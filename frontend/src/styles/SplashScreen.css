@@ -1,0 +1,286 @@
+/* ═══════════════════════════════════════════════════════
+   SPLASH SCREEN — AritExam Pre-Landing Intro
+   Palette: EXACT match to Landing.css
+     Ink       #0a0a23
+     Cobalt    #1a4fff
+     Cyan      #00e5ff
+   Fonts: Unbounded (logo) + Playfair Display (tagline)
+   ═══════════════════════════════════════════════════════ */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: linear-gradient(155deg, #080830 0%, #0d1b4f 40%, #1a2f6f 70%, #0a1235 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  /* Entry */
+  animation: splashFadeIn 0.5s ease forwards;
+}
+
+/* Exit wipe — slides UP to reveal Landing below */
+.splash--exit {
+  animation: splashWipeUp 0.55s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes splashFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes splashWipeUp {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(-100%); opacity: 1; }
+}
+
+/* ─── Animated Grid — mirrors Landing hero grid ─── */
+.splash__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: gridPanSplash 30s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes gridPanSplash {
+  to { background-position: 48px 48px; }
+}
+
+/* ─── Orbs — same radial stops as Landing ─── */
+.splash__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
+  animation: orbDriftSplash 12s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.splash__orb--1 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, #00e5ff 0%, transparent 70%);
+  top: -10%;
+  right: 5%;
+  animation-delay: 0s;
+}
+
+.splash__orb--2 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, #1a4fff 0%, transparent 70%);
+  bottom: -5%;
+  left: 2%;
+  animation-delay: -6s;
+}
+
+@keyframes orbDriftSplash {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(30px, -25px) scale(1.1); }
+  66%  { transform: translate(-20px, 20px) scale(0.92); }
+}
+
+/* ─── Center content ─── */
+.splash__center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+  padding: 0 24px;
+}
+
+/* ─── Logo + badge ─── */
+.splash__logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: splashLogoReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes splashLogoReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.splash__logo {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  background: linear-gradient(135deg, #fff 30%, #00e5ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+/* Badge — exact copy from .landing-hero__badge but white-tinted for dark bg */
+.splash__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 18px 7px 12px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(0, 229, 255, 0.85);
+  letter-spacing: 0.3px;
+}
+
+.splash__badge-dot {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #00e5ff, #1a4fff);
+  border-radius: 50%;
+  animation: pulseGlowSplash 2s ease infinite;
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+  flex-shrink: 0;
+}
+
+@keyframes pulseGlowSplash {
+  0%, 100% { opacity: 1; transform: scale(1);   box-shadow: 0 0 8px  rgba(0, 229, 255, 0.4); }
+  50%       { opacity: 0.6; transform: scale(1.4); box-shadow: 0 0 16px rgba(0, 229, 255, 0.6); }
+}
+
+/* ─── Typewriter tagline — Playfair to match hero headline font ─── */
+.splash__tagline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.55rem);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.5px;
+  min-height: 2.2rem;
+  position: relative;
+}
+
+.splash__cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: #00e5ff;
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  animation: cursorBlink 0.75s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ─── Ring wrap — appears after logo+typewriter ─── */
+.splash__ring-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.splash__ring-wrap--visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.splash__ring-svg {
+  width: 108px;
+  height: 108px;
+  overflow: visible;
+}
+
+/* Ring percentage text — Unbounded to match stat numbers */
+.splash__ring-pct {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  fill: rgba(255, 255, 255, 0.8);
+}
+
+/* ─── Check items ─── */
+.splash__checks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 200px;
+}
+
+.splash__check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.4s ease;
+}
+
+.splash__check--done {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.splash__check-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.splash__check-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.splash__check-label {
+  letter-spacing: 0.3px;
+}
+
+/* ─── Skip hint ─── */
+.splash__skip {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  z-index: 2;
+}
+
+.splash__skip:hover {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ─── Prefers reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .splash__orb,
+  .splash__grid,
+  .splash__badge-dot,
+  .splash__cursor {
+    animation: none;
+  }
+  .splash--exit {
+    animation: none;
+    opacity: 0;
+  }
+}

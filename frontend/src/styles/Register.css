@@ -1,0 +1,276 @@
+/* ═══════════════════════════════════════════════════════
+   PAGE 2 — REGISTER V2
+   Morphing Blob Split + Aurora Gradient + Type Play
+   Palette: Electric violet #6C3AED + Soft lavender
+   Layout: Asymmetric 40/60 split with blob overlay
+   ═══════════════════════════════════════════════════════ */
+
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  background: #faf8ff;
+}
+
+/* ─── Left Panel — Brand + Morphing Blob ─── */
+.register-left {
+  flex: 0 0 42%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px;
+  background: linear-gradient(160deg, #6C3AED 0%, #4F20C9 40%, #3B10A0 100%);
+  overflow: hidden;
+}
+
+/* Noise texture */
+.register-left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Morphing blob decoration */
+.register-left__blob {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4), transparent 70%);
+  border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%;
+  animation: morphBlob 12s ease-in-out infinite;
+  filter: blur(40px);
+}
+
+.register-left__blob--1 {
+  top: -10%;
+  right: -20%;
+  animation-delay: 0s;
+}
+
+.register-left__blob--2 {
+  bottom: -15%;
+  left: -10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.3), transparent 70%);
+  animation-delay: -4s;
+}
+
+@keyframes morphBlob {
+  0%, 100% { border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%; transform: rotate(0deg); }
+  25% { border-radius: 60% 40% 50% 50% / 40% 60% 40% 60%; transform: rotate(5deg); }
+  50% { border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%; transform: rotate(-3deg); }
+  75% { border-radius: 40% 60% 60% 40% / 50% 50% 40% 60%; transform: rotate(2deg); }
+}
+
+/* Geometric line art */
+.register-left__lines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image:
+    linear-gradient(45deg, rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(-45deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Brand content */
+.register-left__brand {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.register-left__logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.register-left__tagline {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+/* Floating shapes */
+.register-left__shape {
+  position: absolute;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.register-left__shape--circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  bottom: 20%;
+  left: 12%;
+  animation: shapeFloat 8s ease-in-out infinite;
+}
+
+.register-left__shape--ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  top: 25%;
+  right: 18%;
+  animation: shapeFloat 8s ease-in-out -3s infinite;
+}
+
+.register-left__shape--square {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  bottom: 35%;
+  right: 25%;
+  transform: rotate(15deg);
+  animation: shapeFloat 8s ease-in-out -6s infinite;
+}
+
+@keyframes shapeFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(8deg); }
+}
+
+/* ─── Right Panel — Form ─── */
+.register-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 80px;
+  position: relative;
+}
+
+.register-right__step {
+  position: absolute;
+  top: 32px;
+  right: 40px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #bbb;
+}
+
+.register-right__title {
+  font-size: 2.4rem;
+  color: #0a0a23;
+  margin-bottom: 8px;
+}
+
+.register-right__subtitle {
+  font-size: 1rem;
+  color: #889;
+  margin-bottom: 40px;
+}
+
+/* Form fields with accent */
+.register-form {
+  max-width: 440px;
+  --accent: #6C3AED;
+}
+
+.register-form .float-field input:focus {
+  border-color: #6C3AED;
+  box-shadow: 0 0 0 4px rgba(108, 58, 237, 0.08), 0 4px 16px rgba(108, 58, 237, 0.06);
+}
+
+.register-form .float-field input:focus ~ label,
+.register-form .float-field input:not(:placeholder-shown) ~ label {
+  color: #6C3AED;
+}
+
+/* Password strength bar */
+.password-strength {
+  height: 4px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.06);
+  margin-top: -12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.password-strength__fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.5s var(--ease-smooth), background 0.5s ease;
+}
+
+.password-strength__fill.weak { width: 25%; background: linear-gradient(90deg, #FF4444, #FF6666); }
+.password-strength__fill.fair { width: 50%; background: linear-gradient(90deg, #FFAA00, #FFCC44); }
+.password-strength__fill.good { width: 75%; background: linear-gradient(90deg, #00CC66, #44DD88); }
+.password-strength__fill.strong { width: 100%; background: linear-gradient(90deg, #6C3AED, #8B5CF6); }
+
+.password-strength__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.password-match {
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-top: -12px;
+  margin-bottom: 16px;
+}
+
+/* Submit button */
+.register-submit {
+  width: 100%;
+  padding: 18px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #6C3AED 0%, #8B5CF6 100%);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 24px rgba(108, 58, 237, 0.3);
+  transition: all 0.4s var(--ease-spring);
+}
+
+.register-submit:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 40px rgba(108, 58, 237, 0.4);
+}
+
+.register-submit:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.register-login-link {
+  margin-top: 24px;
+  font-size: 0.88rem;
+  color: #889;
+  text-align: center;
+}
+
+.register-login-link a {
+  color: #6C3AED;
+  font-weight: 600;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .register-page { flex-direction: column; }
+  .register-left {
+    flex: 0 0 auto;
+    min-height: 280px;
+    padding: 40px;
+  }
+  .register-left__logo { font-size: 2.4rem; }
+  .register-right { padding: 40px 32px; }
+}
