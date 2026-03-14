@@ -9,7 +9,7 @@ const api = axios.create({
 
 /* ---------- Request interceptor: attach token ---------- */
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('aritexam_token');
+  const token = localStorage.getItem('arithexam_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

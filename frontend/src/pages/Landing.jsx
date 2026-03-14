@@ -2,6 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Landing.css';
 
+import heroStudents from '../assets/hero_students.png';
+import aiProctoring from '../assets/ai_proctoring.png';
+import analyticsDashboard from '../assets/analytics_dashboard.png';
+import securityFeatures from '../assets/security_features.png';
+
 export default function Landing() {
   const [showCookie, setShowCookie] = useState(false);
   const [counters, setCounters] = useState({ exams: 0, students: 0, accuracy: 0, uptime: 0 });
@@ -9,6 +14,7 @@ export default function Landing() {
   const [navScrolled, setNavScrolled] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [activeTab, setActiveTab] = useState(0);
   const statsRef = useRef(null);
   const hasAnimated = useRef(false);
   const heroRef = useRef(null);
@@ -16,8 +22,8 @@ export default function Landing() {
   // Cookie consent
   useEffect(() => {
     const t = setTimeout(() => {
-      if (!localStorage.getItem('aritexam_cookie')) setShowCookie(true);
-    }, 3000);
+      if (!localStorage.getItem('arithexam_cookie')) setShowCookie(true);
+    }, 4000);
     return () => clearTimeout(t);
   }, []);
 
@@ -64,7 +70,7 @@ export default function Landing() {
     return () => obs.disconnect();
   }, []);
 
-  // Cycle active step for "How it Works" interactive highlight
+  // Cycle active step
   useEffect(() => {
     const iv = setInterval(() => setActiveStep(p => (p + 1) % 4), 3000);
     return () => clearInterval(iv);
@@ -93,15 +99,42 @@ export default function Landing() {
   }, []);
 
   const handleCookie = (accept) => {
-    localStorage.setItem('aritexam_cookie', accept ? 'accepted' : 'declined');
+    localStorage.setItem('arithexam_cookie', accept ? 'accepted' : 'declined');
     setShowCookie(false);
   };
 
   const features = [
-    { icon: '🛡️', title: 'AI Proctoring', desc: 'Face detection, tab monitoring and fullscreen enforcement — live in the browser, no plugin needed.', color: '#1a4fff' },
-    { icon: '⚡', title: 'Instant Deploy', desc: 'Create an exam in minutes, share a 6-character code. Candidates start in seconds.', color: '#00b96b' },
-    { icon: '📊', title: 'Deep Analytics', desc: 'Per-topic scores, class rankings and performance trends — delivered the moment the exam ends.', color: '#7c3aed' },
-    { icon: '🌐', title: 'Any Device', desc: 'Works perfectly on desktop, tablet and mobile. Zero compromise on exam experience.', color: '#f59e0b' },
+    { icon: '🛡️', title: 'AI Proctoring', desc: 'Face detection, tab monitoring and fullscreen enforcement — live in the browser, no plugin needed.', color: '#1a4fff', img: aiProctoring },
+    { icon: '⚡', title: 'Instant Deploy', desc: 'Create an exam in minutes, share a 6-character code. Candidates start in seconds.', color: '#00b96b', img: null },
+    { icon: '📊', title: 'Deep Analytics', desc: 'Per-topic scores, class rankings and performance trends — delivered the moment the exam ends.', color: '#7c3aed', img: analyticsDashboard },
+    { icon: '🌐', title: 'Any Device', desc: 'Works perfectly on desktop, tablet and mobile. Zero compromise on exam experience.', color: '#f59e0b', img: null },
+  ];
+
+  const featureShowcase = [
+    {
+      tag: 'AI Proctoring',
+      title: 'Real-time AI monitoring that students barely notice',
+      desc: 'Our computer vision engine detects face movements, tracks eye gaze, monitors tab switches, and enforces fullscreen — all running locally in the browser with zero latency.',
+      img: aiProctoring,
+      badges: ['Face Detection', 'Tab Monitoring', 'Fullscreen Lock', 'Browser-Based'],
+      accent: '#1a4fff',
+    },
+    {
+      tag: 'Analytics Dashboard',
+      title: 'Performance insights that drive better outcomes',
+      desc: 'Interactive dashboards with per-topic analysis, class rankings, performance trends, and exportable reports — available the moment the exam ends.',
+      img: analyticsDashboard,
+      badges: ['Real-time Scores', 'Topic Analysis', 'Class Rankings', 'Export Reports'],
+      accent: '#7c3aed',
+    },
+    {
+      tag: 'Enterprise Security',
+      title: 'Bank-grade security your institution can trust',
+      desc: 'End-to-end encrypted exam delivery, SOC 2 compliant infrastructure, and multi-layer fraud detection that catches 99.2% of cheating attempts.',
+      img: securityFeatures,
+      badges: ['E2E Encryption', 'SOC 2 Compliant', 'Fraud Detection', 'Data Privacy'],
+      accent: '#00b96b',
+    },
   ];
 
   const steps = [
@@ -112,7 +145,7 @@ export default function Landing() {
   ];
 
   const testimonials = [
-    { name: 'Dr. Priya Sharma', role: 'Dean of Academics, MIT Pune', text: 'AritExam changed how we run semester exams. The AI proctoring is accurate and our faculty love the analytics dashboard.', av: 'PS', stars: 5 },
+    { name: 'Dr. Priya Sharma', role: 'Dean of Academics, MIT Pune', text: 'ArithExam changed how we run semester exams. The AI proctoring is accurate and our faculty love the analytics dashboard.', av: 'PS', stars: 5 },
     { name: 'Rahul Verma', role: 'HR Director, TCS', text: 'We ran 3,000 candidate assessments in a single day without a single issue. Truly enterprise-grade reliability.', av: 'RV', stars: 5 },
     { name: 'Sneha Kulkarni', role: 'Training Head, Infosys', text: 'Our candidates actually enjoy the exam experience. That\'s something we never expected to hear about an exam platform.', av: 'SK', stars: 5 },
   ];
@@ -120,51 +153,20 @@ export default function Landing() {
   return (
     <div className="lp">
 
-      {/* ══════════════════════════════
-         DESKTOP NAVBAR
-         ══════════════════════════════ */}
-      <nav className={`lp-navbar ${navScrolled ? 'lp-navbar--scrolled' : ''}`}>
-        <div className="lp-navbar__inner">
-          <Link to="/" className="lp-navbar__brand">
-            <span className="lp-navbar__logo-icon">A</span>
-            <span className="lp-navbar__logo-text">AritExam</span>
-          </Link>
-
-          <div className="lp-navbar__links">
-            <a href="#features" className="lp-navbar__link">Features</a>
-            <a href="#how-it-works" className="lp-navbar__link">How it works</a>
-            <a href="#reviews" className="lp-navbar__link">Reviews</a>
-            <a href="#stats" className="lp-navbar__link">Stats</a>
-          </div>
-
-          <div className="lp-navbar__actions">
-            <Link to="/login">
-              <button className="lp-navbar__btn lp-navbar__btn--ghost">Candidate Login</button>
-            </Link>
-            <Link to="/admin-login">
-              <button className="lp-navbar__btn lp-navbar__btn--ghost">Admin Login</button>
-            </Link>
-            <Link to="/register">
-              <button className="lp-navbar__btn lp-navbar__btn--primary">Get Started Free</button>
-            </Link>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            className={`lp-hamburger ${menuOpen ? 'lp-hamburger--open' : ''}`}
-            onClick={() => setMenuOpen(p => !p)}
-            aria-label="Toggle menu"
-          >
-            <span /><span /><span />
-          </button>
-        </div>
-      </nav>
+      {/* ── HAMBURGER BUTTON — Always visible top-right ── */}
+      <button
+        className={`lp-hamburger ${menuOpen ? 'lp-hamburger--open' : ''}`}
+        onClick={() => setMenuOpen(p => !p)}
+        aria-label="Toggle menu"
+      >
+        <span /><span /><span />
+      </button>
 
       {/* ── MOBILE SLIDE-IN MENU ── */}
       <div className={`lp-menu ${menuOpen ? 'lp-menu--open' : ''}`}>
         <div className="lp-menu__logo">
           <span className="lp-navbar__logo-icon">A</span>
-          AritExam
+          ArithExam
         </div>
         <nav className="lp-menu__links">
           <a href="#features" className="lp-menu__link" onClick={() => setMenuOpen(false)}>Features</a>
@@ -187,12 +189,12 @@ export default function Landing() {
       {menuOpen && <div className="lp-overlay" onClick={() => setMenuOpen(false)} />}
 
       {/* ══════════════════════════════
-         HERO — Interactive Parallax
+         HERO — Premium Split Layout with Real Image
          ══════════════════════════════ */}
       <section className="lp-hero" id="hero" ref={heroRef}>
-        {/* Animated background elements */}
         <div className="lp-hero__bg-mesh" />
         <div className="lp-hero__bg-grid" />
+        <div className="lp-hero__bg-gradient" />
 
         <div className="lp-hero__content">
           <div className="lp-hero__left">
@@ -202,7 +204,7 @@ export default function Landing() {
             </div>
 
             <h1 className="lp-hero__h1">
-              AritExam,<br />
+              ArithExam,<br />
               <span className="lp-hero__accent">Assessments</span><br />
               Simplified!
             </h1>
@@ -244,47 +246,29 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* ── RIGHT — Interactive Illustration ── */}
+          {/* ── RIGHT — Hero Image with Decorative Elements ── */}
           <div className="lp-hero__right">
             <div className="lp-hero__img-wrap" style={{
-              transform: `translate(${mousePos.x * 8}px, ${mousePos.y * 6}px)`,
+              transform: `translate(${mousePos.x * 6}px, ${mousePos.y * 4}px)`,
               transition: 'transform 0.3s ease-out'
             }}>
-              <div className="lp-hero__grid-bg" />
+              {/* Green curved background shape */}
+              <div className="lp-hero__shape" />
 
-              <div className="lp-hero__illustration">
-                <div className="lp-hero__illus-circle" />
-                <div className="lp-hero__screen-mock">
-                  <div className="lp-screen__bar">
-                    <span /><span /><span />
-                  </div>
-                  <div className="lp-screen__content">
-                    <div className="lp-screen__q-row">
-                      <div className="lp-screen__q-dot lp-screen__q-dot--blue" />
-                      <div className="lp-screen__q-line lp-screen__q-line--long" />
-                    </div>
-                    <div className="lp-screen__opts">
-                      {[1,2,3,4].map(i => (
-                        <div key={i} className={`lp-screen__opt ${i===2 ? 'lp-screen__opt--sel' : ''}`}>
-                          <div className={`lp-screen__opt-dot ${i===2 ? 'lp-screen__opt-dot--sel' : ''}`} />
-                          <div className="lp-screen__opt-line" style={{ width: `${[70,55,80,60][i-1]}%` }} />
-                          {i===2 && <span className="lp-screen__opt-check">✓</span>}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="lp-screen__bottom">
-                      <div className="lp-screen__proctor">
-                        <span className="lp-screen__proctor-dot" />
-                        AI Proctoring Active
-                      </div>
-                      <div className="lp-screen__timer">⏱ 42:18</div>
-                    </div>
-                  </div>
-                </div>
+              {/* Main hero image */}
+              <div className="lp-hero__photo-container">
+                <img
+                  src={heroStudents}
+                  alt="Students using ArithExam platform"
+                  className="lp-hero__photo"
+                  loading="eager"
+                />
+                <div className="lp-hero__photo-border" />
               </div>
 
+              {/* Floating stat cards */}
               <div className="lp-float lp-float--1" style={{
-                transform: `translate(${mousePos.x * -12}px, ${mousePos.y * -8}px)`,
+                transform: `translate(${mousePos.x * -10}px, ${mousePos.y * -7}px)`,
                 transition: 'transform 0.4s ease-out'
               }}>
                 <div className="lp-float__icon">🎯</div>
@@ -295,7 +279,7 @@ export default function Landing() {
               </div>
 
               <div className="lp-float lp-float--2" style={{
-                transform: `translate(${mousePos.x * 10}px, ${mousePos.y * -6}px)`,
+                transform: `translate(${mousePos.x * 8}px, ${mousePos.y * -5}px)`,
                 transition: 'transform 0.5s ease-out'
               }}>
                 <div className="lp-float__icon">👥</div>
@@ -306,7 +290,7 @@ export default function Landing() {
               </div>
 
               <div className="lp-float lp-float--3" style={{
-                transform: `translate(${mousePos.x * -8}px, ${mousePos.y * 10}px)`,
+                transform: `translate(${mousePos.x * -6}px, ${mousePos.y * 8}px)`,
                 transition: 'transform 0.4s ease-out'
               }}>
                 <div className="lp-float__icon">⚡</div>
@@ -317,7 +301,7 @@ export default function Landing() {
               </div>
 
               <div className="lp-rating" style={{
-                transform: `translate(${mousePos.x * 6}px, ${mousePos.y * 8}px)`,
+                transform: `translate(${mousePos.x * 5}px, ${mousePos.y * 6}px)`,
                 transition: 'transform 0.5s ease-out'
               }}>
                 <div className="lp-rating__stars">★★★★★</div>
@@ -370,7 +354,7 @@ export default function Landing() {
       <section className="lp-features" id="features">
         <div className="lp-inner">
           <div className="lp-section-head reveal-up">
-            <span className="lp-tag">Why AritExam</span>
+            <span className="lp-tag">Why ArithExam</span>
             <h2 className="lp-section-title">Everything your exam needs,<br />nothing it doesn't</h2>
             <p className="lp-section-desc">Purpose-built for modern assessment — no legacy baggage, no confusing UX.</p>
           </div>
@@ -390,37 +374,74 @@ export default function Landing() {
       </section>
 
       {/* ══════════════════════════════
-         HOW IT WORKS — 4 Steps
+         FEATURE SHOWCASE — Image + Text Sections
+         ══════════════════════════════ */}
+      <section className="lp-showcase" id="showcase">
+        <div className="lp-inner">
+          {featureShowcase.map((item, i) => (
+            <div key={i} className={`lp-showcase__row reveal-up ${i % 2 === 1 ? 'lp-showcase__row--reverse' : ''}`}>
+              <div className="lp-showcase__image-col">
+                <div className="lp-showcase__img-wrap" style={{ borderColor: `${item.accent}15` }}>
+                  <img src={item.img} alt={item.tag} className="lp-showcase__img" loading="lazy" />
+                  <div className="lp-showcase__img-glow" style={{ background: `radial-gradient(circle, ${item.accent}10, transparent 70%)` }} />
+                </div>
+              </div>
+              <div className="lp-showcase__text-col">
+                <span className="lp-tag" style={{ background: `${item.accent}10`, color: item.accent }}>{item.tag}</span>
+                <h3 className="lp-showcase__title">{item.title}</h3>
+                <p className="lp-showcase__desc">{item.desc}</p>
+                <div className="lp-showcase__badges">
+                  {item.badges.map((badge, bi) => (
+                    <span key={bi} className="lp-showcase__badge" style={{ borderColor: `${item.accent}25`, color: item.accent }}>
+                      <span className="lp-showcase__badge-dot" style={{ background: item.accent }} />
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ══════════════════════════════
+         HOW IT WORKS — Enhanced 4 Steps
          ══════════════════════════════ */}
       <section className="lp-how" id="how-it-works">
-        <div className="lp-inner lp-how__inner">
-          <div className="lp-how__left">
-            <span className="lp-tag reveal-up">How it works</span>
-            <h2 className="lp-section-title reveal-up">From zero to<br />exam-ready in<br />4 simple steps</h2>
-            <p className="lp-section-desc reveal-up">
-              No training required. AritExam is intuitive enough for first-time users and powerful enough for enterprise.
+        <div className="lp-inner">
+          <div className="lp-section-head reveal-up" style={{ textAlign: 'center', margin: '0 auto 64px', maxWidth: '700px' }}>
+            <span className="lp-tag">Process</span>
+            <h2 className="lp-section-title">From zero to exam-ready in<br />4 simple steps</h2>
+            <p className="lp-section-desc" style={{ margin: '14px auto' }}>
+              Designed for speed. Intuitive for candidates. Powerful for admins.
             </p>
-            <Link to="/register">
-              <button className="lp-btn-primary reveal-up magnetic-btn">Start for Free →</button>
-            </Link>
           </div>
-          <div className="lp-how__steps">
+
+          <div className="lp-how__grid">
             {steps.map((s, i) => (
               <div
                 key={i}
-                className={`lp-step reveal-up ${activeStep === i ? 'lp-step--active' : ''}`}
-                style={{ animationDelay: `${i * 0.12}s` }}
+                className={`lp-step-card reveal-up ${activeStep === i ? 'active' : ''}`}
+                style={{ animationDelay: `${i * 0.15}s` }}
                 onMouseEnter={() => setActiveStep(i)}
               >
-                <div className={`lp-step__num ${activeStep === i ? 'lp-step__num--active' : ''}`}>{s.n}</div>
-                <div className="lp-step__icon">{s.icon}</div>
-                <div>
-                  <h3 className="lp-step__title">{s.title}</h3>
-                  <p className="lp-step__desc">{s.desc}</p>
+                <div className="lp-step-card__top">
+                  <div className="lp-step-card__num">0{s.n}</div>
+                  <div className="lp-step-card__icon">{s.icon}</div>
                 </div>
-                {i < 3 && <div className="lp-step__connector" />}
+                <div className="lp-step-card__body">
+                  <h3 className="lp-step-card__title">{s.title}</h3>
+                  <p className="lp-step-card__desc">{s.desc}</p>
+                </div>
+                <div className="lp-step-card__line"></div>
               </div>
             ))}
+          </div>
+
+          <div className="lp-how__cta reveal-up" style={{ textAlign: 'center', marginTop: '48px' }}>
+            <Link to="/register">
+              <button className="lp-btn-primary magnetic-btn">Experience it Now →</button>
+            </Link>
           </div>
         </div>
       </section>
@@ -490,7 +511,7 @@ export default function Landing() {
         <div className="lp-inner lp-footer__inner">
           <div className="lp-footer__brand">
             <div className="lp-footer__logo">
-              <span className="lp-navbar__logo-icon">A</span> AritExam
+              <span className="lp-navbar__logo-icon">A</span> ArithExam
             </div>
             <p className="lp-footer__tagline">The future of secure online assessment, built for India.</p>
             <div className="lp-footer__social">
@@ -522,7 +543,7 @@ export default function Landing() {
         </div>
         <div className="lp-footer__bottom">
           <div className="lp-inner lp-footer__bottom-inner">
-            <span>© 2026 AritExam. All rights reserved.</span>
+            <span>© 2026 ArithExam. All rights reserved.</span>
             <span>Made with ♥ in India</span>
           </div>
         </div>

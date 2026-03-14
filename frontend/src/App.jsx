@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
+import SplashScreen from './components/SplashScreen';
 
 import Landing from './pages/Landing';
 import Register from './pages/Register';
@@ -15,6 +17,13 @@ import Results from './pages/Results';
 import './styles/Submission.css';
 
 export default function App() {
+  const [splashDone, setSplashDone] = useState(false);
+
+  // Show splash screen FIRST, then reveal the app
+  if (!splashDone) {
+    return <SplashScreen onComplete={() => setSplashDone(true)} />;
+  }
+
   return (
     <AuthProvider>
       <BrowserRouter>

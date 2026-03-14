@@ -8,14 +8,14 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('aritexam_token');
-    const userData = localStorage.getItem('aritexam_user');
+    const token = localStorage.getItem('arithexam_token');
+    const userData = localStorage.getItem('arithexam_user');
     if (token && userData) {
       try {
         setUser(JSON.parse(userData));
       } catch {
-        localStorage.removeItem('aritexam_token');
-        localStorage.removeItem('aritexam_user');
+        localStorage.removeItem('arithexam_token');
+        localStorage.removeItem('arithexam_user');
       }
     }
     setLoading(false);
@@ -24,8 +24,8 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (email, password, isAdmin = false) => {
     const res = await api.post('/auth/login', { email, password, isAdmin });
     const { token, user: userData } = res.data;
-    localStorage.setItem('aritexam_token', token);
-    localStorage.setItem('aritexam_user', JSON.stringify(userData));
+    localStorage.setItem('arithexam_token', token);
+    localStorage.setItem('arithexam_user', JSON.stringify(userData));
     setUser(userData);
     return userData;
   }, []);
@@ -36,8 +36,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem('aritexam_token');
-    localStorage.removeItem('aritexam_user');
+    localStorage.removeItem('arithexam_token');
+    localStorage.removeItem('arithexam_user');
     setUser(null);
   }, []);
 

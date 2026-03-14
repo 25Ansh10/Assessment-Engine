@@ -37,7 +37,7 @@ export default function Login() {
       <div className="login-card" id="login-card">
 
         {/* Logo — class names match CSS exactly */}
-        <div className="login-card__logo">AritExam</div>
+        <div className="login-card__logo">ArithExam</div>
         <div className="login-card__platform">Assessment Platform</div>
 
         <h1 className="login-card__heading">Welcome Back</h1>

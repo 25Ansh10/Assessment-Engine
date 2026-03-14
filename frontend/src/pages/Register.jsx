@@ -53,7 +53,7 @@ export default function Register() {
         <div className="register-left__shape register-left__shape--square"></div>
 
         <div className="register-left__brand">
-          <div className="register-left__logo">Arit<br/>Exam</div>
+          <div className="register-left__logo">Arith<br/>Exam</div>
           <p className="register-left__tagline">
             Join the next generation of intelligent online assessments. Secure, fair, and beautifully designed.
           </p>
@@ -64,7 +64,7 @@ export default function Register() {
       <div className="register-right">
         <span className="register-right__step">Step 1 of 1</span>
         <h1 className="register-right__title">Create Account</h1>
-        <p className="register-right__subtitle">Get started with your free AritExam account</p>
+        <p className="register-right__subtitle">Get started with your free ArithExam account</p>
 
         <form className="register-form" onSubmit={handleSubmit} id="register-form">
           <div className="float-field">

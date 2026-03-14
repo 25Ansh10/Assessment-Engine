@@ -33,7 +33,7 @@ export default function Dashboard() {
       <aside className="sidebar" id="sidebar">
         <div className="sidebar__logo">
           <span className="sidebar__logo-short">AE</span>
-          <span className="sidebar__logo-full">AritExam</span>
+          <span className="sidebar__logo-full">ArithExam</span>
         </div>
 
         <nav className="sidebar__nav">

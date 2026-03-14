@@ -96,7 +96,7 @@ export default function AdminLogin() {
 
         <div className="admin-disclaimer">
           <p>
-            ⚠ This is the only admin-facing page in AritExam. There is no admin dashboard,
+            ⚠ This is the only admin-facing page in ArithExam. There is no admin dashboard,
             candidate management, or analytics panel. This login form is a standalone
             authentication interface for administrative verification only.
           </p>
