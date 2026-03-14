@@ -1,35 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import '../styles/SplashScreen.css';
 
 export default function SplashScreen({ onComplete }) {
-  const [phase, setPhase] = useState('logo');   // logo → ring → exit
-  const [progress, setProgress] = useState(0);
+  const [phase, setPhase] = useState('entry');   // entry → typing → loading → exit
   const [displayText, setDisplayText] = useState('');
+  const [progress, setProgress] = useState(0);
+  const [particlesReady, setParticlesReady] = useState(false);
 
-  const tagline = 'Secure. Intelligent. Beautiful.';
+  const tagline = 'Secure · Intelligent · Beautiful';
 
-  // Phase 1 — Logo fades in (0–800ms), then typewriter starts (800ms)
-  // Phase 2 — Ring fills (1600–2800ms)
-  // Phase 3 — Exit wipe (2800–3200ms)
+  const handleSkip = useCallback(() => {
+    setPhase('exit');
+    setTimeout(() => onComplete?.(), 600);
+  }, [onComplete]);
 
+  // Skip on any key
   useEffect(() => {
-    // Typewriter
-    const typeDelay = 800;
+    const fn = (e) => { if (e.key) handleSkip(); };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, [handleSkip]);
+
+  // Animation sequence
+  useEffect(() => {
+    // Particles come alive after 200ms
+    const particleTimer = setTimeout(() => setParticlesReady(true), 200);
+
+    // Typewriter starts at 600ms
+    const typeDelay = 600;
     let i = 0;
     const typer = setTimeout(() => {
       const interval = setInterval(() => {
         i++;
         setDisplayText(tagline.slice(0, i));
         if (i >= tagline.length) clearInterval(interval);
-      }, 42);
+      }, 50);
     }, typeDelay);
 
-    // Ring fill
-    const ringStart = 1500;
+    // Loading phase at 1800ms
     let raf;
-    const ringTimer = setTimeout(() => {
+    const loadTimer = setTimeout(() => {
+      setPhase('loading');
       const startTime = Date.now();
-      const duration = 1100;
+      const duration = 1400;
       const tick = () => {
         const elapsed = Date.now() - startTime;
         const p = Math.min(elapsed / duration, 1);
@@ -38,130 +51,105 @@ export default function SplashScreen({ onComplete }) {
         if (p < 1) raf = requestAnimationFrame(tick);
         else setPhase('exit');
       };
-      setPhase('ring');
       raf = requestAnimationFrame(tick);
-    }, ringStart);
+    }, 1800);
 
-    // Transition to landing
+    // Transition out
     const exitTimer = setTimeout(() => {
       onComplete?.();
-    }, 3400);
+    }, 3800);
 
     return () => {
-      clearTimeout(typeDelay);
-      clearTimeout(ringTimer);
+      clearTimeout(particleTimer);
+      clearTimeout(typer);
+      clearTimeout(loadTimer);
       clearTimeout(exitTimer);
       cancelAnimationFrame(raf);
     };
   }, []);
 
-  const circumference = 2 * Math.PI * 44; // r=44
-  const dashOffset = circumference * (1 - progress / 100);
-
-  const statusMap = [
-    { label: 'Camera module', done: progress >= 30 },
-    { label: 'Secure channel', done: progress >= 58 },
-    { label: 'AI proctoring', done: progress >= 82 },
+  const modules = [
+    { label: 'Assessment Engine', done: progress >= 25 },
+    { label: 'AI Proctoring', done: progress >= 50 },
+    { label: 'Analytics Core', done: progress >= 75 },
+    { label: 'Secure Channel', done: progress >= 95 },
   ];
 
   return (
-    <div className={`splash ${phase === 'exit' ? 'splash--exit' : ''}`}>
+    <div className={`splash-v2 ${phase === 'exit' ? 'splash-v2--exit' : ''}`}>
 
-      {/* Animated orbs — reuse Landing palette exactly */}
-      <div className="splash__orb splash__orb--1" />
-      <div className="splash__orb splash__orb--2" />
+      {/* Animated light mesh background */}
+      <div className="splash-v2__mesh" />
 
-      {/* Animated grid — mirrors .landing-hero__right-bg::after */}
-      <div className="splash__grid" />
+      {/* Floating geometric shapes */}
+      <div className={`splash-v2__shapes ${particlesReady ? 'splash-v2__shapes--active' : ''}`}>
+        <div className="splash-v2__shape splash-v2__shape--1" />
+        <div className="splash-v2__shape splash-v2__shape--2" />
+        <div className="splash-v2__shape splash-v2__shape--3" />
+        <div className="splash-v2__shape splash-v2__shape--4" />
+        <div className="splash-v2__shape splash-v2__shape--5" />
+      </div>
 
-      <div className="splash__center">
+      {/* Grid pattern */}
+      <div className="splash-v2__grid" />
 
-        {/* Logo */}
-        <div className="splash__logo-wrap">
-          <span className="splash__logo">AritExam</span>
-          <div className="splash__badge">
-            <span className="splash__badge-dot" />
-            AI-Powered Assessments
+      {/* Center content */}
+      <div className="splash-v2__center">
+
+        {/* Logo mark */}
+        <div className="splash-v2__logo-group">
+          <div className="splash-v2__logo-mark">
+            <span className="splash-v2__logo-letter">A</span>
+            <div className="splash-v2__logo-ring" />
+          </div>
+          <h1 className="splash-v2__logo-text">AritExam</h1>
+          <div className="splash-v2__badge">
+            <span className="splash-v2__badge-dot" />
+            AI-Powered Assessment Platform
           </div>
         </div>
 
-        {/* Typewriter tagline */}
-        <p className="splash__tagline">
+        {/* Typewriter */}
+        <p className="splash-v2__tagline">
           {displayText}
-          <span className="splash__cursor" />
+          <span className="splash-v2__cursor" />
         </p>
 
-        {/* Progress ring */}
-        <div className={`splash__ring-wrap ${phase === 'ring' || phase === 'exit' ? 'splash__ring-wrap--visible' : ''}`}>
-          <svg className="splash__ring-svg" viewBox="0 0 100 100">
-            {/* Track */}
-            <circle
-              cx="50" cy="50" r="44"
-              fill="none"
-              stroke="rgba(255,255,255,0.06)"
-              strokeWidth="3"
-            />
-            {/* Progress arc */}
-            <circle
-              cx="50" cy="50" r="44"
-              fill="none"
-              stroke="url(#ringGrad)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={dashOffset}
-              transform="rotate(-90 50 50)"
-              style={{ transition: 'stroke-dashoffset 0.05s linear' }}
-            />
-            <defs>
-              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#1a4fff" />
-                <stop offset="100%" stopColor="#00e5ff" />
-              </linearGradient>
-            </defs>
-            {/* Percentage */}
-            <text
-              x="50" y="50"
-              textAnchor="middle"
-              dominantBaseline="central"
-              className="splash__ring-pct"
-            >
-              {progress}%
-            </text>
-          </svg>
-
-          {/* Check list */}
-          <div className="splash__checks">
-            {statusMap.map(({ label, done }) => (
-              <div key={label} className={`splash__check ${done ? 'splash__check--done' : ''}`}>
-                <span className="splash__check-icon">
-                  {done ? (
-                    <svg viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="7" stroke="#00e5ff" strokeWidth="1.5" />
-                      <path d="M5 8l2 2 4-4" stroke="#00e5ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="7" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
-                    </svg>
-                  )}
-                </span>
-                <span className="splash__check-label">{label}</span>
-              </div>
-            ))}
+        {/* Loading bar */}
+        <div className={`splash-v2__loader ${phase === 'loading' || phase === 'exit' ? 'splash-v2__loader--visible' : ''}`}>
+          <div className="splash-v2__loader-track">
+            <div className="splash-v2__loader-fill" style={{ width: `${progress}%` }} />
           </div>
+          <div className="splash-v2__loader-pct">{progress}%</div>
+        </div>
+
+        {/* Module check list */}
+        <div className={`splash-v2__modules ${phase === 'loading' || phase === 'exit' ? 'splash-v2__modules--visible' : ''}`}>
+          {modules.map(({ label, done }) => (
+            <div key={label} className={`splash-v2__module ${done ? 'splash-v2__module--done' : ''}`}>
+              <span className="splash-v2__module-icon">
+                {done ? (
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="7" stroke="#1a4fff" strokeWidth="1.5" fill="rgba(26,79,255,0.08)" />
+                    <path d="M5 8l2 2 4-4" stroke="#1a4fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="7" stroke="#d1d5db" strokeWidth="1.5" />
+                  </svg>
+                )}
+              </span>
+              <span className="splash-v2__module-label">{label}</span>
+            </div>
+          ))}
         </div>
 
       </div>
 
-      {/* Skip hint */}
-      <button
-        className="splash__skip"
-        onClick={() => onComplete?.()}
-      >
+      {/* Skip button */}
+      <button className="splash-v2__skip" onClick={handleSkip}>
         Press any key to skip
       </button>
-
     </div>
   );
 }

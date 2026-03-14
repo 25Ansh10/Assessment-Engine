@@ -6,17 +6,29 @@ export default function Landing() {
   const [showCookie, setShowCookie] = useState(false);
   const [counters, setCounters] = useState({ exams: 0, students: 0, accuracy: 0, uptime: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeFeature, setActiveFeature] = useState(0);
+  const [navScrolled, setNavScrolled] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const statsRef = useRef(null);
   const hasAnimated = useRef(false);
+  const heroRef = useRef(null);
 
+  // Cookie consent
   useEffect(() => {
     const t = setTimeout(() => {
       if (!localStorage.getItem('aritexam_cookie')) setShowCookie(true);
-    }, 2500);
+    }, 3000);
     return () => clearTimeout(t);
   }, []);
 
+  // Navbar scroll effect
+  useEffect(() => {
+    const onScroll = () => setNavScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Stats counter animation
   useEffect(() => {
     const observer = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !hasAnimated.current) {
@@ -41,6 +53,7 @@ export default function Landing() {
     return () => observer.disconnect();
   }, []);
 
+  // Scroll reveal
   useEffect(() => {
     const els = document.querySelectorAll('.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-scale');
     const obs = new IntersectionObserver(
@@ -51,16 +64,32 @@ export default function Landing() {
     return () => obs.disconnect();
   }, []);
 
+  // Cycle active step for "How it Works" interactive highlight
   useEffect(() => {
-    const iv = setInterval(() => setActiveFeature(p => (p + 1) % 4), 3500);
+    const iv = setInterval(() => setActiveStep(p => (p + 1) % 4), 3000);
     return () => clearInterval(iv);
   }, []);
 
-  // Close menu on Escape key
+  // Close menu on Escape
   useEffect(() => {
     const fn = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
     window.addEventListener('keydown', fn);
     return () => window.removeEventListener('keydown', fn);
+  }, []);
+
+  // Mouse tracking for Hero parallax
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+    const onMove = (e) => {
+      const rect = hero.getBoundingClientRect();
+      setMousePos({
+        x: ((e.clientX - rect.left) / rect.width - 0.5) * 2,
+        y: ((e.clientY - rect.top) / rect.height - 0.5) * 2,
+      });
+    };
+    hero.addEventListener('mousemove', onMove);
+    return () => hero.removeEventListener('mousemove', onMove);
   }, []);
 
   const handleCookie = (accept) => {
@@ -69,16 +98,17 @@ export default function Landing() {
   };
 
   const features = [
-    { icon: '🛡️', title: 'AI Proctoring', desc: 'Face detection, tab monitoring and fullscreen enforcement — live in the browser, no plugin needed.' },
-    { icon: '⚡', title: 'Instant Deploy', desc: 'Create an exam in minutes, share a 6-character code. Candidates start in seconds.' },
-    { icon: '📊', title: 'Deep Analytics', desc: 'Per-topic scores, class rankings and performance trends delivered the moment the exam ends.' },
-    { icon: '🌐', title: 'Any Device', desc: 'Works perfectly on desktop, tablet and mobile. Zero compromise on exam experience.' },
+    { icon: '🛡️', title: 'AI Proctoring', desc: 'Face detection, tab monitoring and fullscreen enforcement — live in the browser, no plugin needed.', color: '#1a4fff' },
+    { icon: '⚡', title: 'Instant Deploy', desc: 'Create an exam in minutes, share a 6-character code. Candidates start in seconds.', color: '#00b96b' },
+    { icon: '📊', title: 'Deep Analytics', desc: 'Per-topic scores, class rankings and performance trends — delivered the moment the exam ends.', color: '#7c3aed' },
+    { icon: '🌐', title: 'Any Device', desc: 'Works perfectly on desktop, tablet and mobile. Zero compromise on exam experience.', color: '#f59e0b' },
   ];
 
   const steps = [
     { n: '1', icon: '✏️', title: 'Create your exam', desc: 'Build a question bank, set time limits and configure AI proctoring — all in one place.' },
-    { n: '2', icon: '🔗', title: 'Share the code', desc: 'Candidates receive a 6-character access code. They join instantly, no account needed.' },
-    { n: '3', icon: '📈', title: 'View results live', desc: 'Scores, analytics and proctoring reports are ready the moment the exam is submitted.' },
+    { n: '2', icon: '🔗', title: 'Share the code', desc: 'Candidates receive a 6-character access code. They join instantly, no separate account needed.' },
+    { n: '3', icon: '🚀', title: 'Start the exam', desc: 'AI proctoring activates automatically. Full screen enforcement, tab monitoring, and face detection.' },
+    { n: '4', icon: '📈', title: 'View results live', desc: 'Scores, analytics and proctoring reports are ready the moment the exam is submitted.' },
   ];
 
   const testimonials = [
@@ -90,28 +120,57 @@ export default function Landing() {
   return (
     <div className="lp">
 
-      {/* ── HAMBURGER BUTTON ── */}
-      <button
-        className={`lp-hamburger ${menuOpen ? 'lp-hamburger--open' : ''}`}
-        onClick={() => setMenuOpen(p => !p)}
-        aria-label="Toggle menu"
-      >
-        <span />
-        <span />
-        <span />
-      </button>
+      {/* ══════════════════════════════
+         DESKTOP NAVBAR
+         ══════════════════════════════ */}
+      <nav className={`lp-navbar ${navScrolled ? 'lp-navbar--scrolled' : ''}`}>
+        <div className="lp-navbar__inner">
+          <Link to="/" className="lp-navbar__brand">
+            <span className="lp-navbar__logo-icon">A</span>
+            <span className="lp-navbar__logo-text">AritExam</span>
+          </Link>
 
-      {/* ── SLIDE-IN MENU ── */}
+          <div className="lp-navbar__links">
+            <a href="#features" className="lp-navbar__link">Features</a>
+            <a href="#how-it-works" className="lp-navbar__link">How it works</a>
+            <a href="#reviews" className="lp-navbar__link">Reviews</a>
+            <a href="#stats" className="lp-navbar__link">Stats</a>
+          </div>
+
+          <div className="lp-navbar__actions">
+            <Link to="/login">
+              <button className="lp-navbar__btn lp-navbar__btn--ghost">Candidate Login</button>
+            </Link>
+            <Link to="/admin-login">
+              <button className="lp-navbar__btn lp-navbar__btn--ghost">Admin Login</button>
+            </Link>
+            <Link to="/register">
+              <button className="lp-navbar__btn lp-navbar__btn--primary">Get Started Free</button>
+            </Link>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className={`lp-hamburger ${menuOpen ? 'lp-hamburger--open' : ''}`}
+            onClick={() => setMenuOpen(p => !p)}
+            aria-label="Toggle menu"
+          >
+            <span /><span /><span />
+          </button>
+        </div>
+      </nav>
+
+      {/* ── MOBILE SLIDE-IN MENU ── */}
       <div className={`lp-menu ${menuOpen ? 'lp-menu--open' : ''}`}>
         <div className="lp-menu__logo">
-          <span className="lp-nav__logo-icon">A</span>
+          <span className="lp-navbar__logo-icon">A</span>
           AritExam
         </div>
         <nav className="lp-menu__links">
-          <a href="#features"     className="lp-menu__link" onClick={() => setMenuOpen(false)}>Features</a>
+          <a href="#features" className="lp-menu__link" onClick={() => setMenuOpen(false)}>Features</a>
           <a href="#how-it-works" className="lp-menu__link" onClick={() => setMenuOpen(false)}>How it works</a>
-          <a href="#reviews"      className="lp-menu__link" onClick={() => setMenuOpen(false)}>Reviews</a>
-          <a href="#stats"        className="lp-menu__link" onClick={() => setMenuOpen(false)}>Stats</a>
+          <a href="#reviews" className="lp-menu__link" onClick={() => setMenuOpen(false)}>Reviews</a>
+          <a href="#stats" className="lp-menu__link" onClick={() => setMenuOpen(false)}>Stats</a>
         </nav>
         <div className="lp-menu__actions">
           <Link to="/login" onClick={() => setMenuOpen(false)}>
@@ -125,122 +184,146 @@ export default function Landing() {
           </Link>
         </div>
       </div>
-
-      {/* ── OVERLAY ── */}
       {menuOpen && <div className="lp-overlay" onClick={() => setMenuOpen(false)} />}
 
-      {/* ── HERO ── */}
-      <section className="lp-hero" id="hero">
-        <div className="lp-hero__left">
-          <div className="lp-hero__badge">
-            <span className="lp-hero__badge-dot" />
-            AI-Powered Exam Platform
-          </div>
+      {/* ══════════════════════════════
+         HERO — Interactive Parallax
+         ══════════════════════════════ */}
+      <section className="lp-hero" id="hero" ref={heroRef}>
+        {/* Animated background elements */}
+        <div className="lp-hero__bg-mesh" />
+        <div className="lp-hero__bg-grid" />
 
-          <h1 className="lp-hero__h1">
-            AritExam,<br />
-            <span className="lp-hero__accent">Assessments</span><br />
-            Simplified!
-          </h1>
-
-          <p className="lp-hero__desc">
-            Conduct secure, intelligent online exams with real-time AI proctoring —
-            built for institutions, enterprises and educators across India.
-          </p>
-
-          <div className="lp-hero__actions">
-            <Link to="/register">
-              <button className="lp-btn-primary">Sign Up for Free</button>
-            </Link>
-            <Link to="/login">
-              <button className="lp-btn-outline">Candidate Login</button>
-            </Link>
-          </div>
-
-          <div className="lp-hero__checks">
-            <span className="lp-check">AI Proctoring</span>
-            <span className="lp-check">Instant Results</span>
-            <span className="lp-check">Any Device</span>
-            <span className="lp-check">Free to Start</span>
-          </div>
-
-          <div className="lp-hero__proof">
-            <div className="lp-proof-avs">
-              {['A','B','C','D','E'].map((l, i) => (
-                <span key={i} className="lp-proof-av" style={{ marginLeft: i ? '-8px' : 0 }}>{l}</span>
-              ))}
+        <div className="lp-hero__content">
+          <div className="lp-hero__left">
+            <div className="lp-hero__badge">
+              <span className="lp-hero__badge-dot" />
+              AI-Powered Exam Platform
             </div>
-            <div>
-              <div className="lp-proof-num">50,000+</div>
-              <div className="lp-proof-lbl">Monthly Active Students</div>
+
+            <h1 className="lp-hero__h1">
+              AritExam,<br />
+              <span className="lp-hero__accent">Assessments</span><br />
+              Simplified!
+            </h1>
+
+            <p className="lp-hero__desc">
+              Conduct secure, intelligent online exams with real-time AI proctoring —
+              built for institutions, enterprises and educators across India.
+            </p>
+
+            <div className="lp-hero__actions">
+              <Link to="/register">
+                <button className="lp-btn-primary magnetic-btn">
+                  Sign Up for Free
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </button>
+              </Link>
+              <Link to="/login">
+                <button className="lp-btn-outline magnetic-btn">Candidate Login</button>
+              </Link>
+            </div>
+
+            <div className="lp-hero__checks">
+              <span className="lp-check">AI Proctoring</span>
+              <span className="lp-check">Instant Results</span>
+              <span className="lp-check">Any Device</span>
+              <span className="lp-check">Free to Start</span>
+            </div>
+
+            <div className="lp-hero__proof">
+              <div className="lp-proof-avs">
+                {['A','B','C','D','E'].map((l, i) => (
+                  <span key={i} className="lp-proof-av" style={{ marginLeft: i ? '-8px' : 0 }}>{l}</span>
+                ))}
+              </div>
+              <div>
+                <div className="lp-proof-num">50,000+</div>
+                <div className="lp-proof-lbl">Monthly Active Students</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* ── RIGHT IMAGE AREA ── */}
-        <div className="lp-hero__right">
-          <div className="lp-hero__img-wrap">
-            <div className="lp-hero__grid-bg" />
+          {/* ── RIGHT — Interactive Illustration ── */}
+          <div className="lp-hero__right">
+            <div className="lp-hero__img-wrap" style={{
+              transform: `translate(${mousePos.x * 8}px, ${mousePos.y * 6}px)`,
+              transition: 'transform 0.3s ease-out'
+            }}>
+              <div className="lp-hero__grid-bg" />
 
-            <div className="lp-hero__illustration">
-              <div className="lp-hero__illus-circle" />
-              <div className="lp-hero__screen-mock">
-                <div className="lp-screen__bar">
-                  <span /><span /><span />
-                </div>
-                <div className="lp-screen__content">
-                  <div className="lp-screen__q-row">
-                    <div className="lp-screen__q-dot lp-screen__q-dot--blue" />
-                    <div className="lp-screen__q-line lp-screen__q-line--long" />
+              <div className="lp-hero__illustration">
+                <div className="lp-hero__illus-circle" />
+                <div className="lp-hero__screen-mock">
+                  <div className="lp-screen__bar">
+                    <span /><span /><span />
                   </div>
-                  <div className="lp-screen__opts">
-                    {[1,2,3,4].map(i => (
-                      <div key={i} className={`lp-screen__opt ${i===2 ? 'lp-screen__opt--sel' : ''}`}>
-                        <div className={`lp-screen__opt-dot ${i===2 ? 'lp-screen__opt-dot--sel' : ''}`} />
-                        <div className="lp-screen__opt-line" style={{ width: `${[70,55,80,60][i-1]}%` }} />
-                        {i===2 && <span className="lp-screen__opt-check">✓</span>}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="lp-screen__bottom">
-                    <div className="lp-screen__proctor">
-                      <span className="lp-screen__proctor-dot" />
-                      AI Proctoring Active
+                  <div className="lp-screen__content">
+                    <div className="lp-screen__q-row">
+                      <div className="lp-screen__q-dot lp-screen__q-dot--blue" />
+                      <div className="lp-screen__q-line lp-screen__q-line--long" />
                     </div>
-                    <div className="lp-screen__timer">⏱ 42:18</div>
+                    <div className="lp-screen__opts">
+                      {[1,2,3,4].map(i => (
+                        <div key={i} className={`lp-screen__opt ${i===2 ? 'lp-screen__opt--sel' : ''}`}>
+                          <div className={`lp-screen__opt-dot ${i===2 ? 'lp-screen__opt-dot--sel' : ''}`} />
+                          <div className="lp-screen__opt-line" style={{ width: `${[70,55,80,60][i-1]}%` }} />
+                          {i===2 && <span className="lp-screen__opt-check">✓</span>}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="lp-screen__bottom">
+                      <div className="lp-screen__proctor">
+                        <span className="lp-screen__proctor-dot" />
+                        AI Proctoring Active
+                      </div>
+                      <div className="lp-screen__timer">⏱ 42:18</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="lp-float lp-float--1">
-              <div className="lp-float__icon">🎯</div>
-              <div>
-                <div className="lp-float__val">99.2%</div>
-                <div className="lp-float__lbl">AI Accuracy</div>
+              <div className="lp-float lp-float--1" style={{
+                transform: `translate(${mousePos.x * -12}px, ${mousePos.y * -8}px)`,
+                transition: 'transform 0.4s ease-out'
+              }}>
+                <div className="lp-float__icon">🎯</div>
+                <div>
+                  <div className="lp-float__val">99.2%</div>
+                  <div className="lp-float__lbl">AI Accuracy</div>
+                </div>
               </div>
-            </div>
 
-            <div className="lp-float lp-float--2">
-              <div className="lp-float__icon">👥</div>
-              <div>
-                <div className="lp-float__val">2,847</div>
-                <div className="lp-float__lbl">Active Now</div>
+              <div className="lp-float lp-float--2" style={{
+                transform: `translate(${mousePos.x * 10}px, ${mousePos.y * -6}px)`,
+                transition: 'transform 0.5s ease-out'
+              }}>
+                <div className="lp-float__icon">👥</div>
+                <div>
+                  <div className="lp-float__val">2,847</div>
+                  <div className="lp-float__lbl">Active Now</div>
+                </div>
               </div>
-            </div>
 
-            <div className="lp-float lp-float--3">
-              <div className="lp-float__icon">⚡</div>
-              <div>
-                <div className="lp-float__val">Instant</div>
-                <div className="lp-float__lbl">Results</div>
+              <div className="lp-float lp-float--3" style={{
+                transform: `translate(${mousePos.x * -8}px, ${mousePos.y * 10}px)`,
+                transition: 'transform 0.4s ease-out'
+              }}>
+                <div className="lp-float__icon">⚡</div>
+                <div>
+                  <div className="lp-float__val">Instant</div>
+                  <div className="lp-float__lbl">Results</div>
+                </div>
               </div>
-            </div>
 
-            <div className="lp-rating">
-              <div className="lp-rating__stars">★★★★★</div>
-              <div className="lp-rating__score">4.8</div>
-              <div className="lp-rating__lbl">Google Reviews</div>
+              <div className="lp-rating" style={{
+                transform: `translate(${mousePos.x * 6}px, ${mousePos.y * 8}px)`,
+                transition: 'transform 0.5s ease-out'
+              }}>
+                <div className="lp-rating__stars">★★★★★</div>
+                <div className="lp-rating__score">4.8</div>
+                <div className="lp-rating__lbl">Google Reviews</div>
+              </div>
             </div>
           </div>
         </div>
@@ -252,7 +335,7 @@ export default function Landing() {
         <div className="lp-marquee__track-wrap">
           <div className="lp-marquee__track">
             {['MIT Pune','TCS','Infosys','Wipro','IIT Bombay','BITS Pilani','Cognizant','HCL','NIT Nagpur','Accenture',
-              'MIT Pune','TCS','Infosys','Wipro','IIT Bombay','BITS Pilani','Cognizant','HCL','NIT Nagpur','Accenture'].map((n,i)=>(
+              'MIT Pune','TCS','Infosys','Wipro','IIT Bombay','BITS Pilani','Cognizant','HCL','NIT Nagpur','Accenture'].map((n,i) => (
               <span key={i} className="lp-marquee__item">
                 <span className="lp-marquee__sep">·</span>{n}
               </span>
@@ -281,7 +364,9 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
+      {/* ══════════════════════════════
+         FEATURES — Interactive Cards
+         ══════════════════════════════ */}
       <section className="lp-features" id="features">
         <div className="lp-inner">
           <div className="lp-section-head reveal-up">
@@ -292,38 +377,48 @@ export default function Landing() {
           <div className="lp-features__grid">
             {features.map((f, i) => (
               <div key={i} className="lp-feat reveal-up" style={{ animationDelay: `${i*0.1}s` }}>
-                <div className="lp-feat__icon">{f.icon}</div>
+                <div className="lp-feat__icon-wrap" style={{ background: `${f.color}10`, border: `1.5px solid ${f.color}20` }}>
+                  <span className="lp-feat__icon">{f.icon}</span>
+                </div>
                 <h3 className="lp-feat__title">{f.title}</h3>
                 <p className="lp-feat__desc">{f.desc}</p>
+                <div className="lp-feat__accent-line" style={{ background: f.color }} />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
+      {/* ══════════════════════════════
+         HOW IT WORKS — 4 Steps
+         ══════════════════════════════ */}
       <section className="lp-how" id="how-it-works">
         <div className="lp-inner lp-how__inner">
           <div className="lp-how__left">
             <span className="lp-tag reveal-up">How it works</span>
-            <h2 className="lp-section-title reveal-up">From zero to<br />exam-ready in<br />3 simple steps</h2>
+            <h2 className="lp-section-title reveal-up">From zero to<br />exam-ready in<br />4 simple steps</h2>
             <p className="lp-section-desc reveal-up">
               No training required. AritExam is intuitive enough for first-time users and powerful enough for enterprise.
             </p>
             <Link to="/register">
-              <button className="lp-btn-primary reveal-up">Start for Free →</button>
+              <button className="lp-btn-primary reveal-up magnetic-btn">Start for Free →</button>
             </Link>
           </div>
           <div className="lp-how__steps">
             {steps.map((s, i) => (
-              <div key={i} className="lp-step reveal-up" style={{ animationDelay: `${i*0.12}s` }}>
-                <div className="lp-step__num">{s.n}</div>
+              <div
+                key={i}
+                className={`lp-step reveal-up ${activeStep === i ? 'lp-step--active' : ''}`}
+                style={{ animationDelay: `${i * 0.12}s` }}
+                onMouseEnter={() => setActiveStep(i)}
+              >
+                <div className={`lp-step__num ${activeStep === i ? 'lp-step__num--active' : ''}`}>{s.n}</div>
                 <div className="lp-step__icon">{s.icon}</div>
                 <div>
                   <h3 className="lp-step__title">{s.title}</h3>
                   <p className="lp-step__desc">{s.desc}</p>
                 </div>
-                {i < 2 && <div className="lp-step__connector" />}
+                {i < 3 && <div className="lp-step__connector" />}
               </div>
             ))}
           </div>
@@ -362,8 +457,8 @@ export default function Landing() {
             <h2 className="lp-cta__title">Ready to conduct your<br />first smart exam?</h2>
             <p className="lp-cta__desc">Join 500+ institutions. Free plan available. No credit card needed.</p>
             <div className="lp-cta__actions">
-              <Link to="/register"><button className="lp-btn-primary lp-btn-primary--lg">Create Free Account</button></Link>
-              <Link to="/login"><button className="lp-btn-outline">Sign In</button></Link>
+              <Link to="/register"><button className="lp-btn-primary lp-btn-primary--lg magnetic-btn">Create Free Account</button></Link>
+              <Link to="/login"><button className="lp-btn-outline magnetic-btn">Candidate Login</button></Link>
             </div>
             <div className="lp-cta__trust">
               <span>✓ Free forever plan</span>
@@ -395,7 +490,7 @@ export default function Landing() {
         <div className="lp-inner lp-footer__inner">
           <div className="lp-footer__brand">
             <div className="lp-footer__logo">
-              <span className="lp-nav__logo-icon">A</span> AritExam
+              <span className="lp-navbar__logo-icon">A</span> AritExam
             </div>
             <p className="lp-footer__tagline">The future of secure online assessment, built for India.</p>
             <div className="lp-footer__social">

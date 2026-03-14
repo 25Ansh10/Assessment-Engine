@@ -1,14 +1,14 @@
 /* ═══════════════════════════════════════════════════════════
-   LANDING PAGE v6 — AritExam
-   Style: Clean Light · PrepInsta-inspired · Professional
-   Font: Inter (readable) + Poppins (headings)
-   Palette: White bg · Cobalt #1a4fff · Accent green #00b96b
-   Nav: Hamburger top-right → slide-in panel
+   LANDING PAGE v7 — AritExam
+   Style: Clean Light · Interactive · Advanced
+   Font: Inter (body) + Poppins (headings)
+   Palette: White bg · Indigo #1a4fff · Green #00b96b
+   Nav: Desktop navbar + mobile hamburger
    ═══════════════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap');
 
-/* ── Reset & Base ── */
+/* ── Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
@@ -80,6 +80,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   margin-bottom: 28px;
 }
 
+/* Magnetic button interaction */
+.magnetic-btn {
+  position: relative;
+  transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+.magnetic-btn:hover { transform: translateY(-2px) scale(1.02); }
+.magnetic-btn:active { transform: scale(0.97); }
+
 /* ── Buttons ── */
 .lp-btn-primary {
   display: inline-flex;
@@ -93,10 +101,18 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-radius: var(--radius-pill);
   box-shadow: 0 4px 20px rgba(26,79,255,0.25);
   transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.lp-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  pointer-events: none;
 }
 .lp-btn-primary:hover {
   background: var(--blue-dark);
-  transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(26,79,255,0.35);
 }
 .lp-btn-primary--lg { padding: 16px 40px; font-size: 1rem; }
@@ -116,7 +132,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .lp-btn-outline:hover {
   background: var(--blue-light);
-  transform: translateY(-2px);
 }
 
 /* ── Reveal animations ── */
@@ -135,35 +150,151 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   opacity: 1; transform: none;
 }
 
-/* Hero elements — animate on load */
+/* Hero element entry animations */
 .lp-hero__badge   { animation: fadeUp 0.6s 0.1s ease both; }
-.lp-hero__h1      { animation: fadeUp 0.6s 0.2s ease both; }
-.lp-hero__desc    { animation: fadeUp 0.6s 0.3s ease both; }
-.lp-hero__actions { animation: fadeUp 0.6s 0.4s ease both; }
-.lp-hero__checks  { animation: fadeUp 0.6s 0.5s ease both; }
-.lp-hero__proof   { animation: fadeUp 0.6s 0.6s ease both; }
-.lp-hero__right   { animation: fadeUp 0.7s 0.3s ease both; }
+.lp-hero__h1      { animation: fadeUp 0.6s 0.25s ease both; }
+.lp-hero__desc    { animation: fadeUp 0.6s 0.4s ease both; }
+.lp-hero__actions { animation: fadeUp 0.6s 0.5s ease both; }
+.lp-hero__checks  { animation: fadeUp 0.6s 0.6s ease both; }
+.lp-hero__proof   { animation: fadeUp 0.6s 0.7s ease both; }
+.lp-hero__right   { animation: fadeUp 0.8s 0.35s ease both; }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ════════════════════════════
-   HAMBURGER BUTTON
+   DESKTOP NAVBAR
+   ════════════════════════════ */
+.lp-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0 40px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  transition: all 0.35s ease;
+  background: transparent;
+}
+.lp-navbar--scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+.lp-navbar__inner {
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lp-navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lp-navbar__logo-icon {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, #1a4fff 0%, #0040ff 60%, #00b96b 100%);
+  color: #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 900;
+  font-family: 'Poppins', sans-serif;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(26, 79, 255, 0.25);
+}
+.lp-navbar__logo-text {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+.lp-navbar__links {
+  display: flex;
+  gap: 6px;
+}
+.lp-navbar__link {
+  padding: 8px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  border-radius: var(--radius-pill);
+  transition: all 0.2s ease;
+  position: relative;
+}
+.lp-navbar__link:hover {
+  color: var(--blue);
+  background: var(--blue-light);
+}
+.lp-navbar__link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--blue);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+.lp-navbar__link:hover::after {
+  width: 20px;
+}
+.lp-navbar__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.lp-navbar__btn {
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  transition: all 0.25s ease;
+}
+.lp-navbar__btn--ghost {
+  color: var(--ink-2);
+  background: transparent;
+}
+.lp-navbar__btn--ghost:hover {
+  color: var(--blue);
+  background: var(--blue-light);
+}
+.lp-navbar__btn--primary {
+  color: var(--white);
+  background: var(--blue);
+  box-shadow: 0 2px 10px rgba(26,79,255,0.2);
+}
+.lp-navbar__btn--primary:hover {
+  background: var(--blue-dark);
+  box-shadow: 0 4px 16px rgba(26,79,255,0.3);
+  transform: translateY(-1px);
+}
+
+/* ════════════════════════════
+   HAMBURGER (mobile only)
    ════════════════════════════ */
 .lp-hamburger {
-  position: fixed;
-  top: 20px;
-  right: 24px;
-  z-index: 1100;
-  width: 46px;
-  height: 46px;
+  display: none;
+  width: 42px;
+  height: 42px;
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  display: flex;
+  box-shadow: var(--shadow-sm);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -171,22 +302,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.lp-hamburger:hover {
-  border-color: var(--blue);
-  box-shadow: var(--shadow-lg);
-}
 .lp-hamburger span {
   display: block;
-  width: 20px;
+  width: 18px;
   height: 2px;
   background: var(--ink);
   border-radius: 2px;
   transition: all 0.35s ease;
   transform-origin: center;
-}
-.lp-hamburger--open {
-  border-color: var(--blue);
-  background: var(--blue-light);
 }
 .lp-hamburger--open span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
@@ -202,7 +325,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 /* ════════════════════════════
-   SLIDE-IN MENU PANEL
+   SLIDE-IN MENU (mobile)
    ════════════════════════════ */
 .lp-menu {
   position: fixed;
@@ -221,9 +344,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   transform: translateX(100%);
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.lp-menu--open {
-  transform: translateX(0);
-}
+.lp-menu--open { transform: translateX(0); }
 .lp-menu__logo {
   display: flex;
   align-items: center;
@@ -234,20 +355,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   color: var(--ink);
   padding-bottom: 20px;
   border-bottom: 1px solid var(--border);
-}
-.lp-nav__logo-icon {
-  width: 32px;
-  height: 32px;
-  background: var(--blue);
-  color: #fff;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  font-weight: 800;
-  font-family: 'Poppins', sans-serif;
-  flex-shrink: 0;
 }
 .lp-menu__links {
   display: flex;
@@ -279,13 +386,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-top: 1px solid var(--border);
 }
 
-/* ── Dark overlay ── */
+/* ── Overlay ── */
 .lp-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
   z-index: 1049;
   animation: fadeIn 0.3s ease;
 }
@@ -298,23 +404,59 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
    HERO
    ════════════════════════════ */
 .lp-hero {
+  position: relative;
   min-height: 100vh;
-  padding-top: 0;
+  padding-top: 68px;
+  overflow: hidden;
+}
+
+/* Hero animated background mesh */
+.lp-hero__bg-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 700px 500px at 15% 40%, rgba(26, 79, 255, 0.05), transparent),
+    radial-gradient(ellipse 500px 600px at 85% 20%, rgba(0, 185, 107, 0.04), transparent),
+    radial-gradient(ellipse 600px 400px at 50% 90%, rgba(26, 79, 255, 0.03), transparent);
+  animation: heroMeshShift 12s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes heroMeshShift {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+
+.lp-hero__bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(26, 79, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 79, 255, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 60% 70% at 50% 50%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 50%, black, transparent);
+}
+
+.lp-hero__content {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   max-width: 1140px;
   margin: 0 auto;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding: 0 40px;
   gap: 48px;
+  min-height: calc(100vh - 68px);
 }
 
 .lp-hero__left {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 80px 0 60px;
+  padding: 40px 0;
 }
 
 /* Badge */
@@ -356,6 +498,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .lp-hero__accent {
   color: var(--blue);
   position: relative;
+  display: inline-block;
 }
 .lp-hero__accent::after {
   content: '';
@@ -365,6 +508,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   background: rgba(26,79,255,0.12);
   border-radius: 3px;
   z-index: -1;
+  animation: accentGrow 0.8s 0.5s ease both;
+}
+@keyframes accentGrow {
+  from { width: 0; }
+  to   { width: 100%; }
 }
 
 .lp-hero__desc {
@@ -383,7 +531,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   flex-wrap: wrap;
 }
 
-/* Checks row */
+/* Check row */
 .lp-hero__checks {
   display: flex;
   gap: 20px;
@@ -413,7 +561,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   flex-shrink: 0;
 }
 
-/* Proof row */
+/* Social proof */
 .lp-hero__proof {
   display: flex;
   align-items: center;
@@ -469,6 +617,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   z-index: 0;
+  animation: circleBreath 8s ease-in-out infinite;
+}
+@keyframes circleBreath {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.05); }
 }
 
 .lp-hero__screen-mock {
@@ -502,10 +655,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .lp-screen__content { padding: 16px; }
 
-.lp-screen__q-row {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 14px;
-}
+.lp-screen__q-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
 .lp-screen__q-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .lp-screen__q-dot--blue { background: var(--blue); }
 .lp-screen__q-line { height: 8px; background: var(--surface); border-radius: 4px; }
@@ -518,12 +668,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-radius: var(--radius-sm);
   background: var(--surface);
   border: 1.5px solid var(--border);
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
-.lp-screen__opt--sel {
-  background: var(--blue-light);
-  border-color: var(--blue);
-}
+.lp-screen__opt--sel { background: var(--blue-light); border-color: var(--blue); }
 .lp-screen__opt-dot {
   width: 12px; height: 12px; border-radius: 50%;
   border: 2px solid var(--border); flex-shrink: 0;
@@ -559,7 +706,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border);
   z-index: 4;
+  transition: box-shadow 0.3s ease;
 }
+.lp-float:hover { box-shadow: var(--shadow-xl); }
 .lp-float__icon { font-size: 1.3rem; }
 .lp-float__val  { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 800; color: var(--ink); line-height: 1; }
 .lp-float__lbl  { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
@@ -600,7 +749,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: flex;
   align-items: center;
   overflow: hidden;
-  gap: 0;
 }
 .lp-marquee__label {
   flex-shrink: 0;
@@ -613,11 +761,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-right: 1px solid var(--border);
   white-space: nowrap;
 }
-.lp-marquee__track-wrap {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
+.lp-marquee__track-wrap { flex: 1; overflow: hidden; position: relative; }
 .lp-marquee__track-wrap::before,
 .lp-marquee__track-wrap::after {
   content: '';
@@ -657,9 +801,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   background: var(--white);
   padding: 44px 32px;
   text-align: center;
-  transition: background 0.3s;
+  transition: all 0.35s ease;
 }
-.lp-stat:hover { background: var(--blue-light); }
+.lp-stat:hover {
+  background: var(--blue-light);
+  transform: scale(1.02);
+}
 .lp-stat__icon  { font-size: 1.8rem; margin-bottom: 12px; display: block; }
 .lp-stat__val   {
   font-family: 'Poppins', sans-serif;
@@ -669,7 +816,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .lp-stat__label { font-size: 0.88rem; font-weight: 600; color: var(--ink-2); }
 
 /* ════════════════════════════
-   FEATURES
+   FEATURES — Interactive Cards
    ════════════════════════════ */
 .lp-features { padding: 96px 0; background: var(--surface); }
 .lp-features__grid {
@@ -682,19 +829,42 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 32px 28px;
-  transition: all 0.3s ease;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
 }
 .lp-feat:hover {
-  transform: translateY(-6px);
+  transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
   border-color: rgba(26,79,255,0.2);
 }
-.lp-feat__icon  { font-size: 2rem; display: block; margin-bottom: 16px; }
+.lp-feat__icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.lp-feat__icon  { font-size: 1.5rem; display: block; }
 .lp-feat__title { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
 .lp-feat__desc  { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+.lp-feat__accent-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  transition: width 0.4s ease;
+}
+.lp-feat:hover .lp-feat__accent-line {
+  width: 100%;
+}
 
 /* ════════════════════════════
-   HOW IT WORKS
+   HOW IT WORKS — 4 Steps
    ════════════════════════════ */
 .lp-how { padding: 96px 0; background: var(--white); }
 .lp-how__inner {
@@ -708,31 +878,47 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: flex;
   align-items: flex-start;
   gap: 18px;
-  padding: 24px;
+  padding: 20px 24px;
   border-radius: var(--radius-lg);
   position: relative;
-  transition: background 0.3s;
+  transition: all 0.35s ease;
+  cursor: default;
 }
-.lp-step:hover { background: var(--surface); }
+.lp-step:hover,
+.lp-step--active {
+  background: var(--blue-light);
+  transform: translateX(6px);
+}
 .lp-step__num {
   width: 40px; height: 40px; flex-shrink: 0;
-  background: var(--blue);
-  color: var(--white);
+  background: var(--surface);
+  color: var(--ink-2);
   font-family: 'Poppins', sans-serif;
   font-size: 1rem; font-weight: 800;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--border);
+  transition: all 0.35s ease;
+}
+.lp-step__num--active,
+.lp-step--active .lp-step__num,
+.lp-step:hover .lp-step__num {
+  background: var(--blue);
+  color: var(--white);
+  border-color: var(--blue);
+  box-shadow: 0 4px 14px rgba(26,79,255,0.3);
 }
 .lp-step__icon  { font-size: 1.6rem; flex-shrink: 0; }
 .lp-step__title { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
 .lp-step__desc  { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
 .lp-step__connector {
   position: absolute;
-  left: 43px; bottom: -16px;
-  width: 2px; height: 32px;
+  left: 43px; bottom: -12px;
+  width: 2px; height: 24px;
   background: var(--border);
   z-index: 0;
 }
+.lp-step--active .lp-step__connector { background: rgba(26,79,255,0.3); }
 
 /* ════════════════════════════
    REVIEWS
@@ -748,9 +934,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 28px;
-  transition: all 0.3s ease;
+  transition: all 0.35s ease;
 }
-.lp-review:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.lp-review:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
 .lp-review__stars  { color: #f59e0b; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 14px; }
 .lp-review__text   { font-size: 0.92rem; color: var(--ink-2); line-height: 1.75; margin-bottom: 22px; font-style: italic; }
 .lp-review__author { display: flex; align-items: center; gap: 12px; }
@@ -798,7 +984,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: flex; align-items: center; gap: 14px;
   box-shadow: var(--shadow-md);
   min-width: 220px;
+  transition: all 0.3s ease;
 }
+.lp-cta__card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 .lp-cta__card-icon { font-size: 1.8rem; }
 .lp-cta__card-stat { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--blue); line-height: 1; }
 .lp-cta__card-lbl  { font-size: 0.78rem; color: var(--muted); margin-top: 3px; }
@@ -873,7 +1061,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
    RESPONSIVE
    ════════════════════════════ */
 @media (max-width: 1024px) {
-  .lp-hero { grid-template-columns: 1fr; min-height: auto; padding: 60px 40px 60px; gap: 40px; }
+  .lp-navbar__links,
+  .lp-navbar__actions { display: none; }
+  .lp-hamburger { display: flex; }
+  
+  .lp-hero__content { grid-template-columns: 1fr; min-height: auto; padding: 60px 40px 60px; gap: 40px; }
   .lp-hero__left { padding: 0; }
   .lp-hero__right { height: 420px; }
   .lp-stats__grid { grid-template-columns: repeat(2, 1fr); }
@@ -887,7 +1079,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 @media (max-width: 768px) {
   .lp-inner { padding: 0 20px; }
-  .lp-hero { padding: 60px 20px 48px; }
+  .lp-hero__content { padding: 60px 20px 48px; }
   .lp-hero__right { height: 320px; }
   .lp-float--2 { display: none; }
   .lp-stats__grid { grid-template-columns: 1fr 1fr; }
@@ -896,6 +1088,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .lp-footer__bottom-inner { flex-direction: column; gap: 8px; text-align: center; }
   .lp-cookie { right: 12px; left: 12px; max-width: none; }
   .lp-menu { width: 280px; }
+  .lp-navbar { padding: 0 20px; }
 }
 
 @media (max-width: 480px) {
