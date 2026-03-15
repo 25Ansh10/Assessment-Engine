@@ -8,6 +8,7 @@ import '../styles/Login.css';
   'clicked' → user clicks lamp: white flash fires
   'lit'     → teal glow spreads across the room
   'form'    → login card rises up from the lamp base
+  Clicking lamp again in lit/form → back to dark (toggle)
 */
 
 export default function Login() {
@@ -31,12 +32,20 @@ export default function Login() {
     return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
-  /* click sequence */
+  /* click sequence — toggles dark <-> light on every lamp click */
   const handleLampClick = () => {
-    if (phase !== 'dark') return;
-    setPhase('clicked');
-    setTimeout(() => setPhase('lit'),  250);
-    setTimeout(() => setPhase('form'), 620);
+    if (phase === 'dark') {
+      // dark → flash → lit → form
+      setPhase('clicked');
+      setTimeout(() => setPhase('lit'),  250);
+      setTimeout(() => setPhase('form'), 620);
+    } else if (phase === 'lit' || phase === 'form') {
+      // light → dark (turn off)
+      setPhase('dark');
+      setForm({ email: '', password: '' });
+      setError('');
+    }
+    // ignore clicks during 'clicked' transition
   };
 
   const handleChange = (e) => {
@@ -78,7 +87,7 @@ export default function Login() {
         className={`lamp lamp--${phase}`}
         onClick={handleLampClick}
         role="button"
-        aria-label="Click lamp to illuminate"
+        aria-label={isLit ? 'Turn off lamp' : 'Turn on lamp'}
         tabIndex={0}
         onKeyDown={(e) => e.key === 'Enter' && handleLampClick()}
       >
@@ -89,10 +98,7 @@ export default function Login() {
 
         {/* shade */}
         <div className="lamp__shade">
-          {/* inner shine when on */}
           <div className="lamp__shade-shine" />
-
-          {/* face */}
           <div className="lamp__face">
             <div className="lamp__eye lamp__eye--l">
               <div className="lamp__pupil"
@@ -119,7 +125,7 @@ export default function Login() {
         <div className="lamp__neck" />
         <div className="lamp__base" />
 
-        {/* hint bubble */}
+        {/* hint — only in dark */}
         {phase === 'dark' && (
           <div className="lamp__hint">
             <span>Click me!</span>
@@ -128,6 +134,13 @@ export default function Login() {
                 stroke="currentColor" strokeWidth="1.6"
                 strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
+          </div>
+        )}
+
+        {/* turn-off hint — shown in lit/form */}
+        {(phase === 'lit' || phase === 'form') && (
+          <div className="lamp__hint lamp__hint--off">
+            <span>Click to turn off</span>
           </div>
         )}
       </div>

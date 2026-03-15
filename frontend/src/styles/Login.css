@@ -1,5 +1,5 @@
 /* ===================================================
-   ArithExam — Lamp Login   |   Light Theme
+   ArithExam — Lamp Login
    ALL styles scoped to .login-root — zero global bleed
    Dark room -> lamp click -> flash -> glow -> form
    Responsive: mobile / tablet / desktop
@@ -7,39 +7,33 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 
-/* ================================================
-   SCOPED RESET — only inside .login-root, never global
-   ================================================ */
+/* ── Scoped reset — only inside .login-root ── */
 .login-root, .login-root *, .login-root *::before, .login-root *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* ================================================
-   ROOT — all CSS vars scoped to .login-root
-   ================================================ */
+/* ── All vars scoped to .login-root ── */
 .login-root {
-  /* palette */
-  --teal:       #0D9488;
-  --teal2:      #14B8A6;
-  --teal-dk:    #0f766e;
-  --teal-lt:    #ccfbf1;
-  --surface:    #ffffff;
-  --border:     #d1fae5;
-  --text:       #134e4a;
-  --muted:      #5eada4;
-  --shade-on:   #7dd3c8;
-  --shade-off:  #3d7a74;
-  --lamp-face:  #0f3330;
-  --yellow:     #fde68a;
-  --yellow2:    #fbbf24;
-  --sp:         cubic-bezier(.34,1.56,.64,1);
-  --ease:       cubic-bezier(.4,0,.2,1);
-  --font-d:     'Unbounded', sans-serif;
-  --font-b:     'DM Sans', sans-serif;
+  --teal:      #0D9488;
+  --teal2:     #14B8A6;
+  --teal-dk:   #0f766e;
+  --teal-lt:   #ccfbf1;
+  --surface:   #ffffff;
+  --border:    #d1fae5;
+  --text:      #134e4a;
+  --muted:     #5eada4;
+  --shade-on:  #7dd3c8;
+  --shade-off: #3d7a74;
+  --lamp-face: #0f3330;
+  --yellow:    #fde68a;
+  --yellow2:   #fbbf24;
+  --sp:        cubic-bezier(.34,1.56,.64,1);
+  --ease:      cubic-bezier(.4,0,.2,1);
+  --font-d:    'Unbounded', sans-serif;
+  --font-b:    'DM Sans', sans-serif;
 
-  /* layout */
   min-height: 100vh;
   width: 100%;
   font-family: var(--font-b);
@@ -52,13 +46,10 @@
   position: relative;
   overflow: hidden;
   isolation: isolate;
-
-  /* dark room on load */
   background: #0a1612;
   transition: background .55s var(--ease);
 }
 
-/* dot texture — absolute so it never bleeds out */
 .login-root::before {
   content: '';
   position: absolute;
@@ -70,7 +61,6 @@
   transition: opacity .55s ease;
 }
 
-/* lit/form: switch to mint bg */
 .login-root--lit,
 .login-root--form {
   background: #f0fdf8;
@@ -80,9 +70,7 @@
 .login-root--lit::before,
 .login-root--form::before { opacity: 0; }
 
-/* ================================================
-   WHITE FLASH
-   ================================================ */
+/* ── White flash ── */
 .login__flash {
   position: absolute;
   inset: 0;
@@ -91,24 +79,18 @@
   pointer-events: none;
   z-index: 200;
 }
-.login__flash--on {
-  animation: flashBurst .4s ease forwards;
-}
-@keyframes flashBurst {
+.login__flash--on { animation: loginFlash .4s ease forwards; }
+@keyframes loginFlash {
   0%   { opacity: 1; }
   100% { opacity: 0; }
 }
 
-/* ================================================
-   ROOM GLOW — teal cone from top
-   ================================================ */
+/* ── Room glow ── */
 .login__room-glow {
   position: absolute;
-  top: -20%;
-  left: 50%;
+  top: -20%; left: 50%;
   transform: translateX(-50%);
-  width: 110%;
-  height: 110%;
+  width: 110%; height: 110%;
   background: conic-gradient(
     from 180deg at 50% 0%,
     transparent 60deg,
@@ -125,16 +107,12 @@
 }
 .login__room-glow--on { opacity: 1; }
 
-/* ================================================
-   FLOOR POOL — warm glow under lamp
-   ================================================ */
+/* ── Floor pool ── */
 .login__floor-pool {
   position: absolute;
-  bottom: 8%;
-  left: 50%;
+  bottom: 8%; left: 50%;
   transform: translateX(-50%);
-  width: 340px;
-  height: 80px;
+  width: 340px; height: 80px;
   background: radial-gradient(ellipse, rgba(251,191,36,.22) 0%, transparent 70%);
   border-radius: 50%;
   filter: blur(18px);
@@ -145,9 +123,9 @@
 }
 .login__floor-pool--on { opacity: 1; }
 
-/* ================================================
-   LAMP (Child of .login-root, uniquely named)
-   ================================================ */
+/* ════════════════════════════════════════
+   LAMP
+════════════════════════════════════════ */
 .lamp {
   position: relative;
   display: flex;
@@ -168,14 +146,12 @@
 .lamp__cord {
   width: 4px; height: 60px;
   background: linear-gradient(to bottom, #334, #223);
-  border-radius: 2px;
-  position: relative;
+  border-radius: 2px; position: relative;
   transition: background .6s ease;
 }
 .lamp--lit .lamp__cord,
-.lamp--form .lamp__cord {
-  background: linear-gradient(to bottom, #8abfb8, #6da8a0);
-}
+.lamp--form .lamp__cord { background: linear-gradient(to bottom, #8abfb8, #6da8a0); }
+
 .lamp__cord-cap {
   width: 10px; height: 10px; border-radius: 50%; background: #334;
   position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
@@ -212,8 +188,10 @@
 .lamp__face { position: absolute; inset: 0; pointer-events: none; }
 
 .lamp__eye {
-  position: absolute; top: 36px; width: 14px; height: 18px;
-  background: var(--lamp-face); border-radius: 50%; overflow: hidden;
+  position: absolute; top: 36px;
+  width: 14px; height: 18px;
+  background: var(--lamp-face);
+  border-radius: 50%; overflow: hidden;
   transition: background .4s ease;
 }
 .lamp__eye--l { left: calc(50% - 24px); transform: translateX(-50%); }
@@ -222,22 +200,26 @@
 .lamp--form .lamp__eye { background: #041f1c; }
 
 .lamp__pupil {
-  position: absolute; width: 6px; height: 6px; background: #fff;
-  border-radius: 50%; top: 3px; left: 3px; transition: transform .08s linear;
+  position: absolute; width: 6px; height: 6px;
+  background: #fff; border-radius: 50%;
+  top: 3px; left: 3px; transition: transform .08s linear;
 }
 
 .lamp__mouth {
   position: absolute; top: 62px; left: 50%; transform: translateX(-50%);
-  width: 32px; height: 15px; border: 2.5px solid var(--lamp-face);
+  width: 32px; height: 15px;
+  border: 2.5px solid var(--lamp-face);
   border-top: none; border-radius: 0 0 32px 32px;
-  transition: all .4s var(--sp);
+  background: transparent; transition: all .4s var(--sp);
 }
 .lamp__mouth--smile {
-  width: 38px; height: 18px; top: 60px; border-radius: 0 0 38px 38px; border-color: #041f1c;
+  width: 38px; height: 18px; top: 60px;
+  border-radius: 0 0 38px 38px; border-color: #041f1c;
 }
 
 .lamp__blush {
-  position: absolute; top: 65px; width: 20px; height: 11px;
+  position: absolute; top: 65px;
+  width: 20px; height: 11px;
   background: rgba(244,114,114,.42); border-radius: 50%;
   opacity: 0; transition: opacity .6s ease .3s;
 }
@@ -247,8 +229,9 @@
 .lamp__blush--r { left: calc(50% + 34px); transform: translateX(-50%); }
 
 .lamp__bulb {
-  position: relative; width: 22px; height: 22px; border-radius: 50%;
-  margin-top: -3px; z-index: 2; background: #1a2e2a;
+  position: relative; width: 22px; height: 22px;
+  border-radius: 50%; margin-top: -3px; z-index: 2;
+  background: #1a2e2a;
   transition: background .4s ease, box-shadow .4s ease;
 }
 .lamp--lit .lamp__bulb,
@@ -263,7 +246,8 @@
 }
 
 .lamp__ray {
-  position: absolute; top: 50%; left: 50%; width: 2px; height: 18px;
+  position: absolute; top: 50%; left: 50%;
+  width: 2px; height: 18px;
   background: linear-gradient(to bottom, rgba(251,191,36,.8), transparent);
   border-radius: 2px; transform-origin: top center;
   transform: rotate(calc(var(--r) * 45deg)) translateY(-4px);
@@ -281,9 +265,7 @@
   border-radius: 4px; margin-top: -2px; transition: background .6s ease;
 }
 .lamp--lit .lamp__neck,
-.lamp--form .lamp__neck {
-  background: linear-gradient(to bottom, #a8d4ce, #7abfb8);
-}
+.lamp--form .lamp__neck { background: linear-gradient(to bottom, #a8d4ce, #7abfb8); }
 
 .lamp__base {
   width: 72px; height: 18px;
@@ -298,8 +280,10 @@
 }
 
 .lamp::after {
-  content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
-  width: 80px; height: 10px; background: rgba(0,0,0,.3); border-radius: 50%;
+  content: ''; position: absolute;
+  bottom: -12px; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 10px;
+  background: rgba(0,0,0,.3); border-radius: 50%;
   filter: blur(5px); transition: background .6s ease;
 }
 .lamp--lit::after,
@@ -309,18 +293,25 @@
   position: absolute; bottom: -46px; left: 50%; transform: translateX(-50%);
   display: flex; align-items: center; gap: 5px;
   background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.15);
-  border-radius: 20px; padding: 6px 14px; font-size: .75rem; font-weight: 600;
-  color: rgba(255,255,255,.6); white-space: nowrap; backdrop-filter: blur(6px);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: .75rem; font-weight: 600;
+  color: rgba(255,255,255,.6); white-space: nowrap;
+  backdrop-filter: blur(6px);
   animation: hintBounce 2s ease-in-out infinite;
+}
+.lamp__hint--off {
+  background: rgba(13,148,136,.12);
+  border: 1px solid rgba(13,148,136,.3);
+  color: #0D9488;
 }
 @keyframes hintBounce {
   0%,100% { transform: translateX(-50%) translateY(0); }
   50%      { transform: translateX(-50%) translateY(-5px); }
 }
 
-/* ================================================
-   LOGIN CARD — rises from lamp base
-   ================================================ */
+/* ════════════════════════════════════════
+   LOGIN CARD
+════════════════════════════════════════ */
 .login__card {
   position: relative;
   width: min(420px, 100%);
@@ -329,15 +320,16 @@
   border-radius: 24px;
   padding: 40px 36px 36px;
   box-shadow: 0 4px 6px rgba(13,148,136,.04), 0 20px 50px rgba(13,148,136,.12);
-  z-index: 10;
-  overflow: hidden;
+  z-index: 10; overflow: hidden;
   opacity: 0;
   transform: translateY(60px) scale(.7);
   pointer-events: none;
   transform-origin: 50% 100%;
   transition: opacity .35s var(--ease), transform .45s var(--sp);
 }
-.login__card--show { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+.login__card--show {
+  opacity: 1; transform: translateY(0) scale(1); pointer-events: all;
+}
 
 .login__card-shimmer {
   position: absolute; top: 0; left: 10%; right: 10%; height: 3px;
@@ -347,10 +339,11 @@
 
 .login__logo { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
 .login__logo-mark {
-  width: 42px; height: 42px; background: linear-gradient(135deg, var(--teal), var(--teal2));
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--teal), var(--teal2));
   border-radius: 11px; display: flex; align-items: center; justify-content: center;
   font-family: var(--font-d); font-size: 12px; font-weight: 800; color: #fff;
-  box-shadow: 0 4px 14px rgba(13,148,136,.4);
+  box-shadow: 0 4px 14px rgba(13,148,136,.4); flex-shrink: 0;
 }
 .login__logo-name {
   display: block; font-family: var(--font-d); font-size: .95rem; font-weight: 800;
@@ -359,41 +352,45 @@
   line-height: 1.2;
 }
 .login__logo-sub {
-  display: block; font-size: .6rem; font-weight: 600; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--muted); margin-top: 1px;
+  display: block; font-size: .6rem; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-top: 1px;
 }
 
 .login__heading {
-  font-family: var(--font-d); font-size: clamp(1.25rem, 4vw, 1.6rem); font-weight: 800;
-  color: var(--text); margin-bottom: 6px;
+  font-family: var(--font-d); font-size: clamp(1.25rem, 4vw, 1.6rem);
+  font-weight: 800; color: var(--text); margin-bottom: 6px;
 }
 .login__sub { font-size: .88rem; color: var(--muted); margin-bottom: 26px; }
 
 .login__error {
-  font-size: .83rem; color: #dc2626; background: #fef2f2; border: 1px solid #fecaca;
-  border-radius: 8px; padding: 9px 12px; margin-bottom: 14px; text-align: center;
+  font-size: .83rem; color: #dc2626; background: #fef2f2;
+  border: 1px solid #fecaca; border-radius: 8px;
+  padding: 9px 12px; margin-bottom: 14px; text-align: center;
 }
 
 .login__form { display: flex; flex-direction: column; }
 
 .login__field { position: relative; margin-bottom: 18px; }
 .login__field input {
-  width: 100%; padding: 22px 46px 8px 15px; font-family: var(--font-b);
-  font-size: max(.97rem, 16px); border: 1.5px solid var(--border);
-  border-radius: 12px; background: #f7fffe; color: var(--text); outline: none;
+  width: 100%; padding: 22px 46px 8px 15px;
+  font-family: var(--font-b); font-size: max(.97rem, 16px);
+  border: 1.5px solid var(--border); border-radius: 12px;
+  background: #f7fffe; color: var(--text); outline: none;
   transition: border-color .2s, box-shadow .2s, background .2s;
 }
 .login__field label {
   position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
   font-size: .92rem; color: #94a3b8; pointer-events: none;
-  transition: all .18s ease;
+  font-family: var(--font-b); transition: all .18s ease;
 }
 .login__field input:focus + label,
 .login__field input:not(:placeholder-shown) + label {
-  top: 10px; transform: translateY(0); font-size: .66rem; font-weight: 600; color: var(--muted);
+  top: 10px; transform: translateY(0);
+  font-size: .66rem; font-weight: 600; letter-spacing: .3px; color: var(--muted);
 }
 .login__field input:focus {
-  border-color: var(--teal); background: #fff; box-shadow: 0 0 0 4px rgba(13,148,136,.1);
+  border-color: var(--teal); background: #fff;
+  box-shadow: 0 0 0 4px rgba(13,148,136,.1);
 }
 .login__field input:focus + label { color: var(--teal); }
 
@@ -407,29 +404,36 @@
 .login__eye-btn svg { width: 17px; height: 17px; }
 
 .login__forgot-row { text-align: right; margin-bottom: 20px; margin-top: -6px; }
-.login__link { font-size: .83rem; font-weight: 600; color: var(--teal); text-decoration: none; transition: color .2s; }
+.login__link {
+  font-size: .83rem; font-weight: 600; color: var(--teal);
+  text-decoration: none; transition: color .2s;
+}
 .login__link:hover { color: var(--teal-dk); }
 
 .login__submit {
   width: 100%; min-height: 52px; padding: 15px;
   background: linear-gradient(135deg, var(--teal), var(--teal2));
-  border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
-  color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-  box-shadow: 0 4px 20px rgba(13,148,136,.38); transition: transform .3s var(--sp), box-shadow .3s ease;
+  border: none; border-radius: 12px;
+  font-size: 1rem; font-weight: 700; font-family: var(--font-b);
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 20px rgba(13,148,136,.38);
+  transition: transform .3s var(--sp), box-shadow .3s ease, opacity .2s;
 }
 .login__submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(13,148,136,.48); }
 .login__submit:active:not(:disabled) { transform: scale(.98); }
 .login__submit:disabled { opacity: .65; cursor: not-allowed; }
 
 .login__spinner {
-  width: 16px; height: 16px; border: 2.5px solid rgba(255,255,255,.35);
-  border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite;
+  width: 16px; height: 16px; flex-shrink: 0;
+  border: 2.5px solid rgba(255,255,255,.35); border-top-color: #fff;
+  border-radius: 50%; animation: loginSpin .7s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes loginSpin { to { transform: rotate(360deg); } }
 
 .login__footer { text-align: center; margin-top: 22px; font-size: .83rem; color: var(--muted); }
 
-/* Stagger animations on card open */
+/* ── Stagger animations ── */
 .login__card--show .login__logo        { animation: loginFadeUp .4s ease .30s both; }
 .login__card--show .login__heading     { animation: loginFadeUp .4s ease .37s both; }
 .login__card--show .login__sub         { animation: loginFadeUp .4s ease .42s both; }
@@ -444,24 +448,20 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ================================================
+/* ════════════════════════════════════════
    RESPONSIVE
-   ================================================ */
-
+════════════════════════════════════════ */
 @media (min-width: 768px) {
-  .login-root {
-    flex-direction: row; gap: 72px; padding: 40px;
-  }
+  .login-root { flex-direction: row; gap: 72px; padding: 40px; }
   .login__card { width: 420px; flex-shrink: 0; }
 }
-
 @media (min-width: 1200px) {
   .login-root { gap: 100px; }
   .lamp__shade { width: 150px; height: 110px; }
-  .lamp__cord { height: 72px; }
-  .lamp__neck { height: 108px; }
-  .lamp__base { width: 88px; }
-  .lamp__eye { top: 40px; width: 16px; height: 20px; }
+  .lamp__cord  { height: 72px; }
+  .lamp__neck  { height: 108px; }
+  .lamp__base  { width: 88px; }
+  .lamp__eye   { top: 40px; width: 16px; height: 20px; }
   .lamp__eye--l { left: calc(50% - 27px); }
   .lamp__eye--r { left: calc(50% + 27px); }
   .lamp__pupil { width: 7px; height: 7px; top: 3px; left: 3px; }
@@ -471,16 +471,15 @@
   .lamp__blush--l { left: calc(50% - 38px); }
   .lamp__blush--r { left: calc(50% + 38px); }
 }
-
 @media (max-width: 767px) {
   .login-root { flex-direction: column; gap: 24px; padding: 28px 16px 44px; }
   .login__card { width: 100%; max-width: 420px; padding: 32px 20px 28px; border-radius: 20px; }
   .lamp__shade { width: 110px; height: 80px; }
-  .lamp__cord { height: 48px; }
-  .lamp__neck { height: 72px; }
-  .lamp__base { width: 60px; height: 15px; }
-  .lamp__bulb { width: 18px; height: 18px; }
-  .lamp__eye { top: 28px; width: 12px; height: 15px; }
+  .lamp__cord  { height: 48px; }
+  .lamp__neck  { height: 72px; }
+  .lamp__base  { width: 60px; height: 15px; }
+  .lamp__bulb  { width: 18px; height: 18px; }
+  .lamp__eye   { top: 28px; width: 12px; height: 15px; }
   .lamp__eye--l { left: calc(50% - 20px); }
   .lamp__eye--r { left: calc(50% + 20px); }
   .lamp__pupil { width: 5px; height: 5px; top: 2px; left: 2px; }
@@ -489,20 +488,22 @@
   .lamp__blush { top: 52px; width: 16px; height: 9px; }
   .lamp__blush--l { left: calc(50% - 28px); }
   .lamp__blush--r { left: calc(50% + 28px); }
-  .lamp__hint { font-size: .7rem; bottom: -42px; }
+  .lamp__hint  { font-size: .7rem; bottom: -42px; }
   .login__heading { font-size: 1.25rem; }
-  .login__submit { min-height: 54px; font-size: 1.05rem; }
+  .login__submit  { min-height: 54px; font-size: 1.05rem; }
 }
-
 @media (max-width: 360px) {
   .login__card { padding: 26px 16px 22px; }
   .login__logo-mark { width: 36px; height: 36px; font-size: 11px; }
   .login__heading { font-size: 1.1rem; }
 }
-
-/* Reduced motion */
+@media (hover: none) {
+  .login__submit:hover:not(:disabled) { transform: none; box-shadow: 0 4px 20px rgba(13,148,136,.38); }
+}
 @media (prefers-reduced-motion: reduce) {
-  .lamp, .lamp__bulb, .lamp__ray, .lamp__hint, .login__flash, .login__room-glow, .login__floor-pool, .login__card, .login__card--show * {
+  .lamp, .lamp__bulb, .lamp__ray, .lamp__hint,
+  .login__flash, .login__room-glow, .login__floor-pool,
+  .login__card, .login__card--show * {
     animation: none !important; transition: opacity .15s ease !important;
   }
   .login__card { transform: none; }
