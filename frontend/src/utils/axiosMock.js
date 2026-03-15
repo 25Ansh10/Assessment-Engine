@@ -49,7 +49,16 @@ api.interceptors.response.use(
 
         if (url === '/auth/register' && method === 'post') {
           resolve({
-            data: { message: 'Registration successful', userId: 'USR' + Date.now() },
+            data: {
+              token: 'mock-jwt-token-' + Date.now(),
+              user: {
+                id: 'USR' + Date.now(),
+                name: body.name || 'New User',
+                email: body.email,
+                role: 'candidate',
+              },
+              message: 'Registration successful'
+            },
             status: 201,
           });
         }

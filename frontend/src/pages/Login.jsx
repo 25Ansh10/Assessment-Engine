@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import '../styles/Login.css';
 
 /*
@@ -19,7 +20,7 @@ export default function Login() {
   const [loading, setLoading]   = useState(false);
   const [eyePos, setEyePos]     = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
-  // const { login } = useAuth();
+  const { login } = useAuth();
 
   /* eyes track cursor */
   useEffect(() => {
@@ -58,9 +59,10 @@ export default function Login() {
     if (!form.email || !form.password) { setError('Please fill in all fields.'); return; }
     setLoading(true);
     try {
-      // await login(form.email, form.password);
-      await new Promise((r) => setTimeout(r, 1500));
+      await login(form.email, form.password);
       navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }

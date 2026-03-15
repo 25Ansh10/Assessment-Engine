@@ -32,6 +32,12 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (formData) => {
     const res = await api.post('/auth/register', formData);
+    const { token, user: userData } = res.data;
+    if (token && userData) {
+      localStorage.setItem('arithexam_token', token);
+      localStorage.setItem('arithexam_user', JSON.stringify(userData));
+      setUser(userData);
+    }
     return res.data;
   }, []);
 
