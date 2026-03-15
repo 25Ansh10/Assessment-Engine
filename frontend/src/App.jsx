@@ -7,7 +7,6 @@ import SplashScreen from './components/SplashScreen';
 import Landing from './pages/Landing';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import AdminLogin from './pages/AdminLogin';
 import Dashboard from './pages/Dashboard';
 import JoinTest from './pages/JoinTest';
 import PreExam from './pages/PreExam';
@@ -32,7 +31,6 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
 
           {/* Protected Routes */}
           <Route path="/dashboard" element={

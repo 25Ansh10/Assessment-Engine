@@ -256,16 +256,39 @@
 }
 
 /* ─── Responsive ─── */
+@media (max-width: 600px) {
+  .join-test-content__title { font-size: 1.8rem; }
+  .join-test-content__subtitle { font-size: 0.95rem; margin-bottom: 32px; }
+  .join-test-content { padding: 0 10px; }
+}
+
 @media (max-width: 540px) {
   .code-input-box {
-    width: 48px;
-    height: 56px;
-    font-size: 1.4rem;
+    width: 44px;
+    height: 52px;
+    font-size: 1.25rem;
+    border-radius: 12px;
   }
   .code-input-row {
-    gap: 8px;
+    gap: 6px;
   }
   .exam-preview__meta {
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .exam-preview { padding: 20px; }
+  .exam-preview__title { font-size: 1.1rem; }
+  .join-test-proceed { padding: 14px 32px; width: 100%; }
+}
+
+@media (max-width: 380px) {
+  .code-input-box {
+    width: 36px;
+    height: 44px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+  }
+  .code-input-row {
+    gap: 4px;
   }
 }

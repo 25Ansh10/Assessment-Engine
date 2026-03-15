@@ -6,6 +6,7 @@ import '../styles/Register.css';
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -36,9 +37,18 @@ export default function Register() {
       setError('Passwords do not match');
       return;
     }
-    const result = await register(form.name, form.email, form.password);
-    if (result.success) navigate('/dashboard');
-    else setError(result.error || 'Registration failed');
+    try {
+      const result = await register({ 
+        name: form.name, 
+        email: form.email, 
+        password: form.password 
+      });
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -133,8 +143,13 @@ export default function Register() {
 
           {error && <div style={{ color: '#FF4444', fontSize: '0.85rem', marginBottom: '12px' }}>{error}</div>}
 
-          <button type="submit" className="register-submit ripple-btn magnetic-btn" id="register-btn">
-            Create Account
+          <button 
+            type="submit" 
+            className="register-submit ripple-btn magnetic-btn" 
+            id="register-btn"
+            disabled={loading}
+          >
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
 
           <div className="register-login-link">
