@@ -44,7 +44,7 @@
   gap: 36px;
   padding: 32px 16px 48px;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
   isolation: isolate;
   background: #0a1612;
   transition: background .55s var(--ease);
