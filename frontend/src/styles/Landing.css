@@ -72,7 +72,7 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
 .landing-section-head { margin-bottom: 48px; }
 .landing-section-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Unbounded', sans-serif;
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   font-weight: 800;
   color: var(--ink);
@@ -390,10 +390,10 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
 /* Headline */
 .landing-hero__h1 {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Unbounded', sans-serif;
   font-size: clamp(2.4rem, 4.5vw, 3.6rem);
   font-weight: 900; color: var(--ink);
-  line-height: 1.1; letter-spacing: -1px;
+  line-height: 1.1; letter-spacing: -1.5px;
   margin-bottom: 20px;
 }
 .landing-hero__accent {
@@ -679,22 +679,42 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-xl); padding: 40px 32px;
   position: relative;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 .landing-step-card:hover,
 .landing-step-card.active {
-  background: var(--white); border-color: var(--blue);
-  transform: translateY(-8px); box-shadow: var(--shadow-xl);
+  background: var(--white); 
+  border-color: #0D9488;
+  transform: translateY(-8px) scale(1.02); 
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 .landing-step-card__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.landing-step-card__num { font-family: 'Poppins', sans-serif; font-size: 2.5rem; font-weight: 900; color: #e5e7eb; line-height: 1; transition: color 0.3s ease; }
+.landing-step-card__num { 
+  font-family: 'Cinzel', serif; 
+  font-size: 3.2rem; font-weight: 900; 
+  color: #0D9488; 
+  opacity: 0.15;
+  line-height: 1; transition: all 0.4s ease; 
+  position: absolute;
+  top: 10px; right: 20px;
+}
 .landing-step-card:hover .landing-step-card__num,
-.landing-step-card.active .landing-step-card__num { color: var(--blue-light); }
-.landing-step-card__icon { font-size: 1.8rem; width: 48px; height: 48px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm); }
-.landing-step-card__title { font-family: 'Poppins', sans-serif; font-size: 1.15rem; font-weight: 800; color: var(--ink); margin-bottom: 12px; }
-.landing-step-card__desc  { font-size: 0.92rem; color: var(--muted); line-height: 1.6; }
-.landing-step-card__line { position: absolute; bottom: 0; left: 0; width: 0; height: 4px; background: var(--blue); transition: width 0.4s ease; }
+.landing-step-card.active .landing-step-card__num { color: #d4a017; opacity: 0.3; transform: scale(1.1); }
+.landing-step-card__icon { 
+  font-size: 2rem; width: 56px; height: 56px; 
+  background: white; border-radius: 14px; 
+  display: flex; align-items: center; justify-content: center; 
+  box-shadow: 0 8px 16px rgba(0,0,0,0.06); 
+  border: 1px solid rgba(13,148,136,0.1);
+}
+.landing-step-card__title { font-family: 'Unbounded', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--ink); margin-bottom: 14px; letter-spacing: -0.02em; }
+.landing-step-card__desc  { font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--muted); line-height: 1.65; }
+.landing-step-card__line { position: absolute; bottom: 0; left: 0; width: 0; height: 4px; background: #0D9488; transition: width 0.4s ease; }
 .landing-step-card:hover .landing-step-card__line,
 .landing-step-card.active .landing-step-card__line { width: 100%; }
 

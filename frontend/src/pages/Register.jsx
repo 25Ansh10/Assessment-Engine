@@ -27,11 +27,24 @@ const todayStr = () =>
 
 /* ─────────────────────────────────
    REGISTRATION CARD
-   Flips in after OTP verified
+   Flips in after OTP verified + 3D Tilt
 ───────────────────────────────── */
 function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
   const [twText, setTwText] = useState('');
   const twRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    setTilt({
+      x: -(y / (rect.height / 2)) * 12, // Tilt amount up to 12deg
+      y: (x / (rect.width / 2)) * 12
+    });
+  };
+
+  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   /* typewriter for examId */
   useRef(() => {
@@ -59,8 +72,21 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
   }
 
   return (
-    <div className={`rc-wrap ${visible ? 'rc-wrap--visible' : ''}`}>
-      <div className="rc-scene">
+    <div 
+      className={`rc-wrap ${visible ? 'rc-wrap--visible' : ''}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="rc-scene" style={{ 
+        transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: tilt.x === 0 ? 'transform 0.5s ease' : 'none'
+      }}>
+        {/* Dynamic Sheen overlay */}
+        <div className="rc-sheen" style={{
+          transform: `translate(${-tilt.y * 10}px, ${-tilt.x * 10}px)`,
+          opacity: tilt.x === 0 ? 0 : 0.15
+        }} />
+
         <div className="rc-card">
 
           {/* ── FRONT of card ── */}
@@ -83,15 +109,7 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
             {/* header band */}
             <div className="rc-header">
               <div className="rc-header__seal">
-                <svg viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="22" r="20" stroke="#0D9488" strokeWidth="1.4"/>
-                  <circle cx="22" cy="22" r="15" stroke="#0D9488" strokeWidth="0.6"/>
-                  <text x="22" y="19" textAnchor="middle" fontSize="7" fontWeight="700"
-                    fill="#0D9488" fontFamily="serif">ARITH</text>
-                  <text x="22" y="27" textAnchor="middle" fontSize="7" fontWeight="700"
-                    fill="#0D9488" fontFamily="serif">EXAM</text>
-                  <path d="M8 33 Q22 38 36 33" stroke="#0D9488" strokeWidth="0.7" fill="none"/>
-                </svg>
+                <img src="/logo.png" alt="" width="36" height="36" />
               </div>
               <div className="rc-header__text">
                 <p className="rc-header__inst">ArithExam Assessment Board</p>
@@ -516,50 +534,30 @@ export default function Register() {
         <div className="rg-page__bg"/>
 
         <div className="rg-card">
-
-          {/* ══════════ LEFT PANEL ══════════ */}
+          {/* ══════════ LEFT PANEL (CARD ONLY) ══════════ */}
           <div className="rg-left">
-
-            {/* ── IMAGE SLOT (top) ── */}
-            <div className="rg-img-slot">
-              <img 
-                src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&q=80&w=1000" 
-                alt="Student taking exam" 
-                className="rg-img-slot__img"
+            <div className="rg-left__card-container">
+              <RegistrationCard
+                visible={true}
+                name={name}
+                email={otpVerified ? email : ''}
+                examId={examId}
+                regDate={regDate}
+                photo={photo}
               />
-              <div className="rg-img-slot__overlay">
-                <div className="rg-img-slot__badge">Official Candidate</div>
-              </div>
             </div>
-
-            {/* ── REGISTRATION CARD (bottom, flips in after OTP) ── */}
-            <RegistrationCard
-              visible={true}
-              name={name}
-              email={otpVerified ? email : ''}
-              examId={examId}
-              regDate={regDate}
-              photo={photo}
-            />
-
           </div>
 
-          {/* ══════════ RIGHT PANEL ══════════ */}
+          {/* ══════════ RIGHT PANEL (FORM) ══════════ */}
           <div className="rg-right">
             <div className="rg-right__bar"/>
 
             {/* logo */}
             <div className="rg-logo">
-              <div className="rg-logo__mark">
-                <svg viewBox="0 0 32 32" fill="none">
-                  <rect width="32" height="32" rx="8" fill="#0D9488"/>
-                  <text x="16" y="21" textAnchor="middle" fontSize="11"
-                    fontWeight="800" fill="white" fontFamily="sans-serif">AE</text>
-                </svg>
-              </div>
+              <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
               <div>
-                <span className="rg-logo__name">ArithExam</span>
-                <span className="rg-logo__sub">Assessment Engine</span>
+                <span className="rg-logo__name">ArithExam Registration</span>
+                <span className="rg-logo__sub">Official Candidate Board</span>
               </div>
             </div>
 
@@ -576,29 +574,6 @@ export default function Register() {
               <h2 className="rg-card__h">{stepMeta[step]?.h}</h2>
               <p  className="rg-card__p">{stepMeta[step]?.p}</p>
             </div>
-
-            {/* ── SUCCESS BIG CARD OVERLAY ── */}
-      {done && (
-        <div className="rg-success-overlay">
-          <div className="rg-success-content">
-            <div className="rg-success-badge">
-              <span className="rg-success-icon">🎉</span>
-              <h2>Registration Successful!</h2>
-              <p>Your official card is ready. Redirecting to your dashboard...</p>
-            </div>
-            <div className="rg-big-card-wrap">
-              <RegistrationCard
-                visible={true}
-                name={name}
-                email={email}
-                examId={examId}
-                regDate={regDate}
-                photo={photo}
-              />
-            </div>
-          </div>
-        </div>
-      )}
 
             {/* ── Step 0: Name ── */}
             <Pane show={step === 0}>
@@ -723,6 +698,29 @@ export default function Register() {
             {error && step !== 4 && <p className="rg-error">{error}</p>}
 
             {/* nav */}
+            {/* ── SUCCESS BIG CARD OVERLAY ── */}
+            {done && (
+              <div className="rg-success-overlay">
+                <div className="rg-success-content">
+                  <div className="rg-success-badge">
+                    <span className="rg-success-icon">🎉</span>
+                    <h2 style={{ fontFamily: 'Unbounded' }}>Registration Successful!</h2>
+                    <p style={{ fontFamily: 'DM Sans' }}>Your official card is ready. Redirecting soon...</p>
+                  </div>
+                  <div className="rg-big-card-wrap">
+                    <RegistrationCard
+                      visible={true}
+                      name={name}
+                      email={email}
+                      examId={examId}
+                      regDate={regDate}
+                      photo={photo}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="rg-nav">
               {step > 0 && !done && (
                 <button className="rg-nav__bk" onClick={goBack}>← Back</button>

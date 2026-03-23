@@ -4,7 +4,7 @@ import api from '../utils/axiosMock';
 export default function useExamGuard({ onViolation, onAutoSubmit, examId }) {
   const [violations, setViolations] = useState(0);
   const [warnings, setWarnings] = useState([]);
-  const maxViolations = 3;
+  const maxViolations = Number(import.meta.env.VITE_MAX_EXAM_VIOLATIONS) || 3;
   const violationRef = useRef(0);
 
   const addWarning = useCallback((type, message) => {
@@ -87,7 +87,7 @@ export default function useExamGuard({ onViolation, onAutoSubmit, examId }) {
     // Auto-save every 60 seconds
     const autoSaveInterval = setInterval(() => {
       api.post('/exams/autosave', { examId, timestamp: Date.now() });
-    }, 60000);
+    }, Number(import.meta.env.VITE_AUTOSAVE_INTERVAL_MS) || 60000);
 
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);

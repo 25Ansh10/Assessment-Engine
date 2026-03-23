@@ -2,9 +2,12 @@ import axios from 'axios';
 import { mockExams, mockQuestions, mockLeaderboard, mockMetrics } from '../data/mockExams';
 import { mockResults } from '../data/mockResults';
 
+const isProd = import.meta.env.PROD;
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
 const api = axios.create({
-  baseURL: '/api',
-  timeout: 5000,
+  baseURL: apiUrl || '/api',
+  timeout: 15000, // Increased for cross-service stability
 });
 
 /* ---------- Request interceptor: attach token ---------- */

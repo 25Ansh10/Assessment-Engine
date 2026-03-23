@@ -60,128 +60,61 @@ function Field({ id, label, type = 'text', value, onChange, onBlur, ok, err, aut
 function AccessCard({ email, emailOk }) {
   const initials = getInitials(email);
   const masked   = maskEmail(email);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    setTilt({ x: -(y / (rect.height / 2)) * 10, y: (x / (rect.width / 2)) * 10 });
+  };
+
+  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   return (
-    <div className="lc-wrap">
-      <div className="lc-scene">
-        <div className="lc-card">
+    <div className="lc-wrap" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+      <div className="lc-scene" style={{ 
+        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: tilt.x === 0 ? 'transform 0.5s ease' : 'none'
+      }}>
+        {/* Sheen overlay */}
+        <div className="lc-sheen" style={{
+          transform: `translate(${-tilt.y * 8}px, ${-tilt.x * 8}px)`,
+          opacity: tilt.x === 0 ? 0 : 0.12
+        }} />
 
+        <div className="lc-card">
           {/* ── FRONT ── */}
           <div className="lc-front">
-
             {/* holographic strip */}
             <div className="lc-holo"/>
-
-            {/* embossed watermark */}
-            <div className="lc-watermark" aria-hidden="true">
-              <svg viewBox="0 0 180 180" fill="none">
-                <circle cx="90" cy="90" r="80" stroke="currentColor" strokeWidth="0.5" opacity="0.12"/>
-                <circle cx="90" cy="90" r="55" stroke="currentColor" strokeWidth="0.4" opacity="0.08"/>
-                <circle cx="90" cy="90" r="32" stroke="currentColor" strokeWidth="0.4" opacity="0.06"/>
-                <path d="M90 20 L96 50 H128 L103 68 L112 98 L90 82 L68 98 L77 68 L52 50 H84Z"
-                  stroke="currentColor" strokeWidth="0.5" opacity="0.08"/>
-              </svg>
-            </div>
-
-            {/* header band */}
+            {/* ... rest of card ... */}
             <div className="lc-header">
-              <div className="lc-seal">
-                <svg viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="22" r="20" stroke="#0D9488" strokeWidth="1.4"/>
-                  <circle cx="22" cy="22" r="15" stroke="#0D9488" strokeWidth="0.6"/>
-                  <text x="22" y="19" textAnchor="middle" fontSize="7" fontWeight="700"
-                    fill="#0D9488" fontFamily="serif">ARITH</text>
-                  <text x="22" y="27" textAnchor="middle" fontSize="7" fontWeight="700"
-                    fill="#0D9488" fontFamily="serif">EXAM</text>
-                  <path d="M8 33 Q22 38 36 33" stroke="#0D9488" strokeWidth="0.7" fill="none"/>
-                </svg>
-              </div>
+              <div className="lc-seal"><img src="/logo.png" alt="" width="36" height="36" /></div>
               <div className="lc-header__text">
                 <p className="lc-header__inst">ArithExam Assessment Board</p>
                 <h3 className="lc-header__title">ACCESS CARD</h3>
                 <p className="lc-header__session">Session 2024–25</p>
               </div>
-              <div className="lc-role-badge">CAND</div>
             </div>
-
-            {/* gold dashed divider */}
             <div className="lc-divider"/>
-
-            {/* body */}
             <div className="lc-body">
-
-              {/* avatar — initials or placeholder */}
               <div className={`lc-avatar ${email ? 'lc-avatar--filled' : ''}`}>
-                {email
-                  ? <span className="lc-avatar__initials">{initials}</span>
-                  : <svg viewBox="0 0 40 40" fill="none" width="28" height="28">
-                      <circle cx="20" cy="14" r="7" stroke="currentColor" strokeWidth="1.3"/>
-                      <path d="M6 36 C6 26 34 26 34 36" stroke="currentColor"
-                        strokeWidth="1.3" fill="none"/>
-                    </svg>
-                }
+                {email ? <span className="lc-avatar__initials">{initials}</span> : <svg viewBox="0 0 40 40" fill="none" width="28" height="28"><circle cx="20" cy="14" r="7" stroke="currentColor" strokeWidth="1.3"/><path d="M6 36 C6 26 34 26 34 36" stroke="currentColor" strokeWidth="1.3" fill="none"/></svg>}
                 <div className="lc-avatar__stamp">PHOTO</div>
               </div>
-
               <div className="lc-fields">
-                <div className="lc-field-row">
-                  <span className="lc-field-lbl">Email Address</span>
-                  <span className={`lc-field-val ${email ? 'lc-field-val--filled' : ''}`}>
-                    {email ? masked : '— — — — — — —'}
-                  </span>
-                </div>
-                <div className="lc-field-row">
-                  <span className="lc-field-lbl">Access Role</span>
-                  <span className="lc-field-val lc-field-val--filled lc-field-val--role">
-                    CANDIDATE
-                  </span>
-                </div>
-                <div className="lc-field-row">
-                  <span className="lc-field-lbl">Date of Access</span>
-                  <span className="lc-field-val lc-field-val--filled">{TODAY}</span>
-                </div>
+                <div className="lc-field-row"><span className="lc-field-lbl">Email Address</span><span className={`lc-field-val ${email ? 'lc-field-val--filled' : ''}`}>{email ? masked : '— — — — — — —'}</span></div>
+                <div className="lc-field-row"><span className="lc-field-lbl">Access Role</span><span className="lc-field-val lc-field-val--filled lc-field-val--role">CANDIDATE</span></div>
+                <div className="lc-field-row"><span className="lc-field-lbl">Date of Access</span><span className="lc-field-val lc-field-val--filled">{TODAY}</span></div>
               </div>
             </div>
-
-            {/* footer */}
             <div className="lc-footer">
-              <div className="lc-footer__sig">
-                <div className="lc-footer__line"/>
-                <p className="lc-footer__lbl">Controller of Examinations</p>
-              </div>
-              <span className={`lc-badge ${emailOk ? 'lc-badge--valid' : 'lc-badge--pending'}`}>
-                {emailOk ? '✓ VERIFIED' : 'PENDING'}
-              </span>
-              <div className="lc-footer__sig lc-footer__sig--r">
-                <div className="lc-footer__line"/>
-                <p className="lc-footer__lbl">Candidate Signature</p>
-              </div>
+              <div className="lc-footer__sig"><div className="lc-footer__line"/><p className="lc-footer__lbl">Controller</p></div>
+              <span className={`lc-badge ${emailOk ? 'lc-badge--valid' : 'lc-badge--pending'}`}>{emailOk ? '✓ VERIFIED' : 'PENDING'}</span>
             </div>
           </div>
-
-          {/* ── BACK — visible mid-flip ── */}
-          <div className="lc-back">
-            <div className="lc-back__s lc-back__s--1"/>
-            <div className="lc-back__s lc-back__s--2"/>
-            <div className="lc-back__s lc-back__s--3"/>
-            <div className="lc-back__center">
-              <svg viewBox="0 0 60 60" fill="none" width="56">
-                <circle cx="30" cy="30" r="28" stroke="rgba(212,160,23,.4)" strokeWidth="1.5"/>
-                <text x="30" y="26" textAnchor="middle" fontSize="10"
-                  fill="rgba(212,160,23,.6)" fontWeight="700" fontFamily="serif">AE</text>
-                <text x="30" y="36" textAnchor="middle" fontSize="8"
-                  fill="rgba(212,160,23,.5)" fontFamily="serif">EXAM</text>
-              </svg>
-            </div>
-          </div>
-
         </div>
-      </div>
-
-      {/* pending assessment alert */}
-      <div className="lc-alert">
-        <span className="lc-alert__dot"/>
-        <span>📋 <strong>1 pending assessment</strong> scheduled today</span>
       </div>
     </div>
   );
@@ -282,16 +215,10 @@ export default function Login() {
 
           {/* logo */}
           <div className="lg-logo">
-            <div className="lg-logo__mark">
-              <svg viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="8" fill="#0D9488"/>
-                <text x="16" y="21" textAnchor="middle" fontSize="11"
-                  fontWeight="800" fill="white" fontFamily="sans-serif">AE</text>
-              </svg>
-            </div>
+            <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
             <div>
               <span className="lg-logo__name">ArithExam</span>
-              <span className="lg-logo__sub">Assessment Engine</span>
+              <span className="lg-logo__sub">Official Candidate Access</span>
             </div>
           </div>
 

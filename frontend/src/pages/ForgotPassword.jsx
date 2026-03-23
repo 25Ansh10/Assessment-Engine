@@ -95,6 +95,16 @@ function OtpInput({ value, onChange, disabled }) {
 function RecoveryCard({ step, email, emailOk, resetDone }) {
   const initials = getInitials(email);
   const masked   = maskEmail(email);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    setTilt({ x: -(y / (rect.height / 2)) * 10, y: (x / (rect.width / 2)) * 10 });
+  };
+
+  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   const statusLabel = step === 0 ? 'IDENTIFY' :
                       step === 1 ? 'VERIFY' :
@@ -102,39 +112,24 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
   const statusColor = step === 3 ? '#15803d' : '#0D9488';
 
   return (
-    <div className="fc-wrap">
-      <div className="fc-scene">
-        <div className="fc-card">
+    <div className="fc-wrap" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+      <div className="fc-scene" style={{ 
+        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        transition: tilt.x === 0 ? 'transform 0.5s ease' : 'none'
+      }}>
+        {/* Sheen overlay */}
+        <div className="fc-sheen" style={{
+          transform: `translate(${-tilt.y * 8}px, ${-tilt.x * 8}px)`,
+          opacity: tilt.x === 0 ? 0 : 0.12
+        }} />
 
+        <div className="fc-card">
           {/* ── FRONT ── */}
           <div className="fc-front">
-
-            {/* holographic strip */}
             <div className="fc-holo"/>
-
-            {/* embossed watermark */}
-            <div className="fc-watermark" aria-hidden="true">
-              <svg viewBox="0 0 180 180" fill="none">
-                <circle cx="90" cy="90" r="80" stroke="currentColor" strokeWidth="0.5" opacity="0.12"/>
-                <circle cx="90" cy="90" r="55" stroke="currentColor" strokeWidth="0.4" opacity="0.08"/>
-                <circle cx="90" cy="90" r="32" stroke="currentColor" strokeWidth="0.4" opacity="0.06"/>
-                <path d="M90 20 L96 50 H128 L103 68 L112 98 L90 82 L68 98 L77 68 L52 50 H84Z"
-                  stroke="currentColor" strokeWidth="0.5" opacity="0.08"/>
-              </svg>
-            </div>
-
-            {/* header band */}
             <div className="fc-header">
               <div className="fc-seal">
-                <svg viewBox="0 0 44 44" fill="none">
-                  <circle cx="22" cy="22" r="20" stroke="#0D9488" strokeWidth="1.4"/>
-                  <circle cx="22" cy="22" r="15" stroke="#0D9488" strokeWidth="0.6"/>
-                  <text x="22" y="19" textAnchor="middle" fontSize="7" fontWeight="700"
-                    fill="#0D9488" fontFamily="serif">ARITH</text>
-                  <text x="22" y="27" textAnchor="middle" fontSize="7" fontWeight="700"
-                    fill="#0D9488" fontFamily="serif">EXAM</text>
-                  <path d="M8 33 Q22 38 36 33" stroke="#0D9488" strokeWidth="0.7" fill="none"/>
-                </svg>
+                <img src="/logo.png" alt="" width="36" height="36" />
               </div>
               <div className="fc-header__text">
                 <p className="fc-header__inst">ArithExam Assessment Board</p>
@@ -145,110 +140,27 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
                 {statusLabel}
               </div>
             </div>
-
-            {/* gold dashed divider */}
             <div className="fc-divider"/>
-
-            {/* body */}
             <div className="fc-body">
-
-              {/* avatar */}
               <div className={`fc-avatar ${email ? 'fc-avatar--filled' : ''}`}>
-                {email
-                  ? <span className="fc-avatar__initials">{initials}</span>
-                  : <svg viewBox="0 0 40 40" fill="none" width="28" height="28">
-                      <circle cx="20" cy="14" r="7" stroke="currentColor" strokeWidth="1.3"/>
-                      <path d="M6 36 C6 26 34 26 34 36" stroke="currentColor"
-                        strokeWidth="1.3" fill="none"/>
-                    </svg>
-                }
-                {/* lock icon overlay */}
-                <div className="fc-avatar__lock">
-                  <svg viewBox="0 0 24 24" fill="none" width="12" height="12">
-                    <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="2"/>
-                  </svg>
-                </div>
+                {email ? <span className="fc-avatar__initials">{initials}</span> : <svg viewBox="0 0 40 40" fill="none" width="28" height="28"><circle cx="20" cy="14" r="7" stroke="currentColor" strokeWidth="1.3"/><path d="M6 36 C6 26 34 26 34 36" stroke="currentColor" strokeWidth="1.3" fill="none"/></svg>}
+                <div className="fc-avatar__lock"><svg viewBox="0 0 24 24" fill="none" width="12" height="12"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="2"/></svg></div>
               </div>
-
               <div className="fc-fields">
-                <div className="fc-field-row">
-                  <span className="fc-field-lbl">Recovery Email</span>
-                  <span className={`fc-field-val ${email ? 'fc-field-val--filled' : ''}`}>
-                    {email ? masked : '— — — — — — —'}
-                  </span>
-                </div>
-                <div className="fc-field-row">
-                  <span className="fc-field-lbl">Recovery Status</span>
-                  <span className="fc-field-val fc-field-val--filled fc-field-val--status">
-                    {step === 0 && 'AWAITING EMAIL'}
-                    {step === 1 && 'OTP SENT'}
-                    {step === 2 && 'VERIFIED — SET NEW PASSWORD'}
-                    {step === 3 && '✓ PASSWORD RESET COMPLETE'}
-                  </span>
-                </div>
+                <div className="fc-field-row"><span className="fc-field-lbl">Recovery Email</span><span className={`fc-field-val ${email ? 'fc-field-val--filled' : ''}`}>{email ? masked : '— — — — — — —'}</span></div>
+                <div className="fc-field-row"><span className="fc-field-lbl">Recovery Status</span><span className="fc-field-val fc-field-val--filled fc-field-val--status">{step === 0 && 'AWAITING EMAIL'}{step === 1 && 'OTP SENT'}{step === 2 && 'VERIFIED — SET NEW PASSWORD'}{step === 3 && '✓ PASSWORD RESET COMPLETE'}</span></div>
                 <div className="fc-field-row">
                   <span className="fc-field-lbl">Security Level</span>
-                  <div className="fc-security-dots">
-                    {[0, 1, 2, 3].map(i => (
-                      <span key={i} className={`fc-security-dot ${i <= step ? 'fc-security-dot--on' : ''}`} />
-                    ))}
-                    <span className="fc-security-label">
-                      {step === 0 ? 'Level 1' : step === 1 ? 'Level 2' : step === 2 ? 'Level 3' : 'Complete'}
-                    </span>
-                  </div>
+                  <div className="fc-security-dots">{[0, 1, 2, 3].map(i => (<span key={i} className={`fc-security-dot ${i <= step ? 'fc-security-dot--on' : ''}`} />))}<span className="fc-security-label">{step === 0 ? 'Level 1' : step === 1 ? 'Level 2' : step === 2 ? 'Level 3' : 'Complete'}</span></div>
                 </div>
               </div>
             </div>
-
-            {/* footer */}
             <div className="fc-footer">
-              <div className="fc-footer__sig">
-                <div className="fc-footer__line"/>
-                <p className="fc-footer__lbl">Security Officer</p>
-              </div>
-              <span className={`fc-badge ${resetDone ? 'fc-badge--valid' : step > 0 ? 'fc-badge--progress' : 'fc-badge--pending'}`}>
-                {resetDone ? '✓ RECOVERED' : step > 0 ? 'IN PROGRESS' : 'PENDING'}
-              </span>
-              <div className="fc-footer__sig fc-footer__sig--r">
-                <div className="fc-footer__line"/>
-                <p className="fc-footer__lbl">Candidate</p>
-              </div>
+              <div className="fc-footer__sig"><div className="fc-footer__line"/><p className="fc-footer__lbl">Security Officer</p></div>
+              <span className={`fc-badge ${resetDone ? 'fc-badge--valid' : step > 0 ? 'fc-badge--progress' : 'fc-badge--pending'}`}>{resetDone ? '✓ RECOVERED' : step > 0 ? 'IN PROGRESS' : 'PENDING'}</span>
             </div>
           </div>
-
-          {/* ── BACK ── */}
-          <div className="fc-back">
-            <div className="fc-back__s fc-back__s--1"/>
-            <div className="fc-back__s fc-back__s--2"/>
-            <div className="fc-back__s fc-back__s--3"/>
-            <div className="fc-back__center">
-              <svg viewBox="0 0 60 60" fill="none" width="56">
-                <circle cx="30" cy="30" r="28" stroke="rgba(212,160,23,.4)" strokeWidth="1.5"/>
-                <text x="30" y="26" textAnchor="middle" fontSize="10"
-                  fill="rgba(212,160,23,.6)" fontWeight="700" fontFamily="serif">AE</text>
-                <text x="30" y="36" textAnchor="middle" fontSize="8"
-                  fill="rgba(212,160,23,.5)" fontFamily="serif">EXAM</text>
-              </svg>
-            </div>
-          </div>
-
         </div>
-      </div>
-
-      {/* Security tip */}
-      <div className="fc-tip">
-        <span className="fc-tip__icon">
-          <svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </span>
-        <span>
-          {step === 0 && 'Enter your registered email to begin recovery'}
-          {step === 1 && 'Check your inbox for the 6-digit verification code'}
-          {step === 2 && 'Create a strong password to secure your account'}
-          {step === 3 && 'Your account is now secured with the new password'}
-        </span>
       </div>
     </div>
   );

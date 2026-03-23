@@ -376,53 +376,54 @@ export default function Exam({ onFinish }) {
 
 
   /* ════════════════════════════════
-     RESULT SCREEN
+     RESULT SCREEN — Upgrade with 3D View
   ════════════════════════════════ */
   if (showResult) {
     const s = mcqScore();
     const totalMCQ = QUESTIONS.filter(q => q.type === "mcq").length;
+    const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+    const handleTilt = (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setTilt({ x: -((e.clientY - rect.top - rect.height/2) / (rect.height/2)) * 6, y: ((e.clientX - rect.left - rect.width/2) / (rect.width/2)) * 6 });
+    };
+
     return (
-      <div className="res-shell">
-        <div className="res-card">
-          <div className="res-seal">
-            <svg viewBox="0 0 80 80" fill="none" width="72" height="72">
-              <circle cx="40" cy="40" r="37" stroke="#0D9488" strokeWidth="1.5" opacity="0.22" />
-              <circle cx="40" cy="40" r="29" stroke="#0D9488" strokeWidth="1" opacity="0.38" />
-              <circle cx="40" cy="40" r="20" fill="#0D9488" opacity="0.08" />
-              <polyline points="27 40 35 48 53 32" stroke="#0D9488" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+      <div className="res-shell" onMouseMove={handleTilt} onMouseLeave={() => setTilt({ x: 0, y: 0 })}>
+        <div className="res-card" style={{ transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`, transition: tilt.x === 0 ? 'transform 0.5s' : 'none' }}>
+          <div className="res-sheen" style={{ transform: `translate(${-tilt.y*8}px, ${-tilt.x*8}px)`, opacity: tilt.x === 0 ? 0 : 0.1 }} />
+          
+          <div className="res-header">
+            <img src="/logo.png" alt="ArithExam" width="48" height="48" style={{ marginBottom: 12, borderRadius: 10 }} />
+            <h2 className="res-title">Assessment Submitted ✓</h2>
+            <p className="res-sub">Your digital fingerprint and responses are securely logged.</p>
           </div>
-          <h2 className="res-title">Assessment Submitted</h2>
-          <p className="res-sub">Your responses have been securely recorded and are under review.</p>
-          <div className="res-divider" />
+
           <div className="res-stats">
-            <div className="res-stat">
+            <div className="res-stat" style={{ borderLeft: '4px solid var(--teal)' }}>
               <span className="res-val">{s}<span className="res-total">/{totalMCQ}</span></span>
-              <span className="res-lbl">MCQ Score</span>
+              <span className="res-lbl">SCORE</span>
             </div>
-            <div className="res-stat-sep" />
-            <div className="res-stat">
-              <span className="res-val res-val--pending">—</span>
-              <span className="res-lbl">Coding</span>
-            </div>
-            <div className="res-stat-sep" />
-            <div className="res-stat">
-              <span className="res-val res-val--pending">—</span>
-              <span className="res-lbl">Viva</span>
-            </div>
-            <div className="res-stat-sep" />
-            <div className="res-stat">
-              <span className="res-val">{answeredCount}<span className="res-total">/{QUESTIONS.length}</span></span>
-              <span className="res-lbl">Attempted</span>
+            <div className="res-stat" style={{ borderLeft: '4px solid var(--gold)' }}>
+              <span className="res-val">{((s/totalMCQ)*100).toFixed(0)}<span className="res-total">%</span></span>
+              <span className="res-lbl">ACCURACY</span>
             </div>
           </div>
+
+          <div className="res-actions">
+            <button className="res-btn-primary" onClick={() => navigate('/dashboard')}>
+              Generate Progress Report
+            </button>
+            <button className="res-btn-outline" onClick={() => navigate('/dashboard')}>
+              View Leaderboard Rankings →
+            </button>
+          </div>
+
           {violations > 0 && (
-            <div className="res-violations">
-              ⚠️ {violations} violation{violations > 1 ? "s" : ""} recorded during this session.
+            <div className="res-warnings">
+              ⚠️ Warning: {violations} proctoring alerts recorded.
             </div>
           )}
-          <p className="res-note">Coding and Viva responses are pending manual evaluation by the panel.</p>
-          <button className="res-btn" onClick={() => navigate("/results")}>Go to Dashboard →</button>
         </div>
       </div>
     );
@@ -492,10 +493,7 @@ export default function Exam({ onFinish }) {
         {/* ── TOP BAR ── */}
         <header className="ex-bar">
           <div className="ex-bar__brand">
-            <svg viewBox="0 0 28 28" fill="none" width="26" height="26">
-              <rect width="28" height="28" rx="6" fill="#0D9488" />
-              <text x="14" y="19" textAnchor="middle" fontSize="10" fontWeight="800" fill="white" fontFamily="sans-serif">AE</text>
-            </svg>
+            <img src="/logo.png" alt="ArithExam Logo" width="32" height="32" style={{ borderRadius: '8px', filter: 'drop-shadow(0 0 4px rgba(13,148,136,0.3))' }} />
             <div>
               <div className="ex-bar__name">ArithExam</div>
               <div className="ex-bar__session">Live Assessment</div>

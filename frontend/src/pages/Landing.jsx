@@ -130,10 +130,10 @@ export default function Landing() {
   ];
 
   const steps = [
-    { n: '1', icon: '🔗', title: 'Get Your Code', desc: 'Receive a 6-character access code from your instructor or institution to join the exam.' },
-    { n: '2', icon: '👤', title: 'Quick Login', desc: 'Sign in to your candidate account. No complex setup—just enter your details and you\'re in.' },
-    { n: '3', icon: '🚀', title: 'Take the Exam', desc: 'AI proctoring activates. Complete your assessment in a secure, monitored environment.' },
-    { n: '4', icon: '📈', title: 'See Results', desc: 'View your performance, class rank, and detailed feedback immediately after submission.' },
+    { n: '1', icon: '📝', title: 'Quick Registration', desc: 'Securely register your candidate profile with personal details and photo identification.' },
+    { n: '2', icon: '👁️', title: 'Identity Verification', desc: 'ArithGuard biometric monitoring verifies your face and surroundings in real-time during the exam.' },
+    { n: '3', icon: '🧠', title: 'AI-Powered Exam', desc: 'Ollama-driven dynamic questions adapt to your responses for a truly intelligent assessment.' },
+    { n: '4', icon: '🎙️', title: 'Smart Result Scaling', desc: 'Faster Whisper transcribes your viva answers instantly for comprehensive, expert grading performance.' },
   ];
 
   const testimonials = [
@@ -157,8 +157,8 @@ export default function Landing() {
       {/* ── MOBILE SLIDE-IN MENU ── */}
       <div className={`landing-menu ${menuOpen ? 'landing-menu--open' : ''}`}>
         <div className="landing-menu__logo">
-          <span className="landing-navbar__logo-icon">A</span>
-          ArithExam
+          <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
+          <span>ArithExam</span>
         </div>
         <nav className="landing-menu__links">
           <a href="#features" className="landing-menu__link" onClick={() => setMenuOpen(false)}>Features</a>
