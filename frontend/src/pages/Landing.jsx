@@ -121,10 +121,10 @@ export default function Landing() {
     },
     {
       tag: 'Enterprise Security',
-      title: 'Bank-grade security your institution can trust',
-      desc: 'End-to-end encrypted exam delivery, SOC 2 compliant infrastructure, and multi-layer fraud detection that catches 99.2% of cheating attempts.',
+      title: 'Reliable Campus-Grade Security',
+      desc: 'Fully encrypted exam delivery with advanced AI that automatically detects 99.2% of cheating attempts.',
       img: securityFeatures,
-      badges: ['E2E Encryption', 'SOC 2 Compliant', 'Fraud Detection', 'Data Privacy'],
+      badges: ['E2E Encryption', 'Real-time Monitoring', 'Fraud Detection', 'Data Privacy'],
       accent: '#00b96b',
     },
   ];

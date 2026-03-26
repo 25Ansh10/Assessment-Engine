@@ -21,7 +21,12 @@ export default function Results() {
   const [barsAnimated, setBarsAnimated] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
   const animRef = useRef(null);
-  const results = mockResults;
+  
+  // Use real results if available, otherwise fallback to mock
+  const [results, setResults] = useState(() => {
+    const saved = localStorage.getItem("latestExamResults");
+    return saved ? JSON.parse(saved) : mockResults;
+  });
 
   // STITCH 7 — Count-up score animation
   useEffect(() => {
@@ -169,6 +174,43 @@ export default function Results() {
           </div>
         ))}
       </div>
+
+      {/* Difficulty Level Analysis */}
+      {results.levelStats && results.levelStats.length > 0 && (
+        <div className="results-levels" id="level-breakdown">
+          <h2 className="results-topics__title">Difficulty Analysis</h2>
+          <div className="levels-grid">
+            {results.levelStats.map((stat, idx) => (
+              <div key={idx} className={`level-card level-card--${stat.level.toLowerCase()}`}>
+                <div className="level-card__header">
+                  <span className="level-card__title">{stat.level}</span>
+                  <span className="level-card__badge">{Math.round((stat.solved / stat.total) * 100)}%</span>
+                </div>
+                <div className="level-card__stats">
+                  <div className="level-stat-row">
+                    <span className="level-stat-lbl">Solved</span>
+                    <span className="level-stat-val solved">{stat.solved}</span>
+                  </div>
+                  <div className="level-stat-row">
+                    <span className="level-stat-lbl">Unsolved</span>
+                    <span className="level-stat-val unsolved">{stat.unsolved}</span>
+                  </div>
+                  <div className="level-stat-row">
+                    <span className="level-stat-lbl">Total</span>
+                    <span className="level-stat-val">{stat.total}</span>
+                  </div>
+                </div>
+                <div className="level-card__progress">
+                  <div 
+                    className="level-card__progress-fill" 
+                    style={{ width: `${(stat.solved / stat.total) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Leaderboard */}
       <div className="results-leaderboard" id="results-leaderboard">

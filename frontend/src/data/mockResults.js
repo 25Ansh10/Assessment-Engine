@@ -21,6 +21,11 @@ export const mockResults = {
     { topic: 'Statistics', correct: 1, total: 2, percentage: 50, color: '#FF6B6B' },
     { topic: 'Trigonometry', correct: 1, total: 1, percentage: 100, color: '#FFB340' },
   ],
+  levelStats: [
+    { level: 'Easy', solved: 4, unsolved: 0, total: 4 },
+    { level: 'Medium', solved: 3, unsolved: 1, total: 4 },
+    { level: 'Hard', solved: 1, unsolved: 1, total: 2 },
+  ],
   answers: [
     { questionId: 'Q1', selected: 'A', correct: 'A', isCorrect: true },
     { questionId: 'Q2', selected: 'B', correct: 'B', isCorrect: true },

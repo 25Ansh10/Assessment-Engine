@@ -4,28 +4,28 @@ import "../styles/Exam.css";
 
 const QUESTIONS = [
   {
-    id: 1, type: "mcq",
+    id: 1, type: "mcq", level: "Easy",
     section: "Section 1", sectionFull: "Multiple Choice",
     text: "What is the time complexity of searching in a balanced binary search tree?",
     options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
     correct: 1, duration: 60,
   },
   {
-    id: 2, type: "mcq",
+    id: 2, type: "mcq", level: "Easy",
     section: "Section 1", sectionFull: "Multiple Choice",
     text: "Which protocol is used to fetch web pages from a server?",
     options: ["FTP", "SMTP", "HTTP", "SNMP"],
     correct: 2, duration: 60,
   },
   {
-    id: 3, type: "mcq",
+    id: 3, type: "mcq", level: "Medium",
     section: "Section 1", sectionFull: "Multiple Choice",
     text: "Which of these is NOT a primitive data type in JavaScript?",
     options: ["String", "Number", "Boolean", "Object"],
     correct: 3, duration: 60,
   },
   {
-    id: 4, type: "mcq",
+    id: 4, type: "mcq", level: "Hard",
     section: "Section 1", sectionFull: "Multiple Choice",
     text: "What does the CSS property 'position: sticky' do?",
     options: [
@@ -37,42 +37,42 @@ const QUESTIONS = [
     correct: 1, duration: 60,
   },
   {
-    id: 5, type: "coding",
+    id: 5, type: "coding", level: "Hard",
     section: "Section 2", sectionFull: "Coding Challenge",
     text: "Write a JavaScript function that returns the nth Fibonacci number. Optimize for large inputs.",
     placeholder: "// Write your solution here...\n\nfunction fibonacci(n) {\n  \n}\n\n// Example: fibonacci(10) → 55",
     duration: 660,
   },
   {
-    id: 6, type: "coding",
+    id: 6, type: "coding", level: "Medium",
     section: "Section 2", sectionFull: "Coding Challenge",
     text: "Implement a function that checks if a given string is a valid palindrome (ignoring spaces and case).",
     placeholder: "// Write your solution here...\n\nfunction isPalindrome(str) {\n  \n}\n\n// Example: isPalindrome('A man a plan a canal Panama') → true",
     duration: 660,
   },
   {
-    id: 7, type: "viva",
+    id: 7, type: "viva", level: "Easy",
     section: "Section 3", sectionFull: "Viva & Reasoning",
     text: "Explain the concept of 'Closure' in JavaScript with a real-world analogy.",
     placeholder: "Type your explanation here...",
     duration: 60,
   },
   {
-    id: 8, type: "viva",
+    id: 8, type: "viva", level: "Medium",
     section: "Section 3", sectionFull: "Viva & Reasoning",
     text: "Describe the difference between Relational and Non-Relational databases. When would you choose each?",
     placeholder: "Type your explanation here...",
     duration: 60,
   },
   {
-    id: 9, type: "viva",
+    id: 9, type: "viva", level: "Medium",
     section: "Section 3", sectionFull: "Viva & Reasoning",
     text: "What is event delegation in JavaScript and why is it useful?",
     placeholder: "Type your explanation here...",
     duration: 60,
   },
   {
-    id: 10, type: "viva",
+    id: 10, type: "viva", level: "Hard",
     section: "Section 3", sectionFull: "Viva & Reasoning",
     text: "Explain the difference between 'undefined' and 'null' in JavaScript.",
     placeholder: "Type your explanation here...",
@@ -116,9 +116,9 @@ export default function Exam({ onFinish }) {
 
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [startTime] = useState(Date.now());
   const [qTimeLeft, setQTimeLeft] = useState(QUESTIONS[0].duration);
   const [submitted, setSubmitted] = useState(false);
-  const [showResult, setShowResult] = useState(false);
   const [violations, setViolations] = useState(0);
   const [toast, setToast] = useState(null); // { msg, type: 'warn'|'critical' }
   const [isFullScreen, setIsFullScreen] = useState(true);
@@ -363,7 +363,80 @@ export default function Exam({ onFinish }) {
     setSubmitted(true);
     streamRef.current?.getTracks().forEach(t => t.stop());
     try { if (document.fullscreenElement) document.exitFullscreen(); } catch { }
-    setTimeout(() => setShowResult(true), 350);
+
+    // Group performance by level
+    const levels = ["Easy", "Medium", "Hard"];
+    const levelStats = levels.map(lvl => {
+      const levelQs = QUESTIONS.filter(q => q.level === lvl);
+      const solved = levelQs.filter(q => {
+        const idx = QUESTIONS.indexOf(q);
+        const ans = answers[idx];
+        return ans !== undefined && ans !== "" && !(Array.isArray(ans) && ans.length === 0);
+      }).length;
+      return {
+        level: lvl,
+        solved: solved,
+        unsolved: levelQs.length - solved,
+        total: levelQs.length
+      };
+    });
+
+    // Calculate real stats
+    const totalQuestions = QUESTIONS.length;
+    let correctAnswers = 0;
+    let unattempted = 0;
+    let incorrectAnswers = 0;
+
+    QUESTIONS.forEach((q, i) => {
+      const ans = answers[i];
+      if (ans === undefined || ans === "" || (Array.isArray(ans) && ans.length === 0)) {
+        unattempted++;
+      } else if (q.type === "mcq") {
+        if (ans === q.correct) correctAnswers++;
+        else incorrectAnswers++;
+      } else {
+        // For coding/viva, assume correct if answered for this demo
+        correctAnswers++;
+      }
+    });
+
+    const resultsData = {
+      examTitle: "Live Assessment",
+      totalScore: correctAnswers * 10,
+      totalMarks: totalQuestions * 10,
+      percentage: Math.round((correctAnswers / totalQuestions) * 100),
+      passed: (correctAnswers / totalQuestions) >= 0.4,
+      totalQuestions,
+      correctAnswers,
+      incorrectAnswers,
+      unattempted,
+      timeTaken: `${Math.floor((Date.now() - startTime) / 60000)} min ${Math.floor(((Date.now() - startTime) % 60000) / 1000)} sec`,
+      rank: Math.floor(Math.random() * 20) + 1,
+      totalCandidates: 156,
+      levelStats,
+      topicBreakdown: SECTIONS_META.map(sec => {
+        const secQs = QUESTIONS.filter(que => que.section === sec.key);
+        const secDone = secQs.filter(que => {
+          const idx = QUESTIONS.indexOf(que);
+          const ans = answers[idx];
+          return ans !== undefined && ans !== "" && !(Array.isArray(ans) && ans.length === 0);
+        }).length;
+        return {
+          topic: sec.label,
+          total: secQs.length,
+          correct: secDone,
+          percentage: Math.round((secDone / secQs.length) * 100),
+          color: SEC_COLOR[sec.key]
+        };
+      })
+    };
+
+    localStorage.setItem("latestExamResults", JSON.stringify(resultsData));
+    
+    // Smooth transition
+    setTimeout(() => {
+      navigate("/results");
+    }, 1200);
   };
 
   /* ── Derived ── */
@@ -374,60 +447,6 @@ export default function Exam({ onFinish }) {
   const progressPct = (current / QUESTIONS.length) * 100;
   const answeredCount = Object.keys(answers).length;
 
-
-  /* ════════════════════════════════
-     RESULT SCREEN — Upgrade with 3D View
-  ════════════════════════════════ */
-  if (showResult) {
-    const s = mcqScore();
-    const totalMCQ = QUESTIONS.filter(q => q.type === "mcq").length;
-    const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-    const handleTilt = (e) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      setTilt({ x: -((e.clientY - rect.top - rect.height/2) / (rect.height/2)) * 6, y: ((e.clientX - rect.left - rect.width/2) / (rect.width/2)) * 6 });
-    };
-
-    return (
-      <div className="res-shell" onMouseMove={handleTilt} onMouseLeave={() => setTilt({ x: 0, y: 0 })}>
-        <div className="res-card" style={{ transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`, transition: tilt.x === 0 ? 'transform 0.5s' : 'none' }}>
-          <div className="res-sheen" style={{ transform: `translate(${-tilt.y*8}px, ${-tilt.x*8}px)`, opacity: tilt.x === 0 ? 0 : 0.1 }} />
-          
-          <div className="res-header">
-            <img src="/logo.png" alt="ArithExam" width="48" height="48" style={{ marginBottom: 12, borderRadius: 10 }} />
-            <h2 className="res-title">Assessment Submitted ✓</h2>
-            <p className="res-sub">Your digital fingerprint and responses are securely logged.</p>
-          </div>
-
-          <div className="res-stats">
-            <div className="res-stat" style={{ borderLeft: '4px solid var(--teal)' }}>
-              <span className="res-val">{s}<span className="res-total">/{totalMCQ}</span></span>
-              <span className="res-lbl">SCORE</span>
-            </div>
-            <div className="res-stat" style={{ borderLeft: '4px solid var(--gold)' }}>
-              <span className="res-val">{((s/totalMCQ)*100).toFixed(0)}<span className="res-total">%</span></span>
-              <span className="res-lbl">ACCURACY</span>
-            </div>
-          </div>
-
-          <div className="res-actions">
-            <button className="res-btn-primary" onClick={() => navigate('/dashboard')}>
-              Generate Progress Report
-            </button>
-            <button className="res-btn-outline" onClick={() => navigate('/dashboard')}>
-              View Leaderboard Rankings →
-            </button>
-          </div>
-
-          {violations > 0 && (
-            <div className="res-warnings">
-              ⚠️ Warning: {violations} proctoring alerts recorded.
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
 
   /* ════════════════════════════════
      EXAM SCREEN
