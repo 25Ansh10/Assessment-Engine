@@ -3,7 +3,7 @@
    Teal #0D9488  |  Gold #d4a017
    ═══════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800;900&display=swap');
 
 :root {
   --teal:       #0D9488;
@@ -24,7 +24,8 @@
   --s500:       #6b7280;
   --s700:       #374151;
   --s900:       #0f172a;
-  --font:       'Outfit', sans-serif;
+  --font:       'DM Sans', sans-serif;
+  --header-font: 'Playfair Display', serif;
   --r:          12px;
   --r-lg:       18px;
   --r-xl:       24px;
@@ -76,7 +77,8 @@
   border-radius: 8px; display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 11px; letter-spacing: .05em;
 }
-.pe-topbar__name  { font-weight: 700; font-size: 16px; color: var(--s900); }
+.pe-topbar__name  { font-family: var(--header-font); font-weight: 800; font-size: 18px; color: var(--s900); }
+.pe-topbar__tag   { font-size: 11px; font-weight: 700; color: var(--teal); opacity: 0.6; text-transform: uppercase; margin-left: 10px; border-left: 1.5px solid var(--s200); padding-left: 10px; }
 
 /* Step indicator */
 .pe-topbar__steps { display: flex; align-items: center; gap: 8px; }
@@ -145,8 +147,9 @@
 }
 .pe-info-card__left { flex: 1; min-width: 200px; }
 .pe-info-card__title {
-  font-size: 26px; font-weight: 800; color: var(--s900);
-  letter-spacing: -.02em; margin-bottom: 5px;
+  font-family: var(--header-font);
+  font-size: 32px; font-weight: 900; color: var(--s900);
+  letter-spacing: -.01em; margin-bottom: 5px;
 }
 .pe-info-card__code { font-size: 12px; color: var(--s400); margin-bottom: 14px; }
 

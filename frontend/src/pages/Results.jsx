@@ -1,248 +1,178 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { mockResults } from '../data/mockResults';
-import { mockLeaderboard } from '../data/mockExams';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Results.css';
 
-// Generate confetti pieces
-const CONFETTI_COLORS = ['#FF6B5A', '#0066FF', '#00CC66', '#FFB340', '#CC33FF', '#00D4FF', '#FF88AA'];
-const confettiPieces = Array.from({ length: 30 }, (_, i) => ({
-  id: i,
-  color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-  tx: `${(Math.random() - 0.5) * 600}px`,
-  ty: `${(Math.random() - 0.5) * 400}px`,
-  delay: `${Math.random() * 0.5}s`,
-  shape: Math.random() > 0.5 ? '50%' : '3px',
-  size: 8 + Math.random() * 10,
-}));
+/* ─────────────────────────────
+   REPORT COMPONENTS
+   ───────────────────────────── */
 
-export default function Results() {
-  const [displayScore, setDisplayScore] = useState(0);
-  const [barsAnimated, setBarsAnimated] = useState(false);
-  const [confettiActive, setConfettiActive] = useState(false);
-  const animRef = useRef(null);
-  
-  // Use real results if available, otherwise fallback to mock
-  const [results, setResults] = useState(() => {
-    const saved = localStorage.getItem("latestExamResults");
-    return saved ? JSON.parse(saved) : mockResults;
-  });
-
-  // STITCH 7 — Count-up score animation
+function AnimMetric({ val, lbl, sub, icon, color='teal' }) {
+  const [v, setV] = useState(0);
   useEffect(() => {
-    const duration = 1500;
-    const startTime = Date.now();
-    const target = results.percentage;
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // easeOut
-      const ease = 1 - Math.pow(1 - progress, 3);
-      setDisplayScore(Math.round(target * ease));
-
-      if (progress < 1) {
-        animRef.current = requestAnimationFrame(animate);
-      } else {
-        // Trigger confetti after score animation
-        if (results.passed) {
-          setConfettiActive(true);
-        }
-      }
-    };
-
-    animRef.current = requestAnimationFrame(animate);
-
-    // Animate bars with delay
-    setTimeout(() => setBarsAnimated(true), 800);
-
-    return () => {
-      if (animRef.current) cancelAnimationFrame(animRef.current);
-    };
-  }, []);
-
-  const circumference = 2 * Math.PI * 80;
-  const scoreOffset = circumference - (displayScore / 100) * circumference;
+    let n=0; const step=Math.ceil(val/25);
+    const t=setInterval(()=>{ n+=step; if(n>=val){setV(val);clearInterval(t);}else setV(n); },40);
+    return ()=>clearInterval(t);
+  }, [val]);
 
   return (
-    <div className="results-page" id="results-page">
-      {/* STITCH 10 — Confetti Burst */}
-      <div className={`confetti-container ${confettiActive ? 'confetti-active' : ''}`}>
-        {confettiPieces.map((piece) => (
-          <div
-            key={piece.id}
-            className="confetti-piece"
-            style={{
-              width: piece.size,
-              height: piece.size,
-              background: piece.color,
-              borderRadius: piece.shape,
-              animationDelay: piece.delay,
-              '--tx': piece.tx,
-              '--ty': piece.ty,
-            }}
-          />
-        ))}
+    <div className={`res-m-card res-m-card--${color}`}>
+      <div className="res-m-icon">{icon}</div>
+      <div className="res-m-info">
+        <p className="res-m-lbl">{lbl}</p>
+        <h2 className="res-m-val">{v}</h2>
+        <p className="res-m-sub">{sub}</p>
       </div>
+    </div>
+  );
+}
 
-      {/* Score Hero */}
-      <div className="results-hero" id="score-hero">
-        <div className="results-hero__label">{results.examTitle}</div>
-
-        {/* STITCH 7 — Score Ring + Counter */}
-        <div className="results-score-wrap">
-          <svg width="200" height="200" className="results-score-svg">
-            <defs>
-              <linearGradient id="scoreGradientPass" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00CC66" />
-                <stop offset="100%" stopColor="#00FF88" />
-              </linearGradient>
-              <linearGradient id="scoreGradientFail" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FF4444" />
-                <stop offset="100%" stopColor="#FF8888" />
-              </linearGradient>
-            </defs>
-            <circle className="results-score-bg" cx="100" cy="100" r="80" />
-            <circle
-              className={`results-score-arc ${results.passed ? 'pass' : 'fail'}`}
-              cx="100"
-              cy="100"
-              r="80"
-              strokeDasharray={circumference}
-              strokeDashoffset={scoreOffset}
-            />
-          </svg>
-          <div className="results-score-value">
-            <div className="results-score-number">{displayScore}</div>
-            <div className="results-score-percent">/ 100</div>
-          </div>
-        </div>
-
-        <div className={`results-hero__verdict ${results.passed ? 'pass' : 'fail'}`}>
-          {results.passed ? '🎉 Congratulations! You Passed!' : '📚 Keep Practicing!'}
-        </div>
-        <p className="results-hero__message">
-          {results.passed
-            ? `Excellent performance! You scored ${results.totalScore} out of ${results.totalMarks} marks and ranked #${results.rank} among ${results.totalCandidates} candidates.`
-            : `You scored ${results.totalScore} out of ${results.totalMarks}. Review the topic breakdown below and focus on areas for improvement.`
-          }
-        </p>
+function DiffCard({ lvl, solved, total, color }) {
+  const pct = Math.round((solved / total) * 100) || 0;
+  return (
+    <div className="res-d-item">
+      <div className="res-d-head">
+        <span className="res-d-lvl">{lvl}</span>
+        <span className="res-d-pct" style={{color}}>{pct}%</span>
       </div>
-
-      {/* Stat Bar */}
-      <div className="results-stat-bar" id="stat-bar">
-        <div className="results-stat-item">
-          <div className="results-stat-item__value results-stat-item__value--correct">{results.correctAnswers}</div>
-          <div className="results-stat-item__label">Correct</div>
-        </div>
-        <div className="results-stat-item">
-          <div className="results-stat-item__value results-stat-item__value--incorrect">{results.incorrectAnswers}</div>
-          <div className="results-stat-item__label">Incorrect</div>
-        </div>
-        <div className="results-stat-item">
-          <div className="results-stat-item__value results-stat-item__value--unattempted">{results.unattempted}</div>
-          <div className="results-stat-item__label">Unattempted</div>
-        </div>
-        <div className="results-stat-item">
-          <div className="results-stat-item__value results-stat-item__value--time">{results.timeTaken}</div>
-          <div className="results-stat-item__label">Time Taken</div>
-        </div>
-        <div className="results-stat-item">
-          <div className="results-stat-item__value results-stat-item__value--rank">#{results.rank}</div>
-          <div className="results-stat-item__label">Class Rank</div>
-        </div>
+      <div className="res-d-track">
+        <div className="res-d-fill" style={{ width: `${pct}%`, background: color }} />
       </div>
-
-      {/* Topic Breakdown */}
-      <div className="results-topics" id="topic-breakdown">
-        <h2 className="results-topics__title">Topic Performance</h2>
-        {results.topicBreakdown.map((topic) => (
-          <div key={topic.topic} className="topic-row">
-            <div className="topic-row__name">{topic.topic}</div>
-            <div className="topic-row__bar-wrap">
-              <div
-                className="topic-row__bar"
-                style={{
-                  width: barsAnimated ? `${topic.percentage}%` : '0%',
-                  background: topic.color,
-                }}
-              >
-                <span className="topic-row__bar-label">{topic.percentage}%</span>
-              </div>
-            </div>
-            <div className="topic-row__score">{topic.correct}/{topic.total}</div>
-          </div>
-        ))}
+      <div className="res-d-foot">
+        <span><b>{solved}</b> Solved</span>
+        <span><b>{total}</b> Total</span>
       </div>
+    </div>
+  );
+}
 
-      {/* Difficulty Level Analysis */}
-      {results.levelStats && results.levelStats.length > 0 && (
-        <div className="results-levels" id="level-breakdown">
-          <h2 className="results-topics__title">Difficulty Analysis</h2>
-          <div className="levels-grid">
-            {results.levelStats.map((stat, idx) => (
-              <div key={idx} className={`level-card level-card--${stat.level.toLowerCase()}`}>
-                <div className="level-card__header">
-                  <span className="level-card__title">{stat.level}</span>
-                  <span className="level-card__badge">{Math.round((stat.solved / stat.total) * 100)}%</span>
-                </div>
-                <div className="level-card__stats">
-                  <div className="level-stat-row">
-                    <span className="level-stat-lbl">Solved</span>
-                    <span className="level-stat-val solved">{stat.solved}</span>
-                  </div>
-                  <div className="level-stat-row">
-                    <span className="level-stat-lbl">Unsolved</span>
-                    <span className="level-stat-val unsolved">{stat.unsolved}</span>
-                  </div>
-                  <div className="level-stat-row">
-                    <span className="level-stat-lbl">Total</span>
-                    <span className="level-stat-val">{stat.total}</span>
-                  </div>
-                </div>
-                <div className="level-card__progress">
-                  <div 
-                    className="level-card__progress-fill" 
-                    style={{ width: `${(stat.solved / stat.total) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+/* ─────────────────────────────
+   MAIN RESULTS PAGE
+   ───────────────────────────── */
+
+export default function Results() {
+  const navigate = useNavigate();
+  const [score, setScore] = useState(0);
+  const [results, setResults] = useState(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("latestExamResults");
+    if (saved) {
+      const data = JSON.parse(saved);
+      setResults(data);
+      // Anim final score
+      let n=0; const step=Math.ceil(data.percentage/30);
+      const t=setInterval(()=>{ n+=step; if(n>=data.percentage){setScore(data.percentage);clearInterval(t);}else setScore(n); },30);
+      return ()=>clearInterval(t);
+    }
+  }, []);
+
+  if (!results) return <div className="res-loading">Analyzing Performance...</div>;
+
+  const circ = 2 * Math.PI * 90;
+  const offset = circ - (score / 100) * circ;
+
+  return (
+    <div className="res-root">
+      <div className="res-aurora" />
+      
+      {/* ── HEADER ── */}
+      <header className="res-nav">
+        <div className="res-nav-brand">
+          <img src="/logo.png" alt="" width="36" height="36" />
+          <span className="res-nav-title">ArithExam <small>Engineered for Precision. Deciphering Potential.</small></span>
         </div>
-      )}
-
-      {/* Leaderboard */}
-      <div className="results-leaderboard" id="results-leaderboard">
-        <h2 className="results-leaderboard__title">🏆 Class Leaderboard</h2>
-        <div className="leaderboard-list">
-          {mockLeaderboard.slice(0, 5).map((entry) => (
-            <div
-              key={entry.rank}
-              className={`leaderboard-row ${entry.name === 'Demo User' ? 'you' : ''}`}
-            >
-              <span className="leaderboard-row__medal">{entry.avatar}</span>
-              <span className="leaderboard-row__rank">#{entry.rank}</span>
-              <span className="leaderboard-row__name">
-                {entry.name}{entry.name === 'Demo User' ? ' (You)' : ''}
-              </span>
-              <span className="leaderboard-row__score">{entry.score}%</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* CTAs */}
-      <div className="results-cta">
-        <Link to="/dashboard">
-          <button className="results-cta__dashboard ripple-btn" id="back-dashboard-btn">
-            Back to Dashboard
-          </button>
-        </Link>
-        <button className="results-cta__review" id="view-review-btn">
-          View Detailed Review
+        <button className="res-back-btn" onClick={() => navigate('/dashboard')}>
+          Back to Dashboard
         </button>
-      </div>
+      </header>
+
+      <main className="res-content">
+        
+        {/* ── SCORE HERO ── */}
+        <section className="res-hero">
+          <div className="res-score-box">
+             <svg width="220" height="220" viewBox="0 0 200 200">
+               <circle cx="100" cy="100" r="90" className="res-ring-bg" />
+               <circle cx="100" cy="100" r="90" className="res-ring-fill" 
+                 style={{ strokeDasharray: circ, strokeDashoffset: offset }} />
+             </svg>
+             <div className="res-score-inner">
+               <span className="res-score-num">{score}</span>
+               <span className="res-score-pct">%</span>
+               <p className="res-score-lbl">OVERALL SCORE</p>
+             </div>
+          </div>
+          
+          <div className="res-hero-text">
+            <h1 className="res-title">Submission Successful</h1>
+            <p className="res-subtitle">Your performance analysis has been finalized by our precision engine.</p>
+            <div className="res-tag-row">
+              <span className="res-tag">ID: {results.rank < 10 ? 'AE-00' : 'AE-0'}{results.rank}</span>
+              <span className={`res-tag ${results.passed ? 'res-tag--pass' : 'res-tag--warn'}`}>
+                {results.passed ? 'VERIFIED PASS' : 'NEEDS PRACTICE'}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* ── METRICS GRID ── */}
+        <div className="res-grid-wrap">
+          <div className="res-metrics">
+            <AnimMetric 
+              lbl="Solved" 
+              val={results.correctAnswers + results.incorrectAnswers} 
+              sub="Questions Attempted" 
+              color="teal"
+              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
+            />
+            <AnimMetric 
+              lbl="Unsolved" 
+              val={results.unattempted} 
+              sub="Left Blank" 
+              color="gold"
+              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>}
+            />
+            <AnimMetric 
+              lbl="Efficiency" 
+              val={Math.round((results.correctAnswers / (results.correctAnswers + results.incorrectAnswers || 1)) * 100)}
+              sub="Accuracy Ratio" 
+              color="teal"
+              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>}
+            />
+          </div>
+
+          {/* ── DIFFICULTY ANALYSIS ── */}
+          <div className="res-analysis">
+             <div className="res-card-head">
+               <h3>DIFFICULTY BREAKDOWN</h3>
+               <p>Performance segmented by cognitive complexity levels.</p>
+             </div>
+             
+             <div className="res-diff-list">
+               {results.levelStats.map(stat => (
+                 <DiffCard 
+                   key={stat.level}
+                   lvl={stat.level} 
+                   solved={stat.solved} 
+                   total={stat.total}
+                   color={stat.level === 'Easy' ? '#0D9488' : stat.level === 'Medium' ? '#d4a017' : '#ef4444'}
+                 />
+               ))}
+             </div>
+          </div>
+        </div>
+
+        {/* ── FOOTER ACTIONS ── */}
+        <footer className="res-footer">
+           <button className="res-cta res-cta--sec" onClick={() => navigate('/dashboard')}>
+             Back to Dashboard
+           </button>
+           <button className="res-cta res-cta--pri" onClick={() => window.print()}>
+             Download PDF Report
+           </button>
+        </footer>
+
+      </main>
     </div>
   );
 }

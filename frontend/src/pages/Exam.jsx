@@ -137,6 +137,8 @@ export default function Exam({ onFinish }) {
   useEffect(() => { violationRef.current = violations; }, [violations]);
   useEffect(() => { submittedRef.current = submitted; }, [submitted]);
 
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
+
   /* ─── Toast helper — shows message, auto-clears ─── */
   const showToast = useCallback((msg, type = "warn") => {
     clearTimeout(toastTimer.current);
@@ -349,6 +351,10 @@ export default function Exam({ onFinish }) {
 
   const goNext = useCallback((auto = false) => {
     if (transitioning) return;
+    if (!auto && current === QUESTIONS.length - 1) {
+      setConfirmSubmit(true);
+      return;
+    }
     setTransitioning(true);
     setTimeout(() => {
       if (current < QUESTIONS.length - 1) setCurrent(c => c + 1);
@@ -497,6 +503,11 @@ export default function Exam({ onFinish }) {
             </button>
           </div>
         </div>
+      )}
+
+      {/* ── Submit confirmation ── */}
+      {confirmSubmit && (
+        <SubmitModal count={answeredCount} onCancel={() => setConfirmSubmit(false)} onConfirm={() => doSubmit()} />
       )}
 
       <div className={`ex-shell ${(!isFullScreen || tabWarning) ? "ex-shell--blurred" : ""}`}>
@@ -721,5 +732,24 @@ export default function Exam({ onFinish }) {
         </div>
       </div>
     </>
+  );
+}
+
+function SubmitModal({ count, onCancel, onConfirm }) {
+  return (
+    <div className="tab-overlay">
+      <div className="tab-overlay__card" style={{ maxWidth: 400 }}>
+        <div className="tab-overlay__icon" style={{ background: 'rgba(13,148,136,0.1)', color: 'var(--teal)' }}>✓</div>
+        <h2 className="tab-overlay__title" style={{ fontFamily: 'var(--header-font)' }}>Ready to Submit?</h2>
+        <p className="tab-overlay__text">
+          You have answered <strong>{count}</strong> out of <strong>{QUESTIONS.length}</strong> questions.
+          You cannot change your answers after submission.
+        </p>
+        <div className="ex-modal-btns" style={{ display: 'flex', gap: 12, width: '100%', marginTop: 24 }}>
+          <button className="ex-btn-cancel" onClick={onCancel}>Keep Reviewing</button>
+          <button className="ex-btn-confirm" onClick={onConfirm}>Submit Now</button>
+        </div>
+      </div>
+    </div>
   );
 }

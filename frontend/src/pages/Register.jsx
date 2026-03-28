@@ -557,7 +557,7 @@ export default function Register() {
               <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
               <div>
                 <span className="rg-logo__name">ArithExam Registration</span>
-                <span className="rg-logo__sub">Official Candidate Board</span>
+                <span className="rg-logo__sub">Engineered for Precision. Deciphering Potential.</span>
               </div>
             </div>
 

@@ -199,8 +199,8 @@ export default function Landing() {
             </h1>
 
             <p className="landing-hero__desc">
-              Conduct secure, intelligent online exams with real-time AI proctoring —
-              built for candidates across India.
+              Engineered for Precision. Deciphering Potential. ArithExam is the 
+              next-generation AI assessment engine built for excellence.
             </p>
 
             <div className="landing-hero__actions">
@@ -502,7 +502,7 @@ export default function Landing() {
             <div className="landing-footer__logo">
               <span className="landing-navbar__logo-icon">A</span> ArithExam
             </div>
-            <p className="landing-footer__tagline">The future of secure online assessment, built for India.</p>
+            <p className="landing-footer__tagline">Engineered for Precision. Deciphering Potential.</p>
             <div className="landing-footer__social">
               <a href="#" className="landing-footer__social-link">Twitter</a>
               <a href="#" className="landing-footer__social-link">Facebook</a>

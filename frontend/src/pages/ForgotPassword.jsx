@@ -329,16 +329,10 @@ export default function ForgotPassword() {
 
           {/* logo */}
           <div className="fp-logo">
-            <div className="fp-logo__mark">
-              <svg viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="8" fill="#0D9488"/>
-                <text x="16" y="21" textAnchor="middle" fontSize="11"
-                  fontWeight="800" fill="white" fontFamily="sans-serif">AE</text>
-              </svg>
-            </div>
+            <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
             <div>
               <span className="fp-logo__name">ArithExam</span>
-              <span className="fp-logo__sub">Assessment Engine</span>
+              <span className="fp-logo__sub">Engineered for Precision. Deciphering Potential.</span>
             </div>
           </div>
 

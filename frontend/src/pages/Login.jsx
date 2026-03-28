@@ -218,7 +218,7 @@ export default function Login() {
             <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
             <div>
               <span className="lg-logo__name">ArithExam</span>
-              <span className="lg-logo__sub">Official Candidate Access</span>
+              <span className="lg-logo__sub">Engineered for Precision. Deciphering Potential.</span>
             </div>
           </div>
 

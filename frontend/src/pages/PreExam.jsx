@@ -4,12 +4,12 @@ import "../styles/PreExam.css";
 
 /* ─── Meta ─── */
 const EXAM_META = {
-  title:    "DevReady Assessment",
-  code:     "AE-DRA-2025",
+  title:    "Unified Subject Assessment",
+  code:     "AE-USA-2025",
   date:     "19 Mar 2025",
-  duration: 30,
-  total:    10,
-  marks:    100,
+  duration: 45,
+  total:    15,
+  marks:    150,
   passing:  40,
 };
 
@@ -22,7 +22,7 @@ const RULES = [
   { icon: "⚡", text: "Auto-submits when time runs out — no manual action needed." },
 ];
 
-const TOPICS = ["React", "Python", "SQL", "Ethics", "Viva"];
+const TOPICS = ["Python", "React", "Coding", "Interactive Viva"];
 
 const getRegPhoto = () =>
   sessionStorage.getItem("ae_register_photo") ||
@@ -468,6 +468,7 @@ export default function PreExam({ onBegin }) {
         <div className="pe-topbar__brand">
           <div className="pe-topbar__mark">AE</div>
           <span className="pe-topbar__name">ArithExam</span>
+          <span className="pe-topbar__tag">Engineered for Precision. Deciphering Potential.</span>
         </div>
         <div className="pe-topbar__steps">
           <div className={`pe-step ${page >= 1 ? "pe-step--done" : ""} ${page === 1 ? "pe-step--active" : ""}`}>
