@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════
+   PAGE 9 — SUBMISSION CONFIRMATION (FULL-SCREEN MODAL)
+   Blur Overlay + Dramatic Modal
+   Integrated within Exam.css but scoped separately
+   ═══════════════════════════════════════════════════════ */
+
+.submission-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submission-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 35, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: backdropFade 0.4s ease forwards;
+}
+
+@keyframes backdropFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.submission-modal {
+  position: relative;
+  background: #fff;
+  border-radius: 28px;
+  padding: 56px 64px;
+  max-width: 560px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.15);
+  animation: modalEntry 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: scale(0.9);
+  opacity: 0;
+}
+
+@keyframes modalEntry {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.submission-modal__icon {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  animation: iconBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform: scale(0);
+}
+
+@keyframes iconBounce {
+  to { transform: scale(1); }
+}
+
+.submission-modal__title {
+  font-size: 2rem;
+  color: #0a0a23;
+  margin-bottom: 8px;
+}
+
+.submission-modal__desc {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 36px;
+}
+
+.submission-modal__stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.submission-modal__stat {
+  text-align: center;
+}
+
+.submission-modal__stat-value {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.submission-modal__stat-value--answered { color: #00CC66; }
+.submission-modal__stat-value--unanswered { color: #FF6B5A; }
+.submission-modal__stat-value--flagged { color: #FFAA00; }
+
+.submission-modal__stat-label {
+  font-size: 0.82rem;
+  color: #999;
+  font-weight: 500;
+}
+
+.submission-modal__actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.submission-modal__back {
+  padding: 14px 36px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+  background: none;
+  border: 2px solid #e0e3e8;
+  border-radius: 14px;
+  transition: all 0.2s;
+}
+
+.submission-modal__back:hover {
+  border-color: #0055FF;
+  color: #0055FF;
+}
+
+.submission-modal__submit {
+  padding: 14px 36px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #0055FF, #0077FF);
+  border-radius: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 85, 255, 0.3);
+  animation: submitGlow 2s ease-in-out infinite;
+}
+
+@keyframes submitGlow {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0, 85, 255, 0.3); }
+  50% { box-shadow: 0 4px 32px rgba(0, 85, 255, 0.5); }
+}
+
+.submission-modal__submit:hover {
+  transform: translateY(-2px);
+}
+
+.submission-modal__hints {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 24px;
+  font-size: 0.78rem;
+  color: #bbb;
+}
+
+.submission-modal__hints span {
+  padding: 4px 10px;
+  background: #f5f7fb;
+  border-radius: 6px;
+  font-family: monospace;
+}
