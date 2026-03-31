@@ -8,41 +8,49 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('arithexam_token');
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
     const userData = localStorage.getItem('arithexam_user');
-    if (token && userData) {
+    if (isLoggedIn === 'true' && userData) {
       try {
         setUser(JSON.parse(userData));
       } catch {
-        localStorage.removeItem('arithexam_token');
+        localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('arithexam_user');
       }
     }
     setLoading(false);
   }, []);
 
-  const login = useCallback(async (email, password, isAdmin = false) => {
-    const res = await api.post('/auth/login', { email, password, isAdmin });
-    const { token, user: userData } = res.data;
-    localStorage.setItem('arithexam_token', token);
+  const login = useCallback(async (email, password) => {
+    // Instant login logic
+    const userData = {
+      id: "AE-" + Math.floor(Math.random() * 900000 + 100000),
+      name: email.split('@')[0].replace(/[._]/g, ' '),
+      email: email,
+      role: 'CANDIDATE'
+    };
+    localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('arithexam_user', JSON.stringify(userData));
     setUser(userData);
     return userData;
   }, []);
 
   const register = useCallback(async (formData) => {
-    const res = await api.post('/auth/register', formData);
-    const { token, user: userData } = res.data;
-    if (token && userData) {
-      localStorage.setItem('arithexam_token', token);
-      localStorage.setItem('arithexam_user', JSON.stringify(userData));
-      setUser(userData);
-    }
-    return res.data;
+    // Instant registration logic
+    const userData = {
+      id: "AE-" + Math.floor(Math.random() * 900000 + 100000),
+      name: formData.name || 'Candidate',
+      email: formData.email,
+      role: 'CANDIDATE'
+    };
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('arithexam_user', JSON.stringify(userData));
+    setUser(userData);
+    return { user: userData };
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem('arithexam_token');
+    localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('arithexam_user');
     setUser(null);
   }, []);

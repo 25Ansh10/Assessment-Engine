@@ -19,9 +19,9 @@
   --sf:  #ffffff;
   --sp:  cubic-bezier(.34,1.56,.64,1);
   --ez:  cubic-bezier(.4,0,.2,1);
-  --fd:  'Unbounded', sans-serif;
+  --fd:  'DM Sans', sans-serif;
   --fb:  'DM Sans', sans-serif;
-  --fc:  'Cinzel', serif;
+  --fc:  'DM Sans', sans-serif;
 
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
@@ -42,23 +42,29 @@
    ═══════════════ */
 .lg-card {
   position: relative; z-index: 1;
-  width: min(920px, 100%);
+  width: min(980px, 94vw);
   display: flex;
   background: var(--sf);
-  border-radius: 20px;
+  border-radius: 24px;
   box-shadow:
     0 0 0 1px rgba(0,0,0,.06),
     0 4px 6px rgba(0,0,0,.03),
-    0 24px 64px rgba(0,0,0,.10);
+    0 24px 64px rgba(0,0,0,.12);
   overflow: hidden;
-  min-height: 580px;
+  min-height: 640px;
+  animation: aePageReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes aePageReveal {
+  from { opacity: 0; transform: scale(0.96) translateY(20px); filter: blur(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
 }
 
 /* ═══════════════
    LEFT PANEL — card only, no image
    ═══════════════ */
 .lg-left {
-  flex: 0 0 44%;
+  flex: 0 0 440px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +96,7 @@
    ACCESS CARD — mirrors Registration Card exactly
    ═══════════════════════════════════ */
 .lc-wrap {
-  width: 100%; max-width: 320px;
+  width: 100%; max-width: 380px;
   position: relative; z-index: 1;
   display: flex; flex-direction: column; gap: 10px;
   animation: lcWrapIn .55s var(--sp) both;
@@ -166,12 +172,20 @@
   background: linear-gradient(90deg, var(--gd), var(--gd2), var(--gd));
 }
 
-.lc-seal     { width: 38px; height: 38px; flex-shrink: 0; }
+.lc-seal     { width: 52px; height: 52px; flex-shrink: 0; }
 .lc-seal svg { width: 100%; height: 100%; }
 
 .lc-header__text   { flex: 1; }
 .lc-header__inst   { font-size: .46rem; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #0f766e; margin-bottom: 2px; }
-.lc-header__title  { font-family: var(--fc); font-size: .74rem; font-weight: 900; color: #b48a1b; letter-spacing: 1.5px; }
+.lc-header__title  { 
+  font-family: 'Cinzel', serif; 
+  font-size: 14px; 
+  font-weight: 800; 
+  color: #b48a1b; 
+  text-transform: uppercase;
+  letter-spacing: 0.12em; 
+  line-height: 1.1; 
+}
 .lc-header__chip {
   display: inline-block;
   padding: 2px 7px;
@@ -210,7 +224,7 @@
 
 /* avatar */
 .lc-avatar {
-  width: 72px; height: 90px; flex-shrink: 0;
+  width: 72px; height: 94px; flex-shrink: 0;
   border: 1.5px solid var(--gd); border-radius: 5px;
   background: #f5f0e0;
   display: flex; flex-direction: column;
@@ -439,24 +453,22 @@
 /* float fields — identical to Register */
 .lg-field { position:relative; margin-bottom:14px; }
 .lg-field input {
-  width:100%; padding:20px 44px 7px 14px;
-  font-family:var(--fb); font-size:max(.93rem,16px);
-  border:1.5px solid var(--bd); border-radius:10px;
-  background:#fafafa; color:var(--tx); outline:none;
+  width:100%; padding:14px 44px 14px 14px;
+  font-family:var(--fb); font-size:max(.95rem, 16px);
+  font-weight: 600;
+  border:2px solid var(--bd); border-radius:12px;
+  background:#fff; color:#1a202c; outline:none;
   transition:border-color .2s, box-shadow .2s, background .2s;
 }
-.lg-field input:focus { border-color:var(--t); background:#fff; box-shadow:0 0 0 3px rgba(13,148,136,.1); }
-.lg-field label {
-  position:absolute; left:14px; top:50%; transform:translateY(-50%);
-  font-size:.88rem; color:#94a3b8; pointer-events:none;
-  font-family:var(--fb); transition:all .18s ease;
+.lg-field input::placeholder {
+  color: #64748b;
+  opacity: 0.85;
 }
+.lg-field input:focus { border-color:var(--t); background:#fff; box-shadow:0 0 0 4px rgba(13,148,136,.12); }
 .lg-field input:focus+label,
 .lg-field input:not(:placeholder-shown)+label {
-  top:9px; transform:translateY(0);
-  font-size:.6rem; font-weight:600; letter-spacing:.3px; color:var(--mu);
+  display: none;
 }
-.lg-field input:focus+label { color:var(--t); }
 .lg-field--ok input { border-color:rgba(16,185,129,.5); }
 .lg-field--ok input:focus { box-shadow:0 0 0 3px rgba(16,185,129,.1); }
 .lg-field--ok input:not(:placeholder-shown)+label,

@@ -44,18 +44,10 @@ function AnimNum({ to, suffix = '' }) {
   return <>{v}{suffix}</>;
 }
 
-function StatCard({ val, lbl, color, spark }) {
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const handleMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setTilt({ x: -(y / (rect.height / 2)) * 6, y: (x / (rect.width / 2)) * 6 });
-  };
+function StatCard({ val, lbl }) {
   return (
-    <div className="db-stat-item" onMouseMove={handleMove} onMouseLeave={() => setTilt({ x: 0, y: 0 })}
-      style={{ transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}>
-      <p className={`db-stat-val ${color === 'gold' ? 'db-stat-val--gold' : ''}`}>
+    <div className="db-stat-item">
+      <p className="db-stat-val">
         <AnimNum to={parseInt(val)} suffix={typeof val === 'string' && val.includes('%') ? '%' : ''} />
       </p>
       <p className="db-stat-lbl">{lbl}</p>
@@ -102,14 +94,11 @@ function TrendChart({ data }) {
   );
 }
 
-function SettingsView({ dark, setDark }) {
+function SettingsView() {
   return (
     <div className="db-settings">
       <div className="db-set-row">
-        <div><p className="db-set-lbl">Dark Mode</p><p className="db-set-desc">Switch between light and high-contrast dark theme</p></div>
-        <button className={`db-toggle ${dark ? 'db-toggle--on' : ''}`} onClick={() => setDark(!dark)}>
-          <span className="db-toggle-thumb" />
-        </button>
+        <div><p className="db-set-lbl">System Preference</p><p className="db-set-desc">Theme is currently locked to Standard Light Mode for optimal precision.</p></div>
       </div>
     </div>
   );
@@ -192,10 +181,6 @@ function RegistrationCard({ user, initials, hideEdit }) {
 function ProfileView({ user, initials, hideEdit }) {
   return (
     <div className="db-profile">
-      <div className="db-p-head">
-        <h2 className="db-p-name">Candidate Profile</h2>
-        <p className="db-p-sub">Verified ID: AE-299381</p>
-      </div>
       <div className="profile-hero">
         <RegistrationCard user={user} initials={initials} hideEdit={hideEdit} />
       </div>
@@ -210,17 +195,10 @@ export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState('dashboard');
-  const [dark, setDark] = useState(localStorage.getItem('theme') === 'dark');
-
   useEffect(() => {
-    if (dark) {
-      document.body.classList.add('dark-theme');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.body.classList.remove('dark-theme');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [dark]);
+    document.body.classList.remove('dark-theme');
+    localStorage.removeItem('theme');
+  }, []);
 
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
@@ -309,7 +287,7 @@ export default function Dashboard() {
 
             <div className="db-grid">
               {/* Profile Bento */}
-              <div className="db-grid-item db-grid--lg">
+              <div className="db-grid-profile">
                 <ProfileView user={ud} initials={initials} hideEdit={true} />
               </div>
 
@@ -317,7 +295,7 @@ export default function Dashboard() {
               <div className="db-grid-group">
                 <div className="db-stat-row">
                   <StatCard val={STATS.totalExams} lbl="Total Tests" />
-                  <StatCard val={`${STATS.avgScore}%`} lbl="Avg Score" color="gold" />
+                  <StatCard val={`${STATS.avgScore}%`} lbl="Avg Score" />
                 </div>
                 <div className="db-grid-item">
                   <div className="db-sec-head">
@@ -382,31 +360,6 @@ export default function Dashboard() {
 
               {/* Right: Settings + Account Info */}
               <div className="db-profile-settings-col">
-                <div className="db-grid-item db-settings-card">
-                  <h3 className="db-sec-title">APPEARANCE</h3>
-                  <div className="db-theme-preview">
-                    <button 
-                      className={`db-theme-opt ${!dark ? 'db-theme-opt--active' : ''}`} 
-                      onClick={() => setDark(false)}
-                    >
-                      <div className="db-theme-swatch db-theme-swatch--light">
-                        <div className="db-swatch-bar" />
-                        <div className="db-swatch-lines"><div /><div /><div /></div>
-                      </div>
-                      <span>Light</span>
-                    </button>
-                    <button 
-                      className={`db-theme-opt ${dark ? 'db-theme-opt--active' : ''}`} 
-                      onClick={() => setDark(true)}
-                    >
-                      <div className="db-theme-swatch db-theme-swatch--dark">
-                        <div className="db-swatch-bar" />
-                        <div className="db-swatch-lines"><div /><div /><div /></div>
-                      </div>
-                      <span>Dark</span>
-                    </button>
-                  </div>
-                </div>
 
                 <div className="db-grid-item db-settings-card">
                   <h3 className="db-sec-title">ACCOUNT</h3>
@@ -430,23 +383,6 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="db-grid-item db-settings-card">
-                  <h3 className="db-sec-title">PLATFORM SYSTEM</h3>
-                  <div className="db-account-rows">
-                    <div className="db-account-row">
-                      <span className="db-account-label">Version Control</span>
-                      <span className="db-account-value">v1.2.0-stable</span>
-                    </div>
-                    <div className="db-account-row">
-                      <span className="db-account-label">Security Protocol</span>
-                      <span className="db-account-value">Quantum-Safe AES-256</span>
-                    </div>
-                    <div className="db-account-row">
-                      <span className="db-account-label">Node Integrity</span>
-                      <span className="db-account-value" style={{color: 'var(--teal)'}}>OPTIMAL</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

@@ -10,9 +10,9 @@ const validateEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
 const getStrength = p => {
   if (!p) return null;
-  if (p.length < 4) return { label: 'Weak',   pct: '20%',  color: '#ef4444' };
-  if (p.length < 6) return { label: 'Fair',   pct: '45%',  color: '#f59e0b' };
-  if (p.length < 8) return { label: 'Good',   pct: '72%',  color: '#10b981' };
+  if (p.length < 5) return { label: 'Weak',   pct: '20%',  color: '#ef4444' };
+  if (p.length < 8) return { label: 'Fair',   pct: '45%',  color: '#f59e0b' };
+  if (p.length < 10) return { label: 'Good',   pct: '72%',  color: '#10b981' };
   return               { label: 'Strong', pct: '100%', color: '#0D9488' };
 };
 
@@ -109,7 +109,7 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
             {/* header band */}
             <div className="rc-header">
               <div className="rc-header__seal">
-                <img src="/logo.png" alt="" width="36" height="36" />
+                <img src="/logo.png" alt="" width="50" height="50" />
               </div>
               <div className="rc-header__text">
                 <p className="rc-header__inst">ArithExam Assessment Board</p>
@@ -340,13 +340,12 @@ function Mirror({ onCapture, onClose }) {
 /* ─────────────────────────────────
    FLOAT FIELD
 ───────────────────────────────── */
-function Field({ id, label, type='text', value, onChange, onBlur, ok, err, autoComplete, disabled, readOnly }) {
+function Field({ id, label, type='text', value, onChange, onBlur, ok, err, autoComplete, disabled, readOnly, children }) {
   return (
     <div className={`rg-field ${ok ? 'rg-field--ok' : err ? 'rg-field--err' : ''}`}>
-      <input id={id} type={type} placeholder=" " value={value}
+      <input id={id} type={type} placeholder={label} value={value}
         onChange={e => onChange?.(e.target.value)} onBlur={onBlur}
         autoComplete={autoComplete} disabled={disabled} readOnly={readOnly}/>
-      <label htmlFor={id}>{label}</label>
       {ok && (
         <span className="rg-field__check">
           <svg viewBox="0 0 20 20" fill="none">
@@ -356,6 +355,7 @@ function Field({ id, label, type='text', value, onChange, onBlur, ok, err, autoC
           </svg>
         </span>
       )}
+      {children}
     </div>
   );
 }
@@ -430,7 +430,7 @@ export default function Register() {
   const nameOk   = name.trim().length >= 2;
   const emailOk  = validateEmail(email);
   const strength = getStrength(password);
-  const passOk   = strength && (strength.label === 'Good' || strength.label === 'Strong');
+  const passOk   = strength && (strength.label === 'Strong' || strength.label === 'Good');
   const matchOk  = confirm.length > 0 && password === confirm;
   const mismatch = confirm.length > 0 && password !== confirm;
 
@@ -523,6 +523,29 @@ export default function Register() {
       {mirrorOpen && <Mirror onCapture={handleCapture} onClose={() => setMirrorOpen(false)}/>}
 
       <div className="rg-page">
+        {/* ── SUCCESS BIG CARD OVERLAY ── */}
+        {done && (
+          <div className="rg-success-overlay">
+            <div className="rg-success-content">
+              <div className="rg-success-badge">
+                <span className="rg-success-icon">🎉</span>
+                <h2 style={{ fontFamily: 'DM Sans', fontWeight: 800 }}>Registration Successful!</h2>
+                <p style={{ fontFamily: 'DM Sans', fontWeight: 500 }}>Your official card is ready. Redirecting soon...</p>
+              </div>
+              <div className="rg-big-card-wrap">
+                <RegistrationCard
+                  visible={true}
+                  name={name}
+                  email={email}
+                  examId={examId}
+                  regDate={regDate}
+                  photo={photo}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="rg-page__bg"/>
 
         <div className="rg-card">
@@ -690,28 +713,6 @@ export default function Register() {
             {error && step !== 4 && <p className="rg-error">{error}</p>}
 
             {/* nav */}
-            {/* ── SUCCESS BIG CARD OVERLAY ── */}
-            {done && (
-              <div className="rg-success-overlay">
-                <div className="rg-success-content">
-                  <div className="rg-success-badge">
-                    <span className="rg-success-icon">🎉</span>
-                    <h2 style={{ fontFamily: 'Unbounded' }}>Registration Successful!</h2>
-                    <p style={{ fontFamily: 'DM Sans' }}>Your official card is ready. Redirecting soon...</p>
-                  </div>
-                  <div className="rg-big-card-wrap">
-                    <RegistrationCard
-                      visible={true}
-                      name={name}
-                      email={email}
-                      examId={examId}
-                      regDate={regDate}
-                      photo={photo}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div className="rg-nav">
               {step > 0 && !done && (
