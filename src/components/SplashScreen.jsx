@@ -1,234 +1,197 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/SplashScreen.css';
-import studentScan from '../assets/student_scan.png';
 
+/**
+ * ARITH-EXAM SPLASH SCREEN V9.0
+ * - Logo matches logo.png: "A" compass with gold infinity ribbon BEHIND the legs
+ * - No sound — clean silent animation
+ * - Scenes: 0=blank | 1=compass draws | 2=infinity weaves | 3=text reveals | 4=fade out
+ */
 export default function SplashScreen({ onComplete }) {
-  const [scene, setScene] = useState(0); // 0=entry, 1=laptop, 2=scan, 3=verified, 4=exit
-  const [progress, setProgress] = useState(0);
-  const canvasRef = useRef(null);
-  const animFrameRef = useRef(null);
-  const [scanProgress, setScanProgress] = useState(0);
-  const [typedText, setTypedText] = useState('');
+  const [scene, setScene] = useState(0);
 
-  const handleSkip = useCallback(() => {
-    setScene(4);
-    setTimeout(() => onComplete?.(), 600);
+  /* ── Scene timeline ─────────────────────────────────────────── */
+  useEffect(() => {
+    const t = [];
+    t.push(setTimeout(() => setScene(1), 300));
+    t.push(setTimeout(() => setScene(2), 2000));
+    t.push(setTimeout(() => setScene(3), 3600));
+    t.push(setTimeout(() => setScene(4), 6000));
+    t.push(setTimeout(() => onComplete?.(), 6900));
+
+    return () => t.forEach(clearTimeout);
   }, [onComplete]);
 
-  // Keyboard skip
-  useEffect(() => {
-    const fn = (e) => { if (e.key === 'Escape' || e.key === ' ') handleSkip(); };
-    window.addEventListener('keydown', fn);
-    return () => window.removeEventListener('keydown', fn);
-  }, [handleSkip]);
-
-  // Background Particles
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let w = canvas.width = window.innerWidth;
-    let h = canvas.height = window.innerHeight;
-
-    const particles = [];
-    for (let i = 0; i < 60; i++) {
-        particles.push({
-            x: Math.random() * w,
-            y: Math.random() * h,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
-            r: Math.random() * 2 + 0.5,
-            opacity: Math.random() * 0.3 + 0.05,
-            color: Math.random() > 0.5 ? '26, 79, 255' : '0, 185, 107',
-        });
-    }
-
-    const draw = () => {
-        ctx.clearRect(0, 0, w, h);
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 150) {
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = `rgba(26, 79, 255, ${0.05 * (1 - dist / 150)})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.stroke();
-                }
-            }
-        }
-        particles.forEach(p => {
-            p.x += p.vx; p.y += p.vy;
-            if (p.x < 0 || p.x > w) p.vx *= -1;
-            if (p.y < 0 || p.y > h) p.vy *= -1;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
-            ctx.fill();
-        });
-        animFrameRef.current = requestAnimationFrame(draw);
-    };
-    draw();
-
-    const onResize = () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', onResize);
-    return () => {
-        cancelAnimationFrame(animFrameRef.current);
-        window.removeEventListener('resize', onResize);
-    };
-  }, []);
-
-  // Animation Timeline
-  useEffect(() => {
-    const timers = [];
-
-    // Overall Progress
-    const progStart = Date.now();
-    const progInt = setInterval(() => {
-      const elapsed = Date.now() - progStart;
-      const p = Math.min(elapsed / 3000, 1);
-      setProgress(Math.round(p * 100));
-      if (p >= 1) clearInterval(progInt);
-    }, 16);
-
-    // Sequence
-    timers.push(setTimeout(() => setScene(1), 100));
-
-    timers.push(setTimeout(() => {
-      setScene(2);
-      let sp = 0;
-      const scanInt = setInterval(() => {
-        sp += 2;
-        setScanProgress(Math.min(sp, 100));
-        if (sp >= 100) clearInterval(scanInt);
-      }, 20); // Slower progress for 1.5s feel
-    }, 1100));
-
-    timers.push(setTimeout(() => {
-      setScene(3);
-      const text = "Secure AI Assessment Platform";
-      let i = 0;
-      const typeInt = setInterval(() => {
-        setTypedText(text.slice(0, i + 1));
-        i++;
-        if (i >= text.length) clearInterval(typeInt);
-      }, 40);
-    }, 2800)); // 1100 + 1500 (extra time for scan) + 200 buffer
-
-    timers.push(setTimeout(() => setScene(4), 4000));
-    timers.push(setTimeout(() => onComplete?.(), 4800));
-
-    return () => {
-      timers.forEach(clearTimeout);
-      clearInterval(progInt);
-    };
-  }, [onComplete]);
+  /* ── Class name helpers ─────────────────────────────────────── */
+  const vis = (min) => scene >= min ? 'sp-visible' : '';
+  const drwn = (min) => scene >= min ? 'sp-drawn' : '';
 
   return (
-    <div className={`sp ${scene === 4 ? 'sp--exit' : ''}`}>
-      <canvas ref={canvasRef} className="sp__canvas" />
-      <div className="sp__overlay" />
+    <div className={`sp-container ${scene === 4 ? 'sp-fade-out' : ''}`}>
 
-      <div className="sp__content">
-        {/* LOGO HEADER */}
-        <div className="sp__header reveal-down">
-          <div className="sp__logo">
-            <span className="sp__logo-box">A</span>
-            <span className="sp__logo-text">Arith<span className="accent">Exam</span></span>
-          </div>
-        </div>
+      {/* Engineering dot-grid background */}
+      <div className="sp-grid-bg" />
 
-        <div className="sp__stage">
-          {/* SCENE 1: Laptop Entrance */}
-          <div className={`sp__scene sp__scene-1 ${scene === 1 ? 'active' : ''} ${scene > 1 ? 'done' : ''}`}>
-            <div className="sp__laptop-3d">
-              <div className="sp__laptop-lid">
-                <div className="sp__portal-mock">
-                  <div className="sp__portal-head">
-                    <div className="win-dots"><span/><span/><span/></div>
-                    <span>Assessment Portal</span>
-                  </div>
-                  <div className="sp__portal-body">
-                    <div className="sp__portal-loading">
-                      <div className="dot-pulse"></div>
-                      <span>Initializing Exam Environment...</span>
-                    </div>
-                    <div className="sp__portal-fields">
-                      <div className="fld"></div>
-                      <div className="fld" style={{width: '70%'}}></div>
-                      <div className="btn">Secure Login</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="sp__laptop-base"></div>
-            </div>
-          </div>
+      {/* ════════════════════════════════════════════════
+          LOGO SVG — matches logo.png exactly
+          Render order: infinity FIRST (back), then legs ON TOP
+      ════════════════════════════════════════════════ */}
+      <svg
+        className="sp-logo-svg"
+        viewBox="0 0 400 420"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          {/* Gold shimmer gradient */}
+          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8a6d2c" />
+            <stop offset="30%" stopColor="#c9a84c" />
+            <stop offset="50%" stopColor="#e0c06a" />
+            <stop offset="70%" stopColor="#c5a044" />
+            <stop offset="100%" stopColor="#8a6d2c" />
+          </linearGradient>
 
-          {/* SCENE 2: AI Face Scan */}
-          <div className={`sp__scene sp__scene-2 ${scene === 2 ? 'active' : ''} ${scene > 2 ? 'done' : ''}`}>
-            <div className="sp__scan-container">
-              <div className="sp__scan-frame">
-                <img src={studentScan} alt="Student" className="sp__student-img" />
-                <div className="sp__scan-overlay">
-                  <div className="sp__scan-line"></div>
-                  <div className="sp__hud-corners">
-                    <span></span><span></span><span></span><span></span>
-                  </div>
-                  <div className="sp__hud-data">
-                    <div className="hud-label">BIOMETRIC SCAN</div>
-                    <div className="hud-val">ID: ARITH-{Math.floor(Math.random()*9000)+1000}</div>
-                  </div>
-                </div>
-              </div>
-              <div className="sp__scan-bottom">
-                <div className="sp__scan-progress-bar">
-                  <div className="fill" style={{width: `${scanProgress}%`}}></div>
-                </div>
-                <div className="sp__scan-status">
-                  {scanProgress < 100 ? `VERIFYING IDENTITY... ${scanProgress}%` : "IDENTITY VERIFIED"}
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Teal depth gradient for legs */}
+          <linearGradient id="tealGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#1a8c82" />
+            <stop offset="50%" stopColor="#0f766e" />
+            <stop offset="100%" stopColor="#144541" />
+          </linearGradient>
 
-          {/* SCENE 3: Verified + Platform Text */}
-          <div className={`sp__scene sp__scene-3 ${scene === 3 ? 'active' : ''}`}>
-            <div className="sp__verified-box">
-              <div className="sp__verified-check">
-                <svg viewBox="0 0 52 52">
-                  <circle className="check-circle" cx="26" cy="26" r="25" fill="none" />
-                  <path className="check-mark" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                </svg>
-              </div>
-              <h1 className="sp__final-text">
-                {typedText}
-                <span className="cursor">|</span>
-              </h1>
-            </div>
-          </div>
-        </div>
+          {/* Darker teal for inner leg edge */}
+          <linearGradient id="tealGradDark" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#0f766e" />
+            <stop offset="100%" stopColor="#0b524a" />
+          </linearGradient>
 
-        {/* MASTER LOADING BAR */}
-        <div className="sp__master-loading">
-          <div className="sp__master-fill" style={{width: `${progress}%`}}></div>
-          <div className="sp__master-info">
-            <span>{scene === 1 ? 'Environment Setup' : scene === 2 ? 'AI Security Check' : 'Launching Platform'}</span>
-            <span>{progress}%</span>
-          </div>
-        </div>
+          {/* Soft drop-shadow on compass legs */}
+          <filter id="dropShadow" x="-15%" y="-15%" width="130%" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+            <feOffset dx="0" dy="3" result="blur" />
+            <feComponentTransfer><feFuncA type="linear" slope="0.25" /></feComponentTransfer>
+            <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+
+          {/* Gold glow on infinity */}
+          <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="glow" />
+            <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+
+        {/* ══════════════════════════════════════════════════════════
+            LAYER 1 (BOTTOM): Gold infinity ribbon — rendered FIRST
+            so it sits BEHIND the compass legs
+        ══════════════════════════════════════════════════════════ */}
+        <path
+          className={`sp-infinity ${drwn(2)}`}
+          d="M 200,220
+             C 185,180  130,165  105,195
+             C  78,228   95,268  125,270
+             C 155,272  180,248  200,220
+             C 220,192  245,168  275,170
+             C 305,172  322,208  295,240
+             C 272,268  245,275  220,258
+             C 205,248  200,235  200,220 Z"
+          stroke="url(#goldGrad)"
+          strokeWidth="20"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+          filter="url(#goldGlow)"
+        />
+
+        {/* ══════════════════════════════════════════════════════════
+            LAYER 2 (TOP): Compass legs — rendered AFTER infinity
+            so they appear IN FRONT of the ribbon
+        ══════════════════════════════════════════════════════════ */}
+
+        {/* ── LEFT COMPASS LEG ── */}
+        <g className={`sp-leg-group ${vis(1)}`} filter="url(#dropShadow)">
+          <polygon
+            className={`sp-leg-fill ${drwn(1)}`}
+            points="188,72 100,345 130,345 208,72"
+            fill="url(#tealGrad)"
+          />
+          <line
+            className={`sp-leg-line ${drwn(1)}`}
+            x1="200" y1="72" x2="120" y2="345"
+            stroke="url(#tealGradDark)" strokeWidth="3" strokeLinecap="butt"
+            opacity="0.4"
+          />
+          {/* Adjustment block */}
+          <rect
+            className={`sp-adj-block ${vis(1)}`}
+            x="128" y="174" width="42" height="22" rx="3"
+            fill="#144541" transform="rotate(-18, 149, 185)"
+          />
+          <line className={`sp-screw-tick ${vis(1)}`} x1="136" y1="178" x2="136" y2="190"
+            stroke="#7ab8b3" strokeWidth="2" transform="rotate(-18, 136, 184)" />
+          <line className={`sp-screw-tick ${vis(1)}`} x1="145" y1="178" x2="145" y2="190"
+            stroke="#7ab8b3" strokeWidth="2" transform="rotate(-18, 145, 184)" />
+          <line className={`sp-screw-tick ${vis(1)}`} x1="154" y1="178" x2="154" y2="190"
+            stroke="#7ab8b3" strokeWidth="2" transform="rotate(-18, 154, 184)" />
+          <line className={`sp-screw-tick ${vis(1)}`} x1="163" y1="178" x2="163" y2="190"
+            stroke="#7ab8b3" strokeWidth="2" transform="rotate(-18, 163, 184)" />
+          {/* Arrow tip */}
+          <polygon
+            className={`sp-arrow-tip ${vis(1)}`}
+            points="115,342 90,378 140,378" fill="#0b6b63"
+          />
+        </g>
+
+        {/* ── RIGHT COMPASS LEG ── */}
+        <g className={`sp-leg-group sp-leg-right-group ${vis(1)}`} filter="url(#dropShadow)">
+          <polygon
+            className={`sp-leg-fill ${drwn(1)}`}
+            points="212,72 300,345 270,345 192,72"
+            fill="url(#tealGrad)"
+          />
+          <line
+            className={`sp-leg-right-line ${drwn(1)}`}
+            x1="200" y1="72" x2="280" y2="345"
+            stroke="url(#tealGradDark)" strokeWidth="3" strokeLinecap="butt"
+            opacity="0.4"
+          />
+          {/* Adjustment block */}
+          <rect
+            className={`sp-adj-block ${vis(1)}`}
+            x="230" y="174" width="42" height="22" rx="3"
+            fill="#144541" transform="rotate(18, 251, 185)"
+          />
+          <line className={`sp-screw-tick ${vis(1)}`} x1="237" y1="178" x2="237" y2="190"
+            stroke="#7ab8b3" strokeWidth="2" transform="rotate(18, 237, 184)" />
+          <line className={`sp-screw-tick ${vis(1)}`} x1="246" y1="178" x2="246" y2="190"
+            stroke="#7ab8b3" strokeWidth="2" transform="rotate(18, 246, 184)" />
+          <line className={`sp-screw-tick ${vis(1)}`} x1="255" y1="178" x2="255" y2="190"
+            stroke="#7ab8b3" strokeWidth="2" transform="rotate(18, 255, 184)" />
+          <line className={`sp-screw-tick ${vis(1)}`} x1="264" y1="178" x2="264" y2="190"
+            stroke="#7ab8b3" strokeWidth="2" transform="rotate(18, 264, 184)" />
+          {/* Arrow tip */}
+          <polygon
+            className={`sp-arrow-tip ${vis(1)}`}
+            points="285,342 260,378 310,378" fill="#0b6b63"
+          />
+        </g>
+
+        {/* ── Hinge / joint at apex (topmost layer) ── */}
+        <circle className={`sp-joint-outer ${vis(1)}`} cx="200" cy="72" r="20" fill="#144541" />
+        <circle className={`sp-joint-inner ${vis(1)}`} cx="200" cy="72" r="10" fill="#0b6b63" />
+        <circle className={`sp-joint-screw ${vis(1)}`} cx="200" cy="72" r="4" fill="#8a6d2c" />
+      </svg>
+
+      {/* ── Text block ─────────────────────────────────────────── */}
+      <div className={`sp-text-block ${vis(3)}`}>
+        <h1 className="sp-wordmark">
+          Arith<span className="sp-wordmark-accent">Exam</span>
+        </h1>
+        <div className={`sp-divider ${vis(3)}`} />
+        <p className={`sp-tagline ${vis(3)}`}>
+          Assess Smarter, Perform Better
+        </p>
       </div>
 
-      <div className="sp__footer">
-        <span>© 2026 ARITHWISE TECHNOLOGIES</span>
-        <span>ADVANCED ASSESSMENT ENGINE</span>
-      </div>
     </div>
   );
 }

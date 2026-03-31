@@ -134,7 +134,7 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
               <div className="fc-header__text">
                 <p className="fc-header__inst">ArithExam Assessment Board</p>
                 <h3 className="fc-header__title">RECOVERY CARD</h3>
-                <p className="fc-header__session">Secure Password Reset</p>
+                <div className="fc-header__chip">SECURE RECOVERY</div>
               </div>
               <div className="fc-role-badge" style={{ background: statusColor }}>
                 {statusLabel}
@@ -156,7 +156,6 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
               </div>
             </div>
             <div className="fc-footer">
-              <div className="fc-footer__sig"><div className="fc-footer__line"/><p className="fc-footer__lbl">Security Officer</p></div>
               <span className={`fc-badge ${resetDone ? 'fc-badge--valid' : step > 0 ? 'fc-badge--progress' : 'fc-badge--pending'}`}>{resetDone ? '✓ RECOVERED' : step > 0 ? 'IN PROGRESS' : 'PENDING'}</span>
             </div>
           </div>
@@ -332,7 +331,7 @@ export default function ForgotPassword() {
             <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
             <div>
               <span className="fp-logo__name">ArithExam</span>
-              <span className="fp-logo__sub">Engineered for Precision. Deciphering Potential.</span>
+              <span className="fp-logo__sub">Assess Smarter, Perform Better.</span>
             </div>
           </div>
 

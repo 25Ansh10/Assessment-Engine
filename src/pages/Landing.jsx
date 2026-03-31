@@ -199,7 +199,7 @@ export default function Landing() {
             </h1>
 
             <p className="landing-hero__desc">
-              Engineered for Precision. Deciphering Potential. ArithExam is the 
+              Assess Smarter, Perform Better. ArithExam is the {" "}
               next-generation AI assessment engine built for excellence.
             </p>
 
@@ -502,7 +502,7 @@ export default function Landing() {
             <div className="landing-footer__logo">
               <span className="landing-navbar__logo-icon">A</span> ArithExam
             </div>
-            <p className="landing-footer__tagline">Engineered for Precision. Deciphering Potential.</p>
+            <p className="landing-footer__tagline">Assess Smarter, Perform Better.</p>
             <div className="landing-footer__social">
               <a href="#" className="landing-footer__social-link">Twitter</a>
               <a href="#" className="landing-footer__social-link">Facebook</a>

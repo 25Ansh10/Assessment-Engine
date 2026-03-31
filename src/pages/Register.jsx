@@ -114,7 +114,7 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
               <div className="rc-header__text">
                 <p className="rc-header__inst">ArithExam Assessment Board</p>
                 <h3 className="rc-header__title">REGISTRATION CARD</h3>
-                <p className="rc-header__session">Session 2024–25</p>
+                <div className="rc-header__chip">DIGITAL ID VERIFIED</div>
               </div>
             </div>
 
@@ -164,19 +164,11 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
 
             {/* footer */}
             <div className="rc-footer">
-              <div className="rc-footer__sig">
-                <div className="rc-footer__line"/>
-                <p className="rc-footer__lbl">Controller of Examinations</p>
-              </div>
               <div className="rc-footer__badge">
                 {photo && examId
                   ? <span className="rc-badge rc-badge--valid">✓ VERIFIED</span>
                   : <span className="rc-badge rc-badge--pending">PENDING</span>
                 }
-              </div>
-              <div className="rc-footer__sig rc-footer__sig--r">
-                <div className="rc-footer__line"/>
-                <p className="rc-footer__lbl">Candidate Signature</p>
               </div>
             </div>
 
@@ -557,7 +549,7 @@ export default function Register() {
               <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
               <div>
                 <span className="rg-logo__name">ArithExam Registration</span>
-                <span className="rg-logo__sub">Engineered for Precision. Deciphering Potential.</span>
+                <span className="rg-logo__sub">Assess Smarter, Perform Better.</span>
               </div>
             </div>
 

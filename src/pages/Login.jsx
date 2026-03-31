@@ -94,8 +94,9 @@ function AccessCard({ email, emailOk }) {
               <div className="lc-header__text">
                 <p className="lc-header__inst">ArithExam Assessment Board</p>
                 <h3 className="lc-header__title">ACCESS CARD</h3>
-                <p className="lc-header__session">Session 2024–25</p>
+                <div className="lc-header__chip">VIRTUAL ACCESS</div>
               </div>
+              <div className="lc-header__icon">🔒</div>
             </div>
             <div className="lc-divider"/>
             <div className="lc-body">
@@ -110,7 +111,6 @@ function AccessCard({ email, emailOk }) {
               </div>
             </div>
             <div className="lc-footer">
-              <div className="lc-footer__sig"><div className="lc-footer__line"/><p className="lc-footer__lbl">Controller</p></div>
               <span className={`lc-badge ${emailOk ? 'lc-badge--valid' : 'lc-badge--pending'}`}>{emailOk ? '✓ VERIFIED' : 'PENDING'}</span>
             </div>
           </div>
@@ -218,7 +218,7 @@ export default function Login() {
             <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
             <div>
               <span className="lg-logo__name">ArithExam</span>
-              <span className="lg-logo__sub">Engineered for Precision. Deciphering Potential.</span>
+              <span className="lg-logo__sub">Assess Smarter, Perform Better.</span>
             </div>
           </div>
 

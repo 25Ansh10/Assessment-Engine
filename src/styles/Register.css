@@ -267,17 +267,26 @@
   letter-spacing: 1.2px; text-transform: uppercase;
   color: #0f766e; margin-bottom: 2px;
 }
-.rc-header__title {
-  font-family: var(--fc);
-  font-size: .78rem; font-weight: 700;
-  color: #0D9488; letter-spacing: 1.5px;
-  line-height: 1.2;
+.rc-header__title { 
+  font-family: 'Cinzel', serif; 
+  font-size: 16px; 
+  font-weight: 900; 
+  color: #b48a1b; 
+  letter-spacing: 0.05em; 
+  line-height: 1.2; 
 }
-.rc-header__session {
-  font-size: .48rem; color: rgba(13,148,136,.5);
-  letter-spacing: .8px; margin-top: 2px;
+.rc-header__chip {
+  display: inline-block;
+  padding: 2px 7px;
+  background: rgba(180, 138, 27, 0.1);
+  color: #b48a1b;
+  font-size: 9px;
+  font-weight: 800;
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+  border: 1px solid rgba(180, 138, 27, 0.2);
 }
-
 .rc-header__qr { flex-shrink: 0; text-align: center; }
 .rc-header__qr svg { width: 40px; height: 40px; }
 .rc-header__qrlbl {
