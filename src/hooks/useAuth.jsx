@@ -35,12 +35,13 @@ export function AuthProvider({ children }) {
     return userData;
   }, []);
 
-  const register = useCallback(async (formData) => {
-    // Instant registration logic
+  const register = useCallback(async (data) => {
     const userData = {
-      id: "AE-" + Math.floor(Math.random() * 900000 + 100000),
-      name: formData.name || 'Candidate',
-      email: formData.email,
+      id: data.examId || ("AE-" + Math.floor(Math.random() * 900000 + 100000)),
+      name: data.name || 'Candidate',
+      email: data.email,
+      photo: data.photo, // Save the base64 photo
+      regDate: data.regDate || new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
       role: 'CANDIDATE'
     };
     localStorage.setItem('isLoggedIn', 'true');

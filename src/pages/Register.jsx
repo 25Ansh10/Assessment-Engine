@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/Register.css';
@@ -27,60 +27,14 @@ const todayStr = () =>
 
 /* ─────────────────────────────────
    REGISTRATION CARD
-   Flips in after OTP verified + 3D Tilt
 ───────────────────────────────── */
 function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
-  const [twText, setTwText] = useState('');
-  const twRef = useRef(null);
-
-  /* typewriter for examId */
-  useRef(() => {
-    if (!examId) { setTwText(''); return; }
-    setTwText(''); let i = 0;
-    clearInterval(twRef.current);
-    twRef.current = setInterval(() => {
-      i++; setTwText(examId.slice(0, i));
-      if (i >= examId.length) clearInterval(twRef.current);
-    }, 48);
-    return () => clearInterval(twRef.current);
-  });
-
-  /* trigger typewriter when examId arrives */
-  const prevId = useRef('');
-  if (examId && examId !== prevId.current) {
-    prevId.current = examId;
-    setTwText('');
-    let i = 0;
-    clearInterval(twRef.current);
-    twRef.current = setInterval(() => {
-      i++; setTwText(examId.slice(0, i));
-      if (i >= examId.length) clearInterval(twRef.current);
-    }, 48);
-  }
-
   return (
     <div className={`rc-wrap ${visible ? 'rc-wrap--visible' : ''}`}>
       <div className="rc-scene">
         <div className="rc-card">
-
-          {/* ── FRONT of card ── */}
           <div className="rc-front">
-
-            {/* holographic top strip */}
             <div className="rc-holo" />
-
-            {/* embossed watermark */}
-            <div className="rc-watermark" aria-hidden="true">
-              <svg viewBox="0 0 180 180" fill="none">
-                <circle cx="90" cy="90" r="80" stroke="currentColor" strokeWidth="0.5" opacity="0.12"/>
-                <circle cx="90" cy="90" r="60" stroke="currentColor" strokeWidth="0.4" opacity="0.09"/>
-                <circle cx="90" cy="90" r="40" stroke="currentColor" strokeWidth="0.4" opacity="0.07"/>
-                <path d="M90 18L96 52H132L104 72L114 106L90 88L66 106L76 72L48 52H84Z"
-                  stroke="currentColor" strokeWidth="0.5" opacity="0.09"/>
-              </svg>
-            </div>
-
-            {/* header band */}
             <div className="rc-header">
               <div className="rc-header__seal">
                 <img src="/logo.png" alt="" width="50" height="50" />
@@ -91,14 +45,8 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
                 <div className="rc-header__chip">DIGITAL ID VERIFIED</div>
               </div>
             </div>
-
-            {/* gold divider */}
             <div className="rc-divider"/>
-
-            {/* body */}
             <div className="rc-body">
-
-              {/* photo slot */}
               <div className={`rc-photo ${photo ? 'rc-photo--filled' : ''}`}>
                 {photo
                   ? <img src={photo} alt="Candidate" className="rc-photo__img"/>
@@ -112,8 +60,6 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
                 }
                 <div className="rc-photo__stamp">PHOTO</div>
               </div>
-
-              {/* fields */}
               <div className="rc-fields">
                 <div className="rc-field-row">
                   <span className="rc-field-lbl">Candidate Name</span>
@@ -128,15 +74,13 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
                   </span>
                 </div>
                 <div className="rc-field-row">
-                  <span className="rc-field-lbl">Date of Registration</span>
+                  <span className="rc-field-lbl">Registration Date</span>
                   <span className={`rc-field-val ${regDate ? 'rc-field-val--filled' : ''}`}>
                     {regDate || '— — — — —'}
                   </span>
                 </div>
               </div>
             </div>
-
-            {/* footer */}
             <div className="rc-footer">
               <div className="rc-footer__badge">
                 {photo && examId
@@ -145,10 +89,7 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
                 }
               </div>
             </div>
-
-          </div>{/* /rc-front */}
-
-          {/* ── BACK of card (seen mid-flip) ── */}
+          </div>
           <div className="rc-back">
             <div className="rc-back__stripe rc-back__stripe--1"/>
             <div className="rc-back__stripe rc-back__stripe--2"/>
@@ -156,16 +97,13 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
             <div className="rc-back__center">
               <svg viewBox="0 0 60 60" fill="none" width="60" height="60">
                 <circle cx="30" cy="30" r="28" stroke="rgba(212,160,23,0.4)" strokeWidth="1.5"/>
-                <text x="30" y="26" textAnchor="middle" fontSize="10" fill="rgba(212,160,23,0.6)"
-                  fontWeight="700" fontFamily="serif">AE</text>
-                <text x="30" y="36" textAnchor="middle" fontSize="8" fill="rgba(212,160,23,0.5)"
-                  fontFamily="serif">EXAM</text>
+                <text x="30" y="26" textAnchor="middle" fontSize="10" fill="rgba(212,160,23,0.6)" fontWeight="700">AE</text>
+                <text x="30" y="36" textAnchor="middle" fontSize="8" fill="rgba(212,160,23,0.5)">EXAM</text>
               </svg>
             </div>
           </div>
-
-        </div>{/* /rc-card */}
-      </div>{/* /rc-scene */}
+        </div>
+      </div>
     </div>
   );
 }
@@ -174,30 +112,101 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
    OTP INPUT
 ───────────────────────────────── */
 function OtpInput({ value, onChange, disabled }) {
-  const refs = Array.from({ length: 6 }, () => useRef(null));
-  const handleKey = (i, e) => {
-    if (e.key === 'Backspace') {
-      onChange(value.slice(0, i));
-      if (i > 0) refs[i - 1].current?.focus();
-      return;
+  const inputRefs = useRef([]);
+
+  const handleKeyDown = (i, e) => {
+    if (e.key === 'Backspace' && !value[i] && i > 0) {
+      inputRefs.current[i - 1]?.focus();
     }
-    if (!/^\d$/.test(e.key)) return;
-    const arr = value.split(''); arr[i] = e.key;
-    onChange(arr.join('').slice(0, 6));
-    if (i < 5) refs[i + 1].current?.focus();
   };
+
+  const handleChange = (i, e) => {
+    const val = e.target.value.slice(-1); // Only take the last character entered
+    if (!/^\d$/.test(val) && val !== '') return;
+
+    const currentArr = value.split('');
+    currentArr[i] = val;
+    const finalStr = currentArr.join('').slice(0, 6);
+    onChange(finalStr);
+
+    if (val !== '' && i < 5) {
+      inputRefs.current[i + 1]?.focus();
+    }
+  };
+
   return (
-    <div className="rg-otp">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <input key={i} ref={refs[i]}
+    <div className="rg-otp" style={{ opacity: 1, visibility: 'visible', display: 'flex' }}>
+      {[0,1,2,3,4,5].map(i => (
+        <input
+          key={i}
+          ref={el => inputRefs.current[i] = el}
           className={`rg-otp__b ${value[i] ? 'rg-otp__b--on' : ''}`}
-          type="text" inputMode="numeric" maxLength={1}
-          value={value[i] || ''} readOnly={disabled}
-          onKeyDown={e => handleKey(i, e)}
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          autoComplete="one-time-code"
+          value={value[i] || ''}
+          disabled={disabled}
+          onKeyDown={e => handleKeyDown(i, e)}
+          onChange={e => handleChange(i, e)}
           onFocus={e => e.target.select()}
-          onChange={() => {}}
+          style={{ opacity: 1, visibility: 'visible' }}
         />
       ))}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────
+   OTP MODAL
+───────────────────────────────── */
+function OtpModal({ email, onVerified, onClose }) {
+  const [otp, setOtp] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const verify = async () => {
+    if (otp.length !== 6) { setError('Enter 6 digits'); return; }
+    setLoading(true); setError('');
+    await new Promise(r => setTimeout(r, 800));
+    if (otp !== '123456') {
+      setError('Invalid code. Use 123456 for demo.');
+      setLoading(false);
+      return;
+    }
+    onVerified();
+  };
+
+  return (
+    <div className="rg-mirror-bg" style={{ zIndex: 999999 }}>
+      <div className="rg-otp-modal" onClick={e => e.stopPropagation()} style={{ margin: 'auto' }}>
+        <div className="rg-otp-modal__head">
+          <h3>Verify Your Email</h3>
+          <p>A 6-digit code has been sent to:<br/><strong>{email}</strong></p>
+        </div>
+        <div className="rg-otp-modal__body">
+          <OtpInput value={otp} onChange={v => { setOtp(v); setError(''); }} />
+          {error && <p className="rg-hint rg-hint--e" style={{ textAlign: 'center', marginTop: 14 }}>{error}</p>}
+          <div className="rg-demo-box">
+            <span className="rg-demo-lbl">DEMO:</span>
+            <span className="rg-demo-val">123456</span>
+          </div>
+        </div>
+        <div className="rg-otp-modal__foot" style={{ display: 'flex', gap: '12px', width: '100%' }}>
+          <button type="button" className="rg-nav__bk" onClick={onClose} style={{ flex: 1 }}>
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            className={`rg-otp-btn ${otp.length === 6 ? 'rg-otp-btn--rdy' : ''}`}
+            onClick={verify} 
+            disabled={loading} 
+            style={{ flex: 1.6, opacity: 1, visibility: 'visible' }}
+          >
+            {loading ? <span className="rg-spinner"/> : 'Verify & Continue'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -211,19 +220,7 @@ function Mirror({ onCapture, onClose }) {
   const [count, setCount] = useState(3);
   const [snap,  setSnap]  = useState(null);
 
-  useRef(() => {
-    let m = true;
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
-      .then(s => {
-        if (!m) { s.getTracks().forEach(t => t.stop()); return; }
-        sRef.current = s; vRef.current.srcObject = s;
-        vRef.current.onloadedmetadata = () => { vRef.current.play(); setPhase('live'); };
-      }).catch(() => setPhase('error'));
-    return () => { m = false; sRef.current?.getTracks().forEach(t => t.stop()); clearTimeout(tRef.current); };
-  });
-
-  /* init camera on mount */
-  useState(() => {
+  useEffect(() => {
     let m = true;
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
       .then(s => {
@@ -235,7 +232,7 @@ function Mirror({ onCapture, onClose }) {
         }
       }).catch(() => setPhase('error'));
     return () => { m = false; sRef.current?.getTracks().forEach(t => t.stop()); clearTimeout(tRef.current); };
-  });
+  }, []);
 
   const capture = useCallback(() => {
     if (phase !== 'live') return;
@@ -249,18 +246,11 @@ function Mirror({ onCapture, onClose }) {
         const url = cv.toDataURL('image/jpeg', .92);
         setSnap(url); setPhase('done');
         sRef.current?.getTracks().forEach(t => t.stop());
+        setTimeout(() => onCapture(url), 1200);
       } else { setCount(c); tRef.current = setTimeout(tick, 1000); }
     };
     tRef.current = setTimeout(tick, 1000);
-  }, [phase]);
-
-  useRef(() => {
-    if (phase === 'done' && snap) tRef.current = setTimeout(() => onCapture(snap), 900);
-  });
-
-  if (phase === 'done' && snap) {
-    setTimeout(() => onCapture(snap), 900);
-  }
+  }, [phase, onCapture]);
 
   return (
     <div className="rg-mirror-bg" role="dialog" aria-modal="true">
@@ -314,9 +304,9 @@ function Mirror({ onCapture, onClose }) {
 /* ─────────────────────────────────
    FLOAT FIELD
 ───────────────────────────────── */
-function Field({ id, label, type='text', value, onChange, onBlur, ok, err, autoComplete, disabled, readOnly, children }) {
+function Field({ id, label, type='text', value, onChange, onBlur, ok, err, autoComplete, disabled, readOnly, children, className }) {
   return (
-    <div className={`rg-field ${ok ? 'rg-field--ok' : err ? 'rg-field--err' : ''}`}>
+    <div className={`rg-field ${ok ? 'rg-field--ok' : err ? 'rg-field--err' : ''} ${className || ''}`}>
       <input id={id} type={type} placeholder={label} value={value}
         onChange={e => onChange?.(e.target.value)} onBlur={onBlur}
         autoComplete={autoComplete} disabled={disabled} readOnly={readOnly}/>
@@ -338,8 +328,9 @@ function Field({ id, label, type='text', value, onChange, onBlur, ok, err, autoC
    PANE wrapper
 ───────────────────────────────── */
 function Pane({ show, children }) {
+  if (!show) return null;
   return (
-    <div className={`rg-pane ${show ? 'rg-pane--in' : 'rg-pane--out'}`}>
+    <div className="rg-pane rg-pane--in">
       {children}
     </div>
   );
@@ -369,7 +360,7 @@ function Confetti({ on }) {
 
 /* ═══════════════════════════════════════
    MAIN REGISTER PAGE
-   Steps: 0=Name  1=Email  2=OTP  3=Password  4=ID  5=Photo
+   Steps: 0=Account Setup  1=Identity Proof
 ═══════════════════════════════════════ */
 export default function Register() {
   const navigate  = useNavigate();
@@ -378,10 +369,7 @@ export default function Register() {
   /* form data */
   const [name,        setName]        = useState('');
   const [email,       setEmail]       = useState('');
-  const [otp,         setOtp]         = useState('');
   const [otpVerified, setOtpVerified] = useState(false);
-  const [otpErr,      setOtpErr]      = useState('');
-  const [otpLoading,  setOtpLoading]  = useState(false);
   const [password,    setPassword]    = useState('');
   const [confirm,     setConfirm]     = useState('');
   const [idFile,      setIdFile]      = useState(null);
@@ -397,6 +385,7 @@ export default function Register() {
   const [loading,    setLoading]    = useState(false);
   const [done,       setDone]       = useState(false);
   const [mirrorOpen, setMirrorOpen] = useState(false);
+  const [showOtp,    setShowOtp]    = useState(false);
 
   const fileRef = useRef(null);
 
@@ -408,48 +397,30 @@ export default function Register() {
   const matchOk  = confirm.length > 0 && password === confirm;
   const mismatch = confirm.length > 0 && password !== confirm;
 
-  /* OTP */
-  const sendOtp = async () => {
-    setOtpLoading(true); setOtpErr('');
-    await new Promise(r => setTimeout(r, 900)); // TODO: real API
-    setOtpLoading(false);
-  };
+  const step0Complete = nameOk && emailOk && otpVerified && passOk && matchOk;
+  const step1Complete = !!idFile && !!photo;
 
-  const verifyOtp = async () => {
-    if (otp.length !== 6) { setOtpErr('Enter all 6 digits.'); return; }
-    setOtpLoading(true); setOtpErr('');
-    await new Promise(r => setTimeout(r, 700));
-    if (otp !== '123456') {
-      setOtpErr('Incorrect OTP — use 123456 for demo.'); setOtpLoading(false); return;
-    }
+  const handleOtpVerified = () => {
     setOtpVerified(true);
     setExamId(makeExamId());
     setRegDate(todayStr());
-    setOtpLoading(false);
-    setTimeout(() => { setError(''); setStep(3); }, 600);
+    setShowOtp(false);
   };
 
   const goNext = () => {
     setError('');
     if (step === 0) {
-      if (!nameOk) { setError('Enter your full name (at least 2 characters).'); return; }
-      setStep(1);
-    } else if (step === 1) {
-      if (!emailOk) { setError('Enter a valid email address.'); return; }
-      sendOtp().then(() => setStep(2));
-    } else if (step === 3) {
-      if (!passOk)  { setError('Password must be at least 8 characters.'); return; }
+      if (!nameOk) { setError('Enter your full name.'); return; }
+      if (!emailOk) { setError('Enter a valid email.'); return; }
+      if (!otpVerified) { setError('Please verify your email address.'); return; }
+      if (!passOk) { setError('Create a stronger password.'); return; }
       if (!matchOk) { setError('Passwords do not match.'); return; }
-      setStep(4);
-    } else if (step === 4) {
-      if (!idFile)  { setError('Please upload your identity document.'); return; }
-      setStep(5);
+      setStep(1);
     }
   };
 
   const goBack = () => {
-    setError(''); setOtpErr('');
-    if (step === 2) { setOtp(''); setOtpVerified(false); setStep(1); return; }
+    setError('');
     if (step > 0) setStep(s => s - 1);
   };
 
@@ -472,48 +443,41 @@ export default function Register() {
 
   const handleSubmit = async () => {
     if (!photo) { setError('Please capture your live photo.'); return; }
+    if (!idFile) { setError('Please upload your ID proof.'); return; }
     setLoading(true);
     try {
-      await register({ name, email, password });
+      await register({ name, email, password, photo, examId, regDate });
       setDone(true);
       setTimeout(() => navigate('/dashboard'), 5000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.response?.data?.message || 'Registration failed.');
     } finally { setLoading(false); }
   };
 
   /* step meta */
   const stepMeta = [
-    { h: "What's your name?",       p: "Step 1 of 5 · As it appears on your ID"     },
-    { h: "Your email address",       p: "Step 2 of 5 · An OTP will be sent here"     },
-    { h: "Verify your email",        p: `Enter the OTP sent to ${email}`             },
-    { h: "Create a password",        p: "Step 3 of 5 · Use a strong combination"     },
-    { h: "Upload identity proof",    p: "Step 4 of 5 · Passport / Aadhaar / DL"     },
-    { h: "Take a live photo",        p: "Step 5 of 5 · Must match your ID document"  },
+    { h: "Create Your Account",    p: "Step 1 of 2 · Basic details" },
+    { h: "Digital Identity",      p: "Step 2 of 2 · ID & Live verification" }
   ];
 
   return (
     <>
-      {mirrorOpen && <Mirror onCapture={handleCapture} onClose={() => setMirrorOpen(false)}/>}
-
       <div className="rg-page">
-        {/* ── SUCCESS BIG CARD OVERLAY ── */}
+        {mirrorOpen && <Mirror onCapture={handleCapture} onClose={() => setMirrorOpen(false)}/>}
+        {showOtp && <OtpModal email={email} onVerified={handleOtpVerified} onClose={() => setShowOtp(false)} />}
+        
         {done && (
           <div className="rg-success-overlay">
             <div className="rg-success-content">
               <div className="rg-success-badge">
                 <span className="rg-success-icon">🎉</span>
-                <h2 style={{ fontFamily: 'DM Sans', fontWeight: 800 }}>Registration Successful!</h2>
-                <p style={{ fontFamily: 'DM Sans', fontWeight: 500 }}>Your official card is ready. Redirecting soon...</p>
+                <h2>Registration Successful!</h2>
+                <p>Your official card is ready. Redirecting soon...</p>
               </div>
               <div className="rg-big-card-wrap">
                 <RegistrationCard
-                  visible={true}
-                  name={name}
-                  email={email}
-                  examId={examId}
-                  regDate={regDate}
-                  photo={photo}
+                  visible={true} name={name} email={email}
+                  examId={examId} regDate={regDate} photo={photo}
                 />
               </div>
             </div>
@@ -523,25 +487,18 @@ export default function Register() {
         <div className="rg-page__bg"/>
 
         <div className="rg-card">
-          {/* ══════════ LEFT PANEL (CARD ONLY) ══════════ */}
           <div className="rg-left">
             <div className="rg-left__card-container">
               <RegistrationCard
-                visible={true}
-                name={name}
+                visible={true} name={name}
                 email={otpVerified ? email : ''}
-                examId={examId}
-                regDate={regDate}
-                photo={photo}
+                examId={examId} regDate={regDate} photo={photo}
               />
             </div>
           </div>
 
-          {/* ══════════ RIGHT PANEL (FORM) ══════════ */}
           <div className="rg-right">
             <div className="rg-right__bar"/>
-
-            {/* logo */}
             <div className="rg-logo">
               <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
               <div>
@@ -550,179 +507,119 @@ export default function Register() {
               </div>
             </div>
 
-            {/* progress */}
             <div className="rg-prog">
               <div className="rg-prog__track">
-                <div className="rg-prog__fill" style={{ width: `${(step / 5) * 100}%` }}/>
+                <div className="rg-prog__fill" style={{ width: `${((step + 1) / 2) * 100}%` }}/>
               </div>
-              <span className="rg-prog__txt">Step {Math.min(step + 1, 6)} of 6</span>
+              <span className="rg-prog__txt">Page {step + 1} of 2</span>
             </div>
 
-            {/* heading */}
             <div className="rg-step-head" key={step}>
               <h2 className="rg-card__h">{stepMeta[step]?.h}</h2>
               <p  className="rg-card__p">{stepMeta[step]?.p}</p>
             </div>
 
-            {/* ── Step 0: Name ── */}
             <Pane show={step === 0}>
               <Field id="rg-name" label="Full Name" value={name}
                 onChange={v => { setName(v); setTouched(t => ({ ...t, n: 1 })); setError(''); }}
-                ok={nameOk && !!touched.n}
-                err={!!touched.n && !nameOk && name.length > 0}
-                autoComplete="name"/>
-              {touched.n && !nameOk && name.length > 0 &&
-                <p className="rg-hint rg-hint--e">Min 2 characters required</p>}
-              {nameOk && touched.n &&
-                <p className="rg-hint rg-hint--ok">✓ Will appear on your registration card</p>}
+                ok={nameOk && !!touched.n} />
+              
+              <div className="rg-email-verify-group" style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
+                <Field id="rg-email" label="Email Address" type="email" value={email}
+                  onChange={v => { setEmail(v); setOtpVerified(false); setTouched(t => ({ ...t, e: 1 })); setError(''); }}
+                  ok={otpVerified} className="rg-email-field" style={{ flex: 1 }} />
+                {!otpVerified && emailOk && (
+                  <button type="button" className="rg-verify-btn" 
+                    style={{ 
+                      padding: '0 20px', borderRadius: '12px', border: 'none', 
+                      background: 'var(--t)', color: '#fff', fontWeight: 600, cursor: 'pointer',
+                      height: '52px', marginTop: '0'
+                    }}
+                    onClick={() => setShowOtp(true)}>
+                    Verify
+                  </button>
+                )}
+              </div>
+
+              <div className="rg-form-row" style={{ display: 'flex', gap: '12px', marginBottom: '14px' }}>
+                <div style={{ flex: 1 }}>
+                  <Field id="rg-pw" label="Password" type="password" value={password}
+                    onChange={v => { setPassword(v); setError(''); }}
+                    ok={passOk} autoComplete="new-password"/>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <Field id="rg-cf" label="Confirm" type="password" value={confirm}
+                    onChange={v => { setConfirm(v); setError(''); }}
+                    ok={matchOk} err={mismatch} autoComplete="new-password"/>
+                </div>
+              </div>
+              {strength && (
+                <div className="rg-bar" style={{ marginTop: '-8px' }}>
+                  <div className="rg-bar__bg"><div className="rg-bar__fill" style={{ width: strength.pct, background: strength.color }}/></div>
+                  <span className="rg-bar__lbl" style={{ color: strength.color }}>{strength.label}</span>
+                </div>
+              )}
             </Pane>
 
-            {/* ── Step 1: Email ── */}
             <Pane show={step === 1}>
-              <Field id="rg-email" label="Email Address" type="email" value={email}
-                onChange={v => { setEmail(v); setTouched(t => ({ ...t, e: 1 })); setError(''); }}
-                onBlur={() => setTouched(t => ({ ...t, e: 1 }))}
-                ok={emailOk}
-                err={!!touched.e && !emailOk && email.length > 0}
-                autoComplete="email"/>
-              {touched.e && email && !emailOk &&
-                <p className="rg-hint rg-hint--e">Enter a valid email address</p>}
-              {emailOk &&
-                <p className="rg-hint rg-hint--ok">✓ OTP will be sent to this address</p>}
-            </Pane>
+              <div className="rg-identity-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div className="rg-identity-item">
+                  <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 600, display: 'block', marginBottom: '8px' }}>ID Upload</span>
+                  <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp"
+                    style={{ display: 'none' }} onChange={handleIdUpload}/>
+                  {!idPreview
+                    ? <button type="button" className="rg-upload" onClick={() => fileRef.current?.click()}>
+                        <span style={{ fontSize: '1.5rem' }}>🪪</span>
+                        <span>Upload ID</span>
+                      </button>
+                    : <div className="rg-prev">
+                        <img src={idPreview} alt="ID" style={{ maxHeight: '100px' }}/>
+                        <div className="rg-prev__ov"><button onClick={() => { setIdFile(null); setIdPreview(null); }}>Change</button></div>
+                        <span className="rg-prev__badge">✓ ID</span>
+                      </div>}
+                </div>
 
-            {/* ── Step 2: OTP ── */}
-            <Pane show={step === 2}>
-              <p className="rg-otp-info">
-                Enter the 6-digit code sent to <strong>{email}</strong>
-                <br/><small className="rg-demo-note">Demo: use 123456</small>
-              </p>
-              <OtpInput value={otp} onChange={v => { setOtp(v); setOtpErr(''); }} disabled={otpVerified}/>
-              {otpErr     && <p className="rg-hint rg-hint--e">{otpErr}</p>}
-              {otpVerified && <p className="rg-hint rg-hint--ok">✓ Email verified! Registration card generated.</p>}
-              <div className="rg-otp-row">
-                <button
-                  className={`rg-otp-btn ${otp.length === 6 ? 'rg-otp-btn--rdy' : ''}`}
-                  onClick={verifyOtp} disabled={otpLoading || otpVerified}>
-                  {otpLoading
-                    ? <><span className="rg-spinner"/>Verifying…</>
-                    : otpVerified ? '✓ Verified' : 'Verify OTP'}
-                </button>
-                <button className="rg-resend" onClick={sendOtp} disabled={otpLoading}>
-                  Resend OTP
-                </button>
+                <div className="rg-identity-item">
+                  <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Live Photo</span>
+                  {!photo
+                    ? <button type="button" className="rg-upload rg-upload--cam" onClick={() => setMirrorOpen(true)}>
+                        <span style={{ fontSize: '1.5rem' }}>🪞</span>
+                        <span>Live Mirror</span>
+                      </button>
+                    : <div className="rg-prev rg-prev--photo">
+                        <img src={photo} alt="Live" style={{ maxHeight: '100px' }}/>
+                        <div className="rg-prev__ov"><button onClick={() => { setPhoto(null); setMirrorOpen(true); }}>Retake</button></div>
+                        <span className="rg-prev__badge">✓ Photo</span>
+                      </div>}
+                </div>
               </div>
             </Pane>
 
-            {/* ── Step 3: Password ── */}
-            <Pane show={step === 3}>
-              <Field id="rg-pw" label="Password" type="password" value={password}
-                onChange={v => { setPassword(v); setError(''); }}
-                ok={passOk} autoComplete="new-password"/>
-              {strength && (
-                <div className="rg-bar">
-                  <div className="rg-bar__bg">
-                    <div className="rg-bar__fill"
-                      style={{ width: strength.pct, background: strength.color }}/>
-                  </div>
-                  <span className="rg-bar__lbl" style={{ color: strength.color }}>
-                    {strength.label}
-                  </span>
-                </div>
-              )}
-              <Field id="rg-cf" label="Confirm Password" type="password" value={confirm}
-                onChange={v => { setConfirm(v); setError(''); }}
-                ok={matchOk} err={mismatch} autoComplete="new-password"/>
-              {confirm && (
-                <p className={`rg-hint ${matchOk ? 'rg-hint--ok' : 'rg-hint--e'}`}>
-                  {matchOk ? '✓ Passwords match' : '✗ Passwords do not match'}
-                </p>
-              )}
-            </Pane>
+            {error && <p className="rg-error">{error}</p>}
 
-            {/* ── Step 4: ID Upload ── */}
-            <Pane show={step === 4}>
-              <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp"
-                style={{ display: 'none' }} onChange={handleIdUpload}/>
-              {!idPreview
-                ? <button type="button" className="rg-upload"
-                    onClick={() => fileRef.current?.click()}>
-                    <span className="rg-upload__ic">🪪</span>
-                    <span className="rg-upload__tx">Click to upload ID document</span>
-                    <span className="rg-upload__sx">JPG or PNG · max 5 MB</span>
-                  </button>
-                : <div className="rg-prev">
-                    <img src={idPreview} alt="ID"/>
-                    <div className="rg-prev__ov">
-                      <button onClick={() => { setIdFile(null); setIdPreview(null); }}>
-                        Change
-                      </button>
-                    </div>
-                    <span className="rg-prev__badge">✓ Uploaded</span>
-                  </div>}
-              {error && <p className="rg-hint rg-hint--e" style={{ marginTop: 10 }}>{error}</p>}
-            </Pane>
-
-            {/* ── Step 5: Live Photo ── */}
-            <Pane show={step === 5}>
-              {!photo
-                ? <button type="button" className="rg-upload rg-upload--cam"
-                    onClick={() => setMirrorOpen(true)}>
-                    <span className="rg-upload__ic">🪞</span>
-                    <span className="rg-upload__tx">Open Live Mirror &amp; Capture</span>
-                    <span className="rg-upload__sx">Photo will appear on your registration card</span>
-                  </button>
-                : <div className="rg-prev rg-prev--photo">
-                    <img src={photo} alt="Live"/>
-                    <div className="rg-prev__ov">
-                      <button onClick={() => { setPhoto(null); setMirrorOpen(true); }}>
-                        Retake
-                      </button>
-                    </div>
-                    <span className="rg-prev__badge">✓ Live Photo</span>
-                  </div>}
-            </Pane>
-
-            {/* error */}
-            {error && step !== 4 && <p className="rg-error">{error}</p>}
-
-            {/* nav */}
-
-            <div className="rg-nav">
+            <div className="rg-nav" style={{ marginTop: '20px' }}>
               {step > 0 && !done && (
                 <button className="rg-nav__bk" onClick={goBack}>← Back</button>
               )}
-              {step !== 2 && step !== 5 && (
-                <button
-                  className={`rg-nav__nx ${
-                    [nameOk, emailOk, false, passOk && matchOk, !!idFile, !!photo][step]
-                      ? 'rg-nav__nx--rdy' : ''
-                  }`}
-                  onClick={goNext}>
+              {step === 0 && (
+                <button className={`rg-nav__nx ${step0Complete ? 'rg-nav__nx--rdy' : ''}`}
+                  onClick={goNext} disabled={!step0Complete}>
                   Continue →
                 </button>
               )}
-              {step === 5 && (
-                <button
-                  className={`rg-nav__sub ${done ? 'rg-nav__sub--done' : ''}`}
-                  onClick={handleSubmit}
-                  disabled={loading || done}>
+              {step === 1 && (
+                <button className={`rg-nav__sub ${done ? 'rg-nav__sub--done' : ''}`}
+                  onClick={handleSubmit} disabled={loading || done || !step1Complete}>
                   <Confetti on={done}/>
-                  {done
-                    ? '🎉 Registration Complete!'
-                    : loading
-                    ? 'Please wait…'
-                    : 'Complete Registration →'}
+                  {done ? '🎉 Success!' : loading ? 'Please wait…' : 'Complete Registration →'}
                 </button>
               )}
             </div>
 
-            <p className="rg-footer">
-              Already registered?&nbsp;
-              <Link to="/login">Sign in here</Link>
+            <p className="rg-footer" style={{ marginTop: '20px' }}>
+              Already registered? <Link to="/login">Sign in</Link>
             </p>
           </div>
-
         </div>
       </div>
     </>

@@ -183,14 +183,21 @@
 /* Wordmark heading */
 .sp-wordmark {
     font-family: 'DM Sans', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: .9;
-    margin-bottom: .25rem;
-    color: #003d38; /* Exact dark teal from the provided image */
+    font-size: 3.8rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    
+    /* Vibrant Teal-to-Gold Gradient */
+    background: linear-gradient(135deg, #1a8c82 0%, #0D9488 45%, #D4A017 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
     opacity: 0;
-    transition: all 0.8s ease 0.2s;
+    transform: translateY(10px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
 }
 
 .sp-text-block.sp-visible .sp-wordmark {
@@ -199,7 +206,8 @@
 }
 
 .sp-wordmark-accent {
-    color: inherit; /* Matches the rest of the wordmark as seen in the image */
+    -webkit-text-fill-color: inherit; 
+    color: inherit;
 }
 
 /* Gold divider bar */

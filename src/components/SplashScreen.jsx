@@ -14,10 +14,10 @@ export default function SplashScreen({ onComplete }) {
   useEffect(() => {
     const t = [];
     t.push(setTimeout(() => setScene(1), 300));
-    t.push(setTimeout(() => setScene(2), 2000));
-    t.push(setTimeout(() => setScene(3), 3600));
-    t.push(setTimeout(() => setScene(4), 6000));
-    t.push(setTimeout(() => onComplete?.(), 6900));
+    t.push(setTimeout(() => setScene(2), 1800));
+    t.push(setTimeout(() => setScene(3), 3000));
+    t.push(setTimeout(() => setScene(4), 6500));
+    t.push(setTimeout(() => onComplete?.(), 7200));
 
     return () => t.forEach(clearTimeout);
   }, [onComplete]);

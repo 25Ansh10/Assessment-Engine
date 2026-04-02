@@ -130,7 +130,11 @@ function RegistrationCard({ user, initials, hideEdit }) {
 
         <div className="drc-body">
           <div className="drc-photo-box">
-            <div className="drc-ava">{initials}</div>
+            {user.photo ? (
+              <img src={user.photo} alt="Candidate" className="drc-img" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
+            ) : (
+              <div className="drc-ava">{initials}</div>
+            )}
             <div className="drc-stamp">CANDIDATE</div>
           </div>
           <div className="drc-fields">
@@ -148,7 +152,7 @@ function RegistrationCard({ user, initials, hideEdit }) {
             </div>
             <div className="drc-row">
               <label>CANDIDATE ID</label>
-              <span className="drc-id-val">AE-SR-299381</span>
+              <span className="drc-id-val">{user.id || 'AE-SR-000000'}</span>
             </div>
           </div>
         </div>
@@ -194,9 +198,11 @@ export default function Dashboard() {
 
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  const ud = {
-    name: user?.name || 'Candidate Pool',
-    email: user?.email || 'verified@arithexam.co'
+   const ud = {
+    name: user?.name || 'Pool Candidate',
+    email: user?.email || 'verified@arithexam.co',
+    id: user?.id || 'AE-SR-000000',
+    photo: user?.photo || null
   };
   const initials = ud.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
   const recentDiff = TREND[TREND.length - 1].score - TREND[TREND.length - 2].score;
@@ -230,7 +236,7 @@ export default function Dashboard() {
       <aside className="db-sidebar">
         <div className="db-side-top">
           <div className="db-nav-brand" onClick={() => navigate('/')}>
-            <img src="/logo.png" alt="" width="42" height="42" />
+            <img src="/logo.png" alt="ArithExam" width="42" height="42" />
             <div className="db-nav-text">
               <span className="db-nav-title">ArithExam</span>
             </div>
@@ -248,10 +254,14 @@ export default function Dashboard() {
 
         <div className="db-side-foot">
           <div className="db-side-user" onClick={() => setView('profile')}>
-            <div className="db-side-ava">{initials}</div>
+            {ud.photo ? (
+              <img src={ud.photo} className="db-side-ava" alt="" style={{ objectFit: 'cover' }} />
+            ) : (
+               <div className="db-side-ava">{initials}</div>
+            )}
             <div className="db-side-user-info">
-              <p className="db-side-user-name">{ud.name.split(' ')[0]}</p>
-              <p className="db-side-user-role">Candidate</p>
+              <p className="db-side-user-name">{ud.name}</p>
+              <p className="db-side-user-role">Candidate Pool</p>
             </div>
           </div>
           <button className="db-side-logout" onClick={logout}>
@@ -366,7 +376,7 @@ export default function Dashboard() {
                     </div>
                     <div className="db-account-row">
                       <span className="db-account-label">Candidate ID</span>
-                      <span className="db-account-value db-account-value--id">AE-SR-299381</span>
+                      <span className="db-account-value db-account-value--id">{ud.id}</span>
                     </div>
                     <div className="db-account-row">
                       <span className="db-account-label">Status</span>
