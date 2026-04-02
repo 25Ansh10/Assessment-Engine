@@ -110,12 +110,8 @@
 
 .lc-card {
   width: 100%; position: relative;
-  transform-style: preserve-3d;
-  /* subtle hover tilt */
+  /* subtle hover tilt removal */
   transition: transform .4s var(--ez);
-}
-.lc-wrap:hover .lc-card {
-  transform: rotateY(-3deg) rotateX(1.5deg);
 }
 
 .lc-front, .lc-back {
@@ -538,7 +534,7 @@
   transition:all .3s var(--sp);
   margin-bottom:16px;
 }
-.lg-submit:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 8px 22px rgba(13,148,136,.4); }
+.lg-submit:hover:not(:disabled) { box-shadow:0 8px 22px rgba(13,148,136,.4); }
 .lg-submit:active:not(:disabled){ transform:scale(.98); }
 .lg-submit:disabled { opacity:.65; cursor:not-allowed; }
 .lg-submit__arrow { font-size:1.05rem; transition:transform .2s; }

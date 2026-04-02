@@ -59,29 +59,10 @@ function Field({ id, label, type = 'text', value, onChange, onBlur, ok, err, aut
 function AccessCard({ email, emailOk }) {
   const initials = getInitials(email);
   const masked   = maskEmail(email);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setTilt({ x: -(y / (rect.height / 2)) * 10, y: (x / (rect.width / 2)) * 10 });
-  };
-
-  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   return (
-    <div className="lc-wrap" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-      <div className="lc-scene" style={{ 
-        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-        transition: tilt.x === 0 ? 'transform 0.5s ease' : 'none'
-      }}>
-        {/* Sheen overlay */}
-        <div className="lc-sheen" style={{
-          transform: `translate(${-tilt.y * 8}px, ${-tilt.x * 8}px)`,
-          opacity: tilt.x === 0 ? 0 : 0.12
-        }} />
-
+    <div className="lc-wrap">
+      <div className="lc-scene">
         <div className="lc-card">
           {/* ── FRONT ── */}
           <div className="lc-front">

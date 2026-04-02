@@ -7,12 +7,12 @@
 
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
-    --sp-teal: #0D9488;
-    --sp-teal-dark: #0f766e;
-    --sp-teal-light: #14B8A6;
-    --sp-gold: #D4A017;
-    --sp-gold-light: #f0c040;
-    --sp-gold-dark: #b48a1b;
+    --sp-teal: #1a8c82;
+    --sp-teal-dark: #144541;
+    --sp-teal-light: #44b5ad;
+    --sp-gold: #c9a84c;
+    --sp-gold-light: #e0c06a;
+    --sp-gold-dark: #8a6d2c;
     --sp-bg: #f8fafb;
     --sp-text-muted: #5a7a78;
     --sp-text-faint: #94a3b8;
@@ -183,44 +183,40 @@
 /* Wordmark heading */
 .sp-wordmark {
     font-family: 'DM Sans', sans-serif;
-    font-size: 3.25rem;
-    font-weight: 900;
-    letter-spacing: -0.06em;
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     line-height: .9;
     margin-bottom: .25rem;
-    background: linear-gradient(135deg, var(--sp-teal), var(--sp-teal-light));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: spFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+    color: #003d38; /* Exact dark teal from the provided image */
     opacity: 0;
+    transition: all 0.8s ease 0.2s;
 }
 
-.sp-tagline {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--sp-teal-dark);
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    opacity: 0;
-    animation: spFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
-    white-space: nowrap;
+.sp-text-block.sp-visible .sp-wordmark {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sp-wordmark-accent {
+    color: inherit; /* Matches the rest of the wordmark as seen in the image */
 }
 
 /* Gold divider bar */
 .sp-divider {
-    height: 2.5px;
-    width: 56px;
-    background: linear-gradient(90deg,
-            var(--sp-gold-dark),
-            var(--sp-gold-light),
-            var(--sp-gold-dark));
-    margin: 14px auto 10px;
-    border-radius: 2px;
+    height: 2px;
+    width: 60px;
+    background: linear-gradient(90deg, 
+        var(--sp-gold-dark), 
+        var(--sp-gold-light), 
+        var(--sp-gold-dark)
+    );
+    margin: 18px auto 12px;
+    border-radius: var(--radius-pill);
     transform: scaleX(0);
     transform-origin: center;
     transition: transform 1s ease 0.5s;
+    opacity: 0.8;
 }
 
 .sp-divider.sp-visible {
@@ -233,12 +229,20 @@
     color: var(--sp-text-muted);
     font-size: 0.78rem;
     font-weight: 700;
-    letter-spacing: 4px;
+    letter-spacing: 5px;
     text-transform: uppercase;
     opacity: 0;
-    transition: opacity 1s ease 0.8s;
+    transform: translateY(8px);
+    transition: all 0.8s ease 0.8s;
 }
 
 .sp-tagline.sp-visible {
     opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Fallback Animations if needed ── */
+@keyframes spFadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }

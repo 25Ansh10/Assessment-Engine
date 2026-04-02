@@ -94,16 +94,6 @@ function OtpInput({ value, onChange, disabled }) {
 function RecoveryCard({ step, email, emailOk, resetDone }) {
   const initials = getInitials(email);
   const masked   = maskEmail(email);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setTilt({ x: -(y / (rect.height / 2)) * 10, y: (x / (rect.width / 2)) * 10 });
-  };
-
-  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   const statusLabel = step === 0 ? 'IDENTIFY' :
                       step === 1 ? 'VERIFY' :
@@ -111,17 +101,8 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
   const statusColor = step === 3 ? '#15803d' : '#0D9488';
 
   return (
-    <div className="fc-wrap" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-      <div className="fc-scene" style={{ 
-        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-        transition: tilt.x === 0 ? 'transform 0.5s ease' : 'none'
-      }}>
-        {/* Sheen overlay */}
-        <div className="fc-sheen" style={{
-          transform: `translate(${-tilt.y * 8}px, ${-tilt.x * 8}px)`,
-          opacity: tilt.x === 0 ? 0 : 0.12
-        }} />
-
+    <div className="fc-wrap">
+      <div className="fc-scene">
         <div className="fc-card">
           {/* ── FRONT ── */}
           <div className="fc-front">

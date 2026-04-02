@@ -107,18 +107,10 @@ function SettingsView() {
 function RegistrationCard({ user, initials, hideEdit }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user.name);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setTilt({ x: -(y / (rect.height / 2)) * 10, y: (x / (rect.width / 2)) * 10 });
-  };
 
   return (
-    <div className="drc-wrap" onMouseMove={handleMove} onMouseLeave={() => setTilt({ x: 0, y: 0 })}>
-      <div className="drc-card" style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}>
+    <div className="drc-wrap">
+      <div className="drc-card">
         <div className="drc-holo" />
         <div className="drc-header">
           <div className="drc-seal"><img src="/logo.png" alt="" width="32" height="32" /></div>

@@ -32,19 +32,6 @@ const todayStr = () =>
 function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
   const [twText, setTwText] = useState('');
   const twRef = useRef(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setTilt({
-      x: -(y / (rect.height / 2)) * 12, // Tilt amount up to 12deg
-      y: (x / (rect.width / 2)) * 12
-    });
-  };
-
-  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   /* typewriter for examId */
   useRef(() => {
@@ -72,21 +59,8 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
   }
 
   return (
-    <div 
-      className={`rc-wrap ${visible ? 'rc-wrap--visible' : ''}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="rc-scene" style={{ 
-        transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-        transition: tilt.x === 0 ? 'transform 0.5s ease' : 'none'
-      }}>
-        {/* Dynamic Sheen overlay */}
-        <div className="rc-sheen" style={{
-          transform: `translate(${-tilt.y * 10}px, ${-tilt.x * 10}px)`,
-          opacity: tilt.x === 0 ? 0 : 0.15
-        }} />
-
+    <div className={`rc-wrap ${visible ? 'rc-wrap--visible' : ''}`}>
+      <div className="rc-scene">
         <div className="rc-card">
 
           {/* ── FRONT of card ── */}

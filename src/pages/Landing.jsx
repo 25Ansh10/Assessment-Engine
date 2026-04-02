@@ -13,8 +13,6 @@ export default function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [activeTab, setActiveTab] = useState(0);
   const statsRef = useRef(null);
   const hasAnimated = useRef(false);
   const heroRef = useRef(null);
@@ -83,63 +81,48 @@ export default function Landing() {
     return () => window.removeEventListener('keydown', fn);
   }, []);
 
-  // Mouse tracking for Hero parallax
-  useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const onMove = (e) => {
-      const rect = hero.getBoundingClientRect();
-      setMousePos({
-        x: ((e.clientX - rect.left) / rect.width - 0.5) * 2,
-        y: ((e.clientY - rect.top) / rect.height - 0.5) * 2,
-      });
-    };
-    hero.addEventListener('mousemove', onMove);
-    return () => hero.removeEventListener('mousemove', onMove);
-  }, []);
-
   const handleCookie = (accept) => {
     localStorage.setItem('arithexam_cookie', accept ? 'accepted' : 'declined');
     setShowCookie(false);
   };
 
   const features = [
-    { icon: '🛡️', title: 'AI Proctoring', desc: 'Face detection, tab monitoring and fullscreen enforcement — live in the browser, no plugin needed.', color: '#1a4fff', img: aiProctoring },
-    { icon: '⚡', title: 'Instant Access', desc: 'Join any assessment instantly using a 6-character code shared by your institution. No complex setup.', color: '#00b96b', img: null },
-    { icon: '📊', title: 'Deep Analytics', desc: 'Per-topic scores, class rankings and performance trends — delivered the moment the exam ends.', color: '#7c3aed', img: analyticsDashboard },
-    { icon: '🌐', title: 'Any Device', desc: 'Works perfectly on desktop, tablet and mobile. Zero compromise on exam experience.', color: '#f59e0b', img: null },
+    { icon: '🛡️', title: 'Smart Proctoring', desc: 'Secure environment that ensures fair play using advanced AI face detection and tab monitoring.', color: '#1a4fff', img: aiProctoring },
+    { icon: '⚡', title: 'Instant Launch', desc: 'Enter your exam code and dive straight into your assessment. No wait times, no friction.', color: '#00b96b', img: null },
+    { icon: '📈', title: 'Growth Tracking', desc: 'Detailed performance breakdown and personalized insights to help you improve every day.', color: '#7c3aed', img: analyticsDashboard },
+    { icon: '📱', title: 'Device Agnostic', desc: 'Take your exam on a smartphone, tablet, or laptop. Consistent performance everywhere.', color: '#f59e0b', img: null },
   ];
 
   const featureShowcase = [
     {
-      tag: 'AI Proctoring',
-      title: 'Real-time AI monitoring that students barely notice',
-      desc: 'Our computer vision engine detects face movements, tracks eye gaze, monitors tab switches, and enforces fullscreen — all running locally in the browser with zero latency.',
+      tag: 'Secure Testing',
+      title: 'A Fair Playing Field for Every Student',
+      desc: 'Our AI proctoring identifies distractions and ensures integrity without being intrusive, so you can focus entirely on your performance.',
       img: aiProctoring,
-      badges: ['Face Detection', 'Tab Monitoring', 'Fullscreen Lock', 'Browser-Based'],
+      badges: ['Face Detection', 'Integrity First', 'Auto-Lock', 'Zero Latency'],
       accent: '#1a4fff',
     },
     {
-      tag: 'Enterprise Security',
-      title: 'Reliable Campus-Grade Security',
-      desc: 'Fully encrypted exam delivery with advanced AI that automatically detects 99.2% of cheating attempts.',
-      img: securityFeatures,
-      badges: ['E2E Encryption', 'Real-time Monitoring', 'Fraud Detection', 'Data Privacy'],
+      tag: 'Personalized Insights',
+      title: 'Don\'t Just Test, Grow!',
+      desc: 'Get an instant, deep-dive report of your strengths and weaknesses the moment you finish. Track your progress across multiple sessions.',
+      img: analyticsDashboard,
+      badges: ['Instant Score', 'Topic Analysis', 'Progress Chart', 'Skill Gaps'],
       accent: '#00b96b',
     },
   ];
 
   const steps = [
-    { n: '1', icon: '📝', title: 'Quick Registration', desc: 'Securely register your candidate profile with personal details and photo identification.' },
-    { n: '2', icon: '👁️', title: 'Identity Verification', desc: 'ArithGuard biometric monitoring verifies your face and surroundings in real-time during the exam.' },
-    { n: '3', icon: '🧠', title: 'AI-Powered Exam', desc: 'Ollama-driven dynamic questions adapt to your responses for a truly intelligent assessment.' },
-    { n: '4', icon: '🎙️', title: 'Smart Result Scaling', desc: 'Faster Whisper transcribes your viva answers instantly for comprehensive, expert grading performance.' },
+    { n: '1', icon: '📝', title: 'Quick Join', desc: 'Securely create your candidate profile or enter your unique exam code to begin.' },
+    { n: '2', icon: '👁️', title: 'Smart Verify', desc: 'A quick biometric check ensures your identity and secures your testing session.' },
+    { n: '3', icon: '🧠', title: 'Take the Exam', desc: 'Experience a modern, distraction-free assessment interface designed for focus.' },
+    { n: '4', icon: '🏆', title: 'Check Progress', desc: 'Instantly view your results and comprehensive feedback to track your learning journey.' },
   ];
 
   const testimonials = [
-    { name: 'Dr. Priya Sharma', role: 'Dean of Academics, MIT Pune', text: 'ArithExam changed how we run semester exams. The AI proctoring is accurate and our faculty love the analytics dashboard.', av: 'PS', stars: 5 },
-    { name: 'Rahul Verma', role: 'HR Director, TCS', text: 'We ran 3,000 candidate assessments in a single day without a single issue. Truly enterprise-grade reliability.', av: 'RV', stars: 5 },
-    { name: 'Sneha Kulkarni', role: 'Training Head, Infosys', text: 'Our candidates actually enjoy the exam experience. That\'s something we never expected to hear about an exam platform.', av: 'SK', stars: 5 },
+    { name: 'Arjun Mehta', role: 'Final Year Student, IIT Delhi', text: 'ArithExam made my entrance prep so much smoother. The instant feedback on which topics I missed is a game changer.', av: 'AM', stars: 5 },
+    { name: 'Riya Kulkarni', role: 'Graduate Applicant', text: 'I love how I can take my assessments on my iPad without any lag. The interface is clean and helps me stay focused.', av: 'RK', stars: 5 },
+    { name: 'Sameer Sheikh', role: 'Professional Certification Candidate', text: 'The most stress-free exam experience I\'ve had. No complex setup, just enter the code and start.', av: 'SS', stars: 5 },
   ];
 
   return (
@@ -168,10 +151,10 @@ export default function Landing() {
         </nav>
         <div className="landing-menu__actions">
           <Link to="/login" onClick={() => setMenuOpen(false)}>
-            <button className="landing-btn-outline" style={{ width: '100%' }}>Candidate Login</button>
+            <button className="landing-btn-outline" style={{ width: '100%' }}>Login to Portal</button>
           </Link>
           <Link to="/register" onClick={() => setMenuOpen(false)}>
-            <button className="landing-btn-primary" style={{ width: '100%' }}>Get Started Free →</button>
+            <button className="landing-btn-primary" style={{ width: '100%' }}>Join for Free →</button>
           </Link>
         </div>
       </div>
@@ -199,26 +182,26 @@ export default function Landing() {
             </h1>
 
             <p className="landing-hero__desc">
-              Assess Smarter, Perform Better. ArithExam is the {" "}
-              next-generation AI assessment engine built for excellence.
+              Assess Smarter, Perform Better. ArithExam is your personalized 
+              assessment engine, built to help you track progress and excel.
             </p>
 
             <div className="landing-hero__actions">
               <Link to="/register">
                 <button className="landing-btn-primary magnetic-btn">
-                  Sign Up for Free
+                  Start Your Journey
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
               </Link>
               <Link to="/login">
-                <button className="landing-btn-outline magnetic-btn">Candidate Login</button>
+                <button className="landing-btn-outline magnetic-btn">Login to Portal</button>
               </Link>
             </div>
 
             <div className="landing-hero__checks">
-              <span className="landing-check">AI Proctoring</span>
-              <span className="landing-check">Instant Results</span>
-              <span className="landing-check">Any Device</span>
+              <span className="landing-check">Secure Testing</span>
+              <span className="landing-check">In-depth Analysis</span>
+              <span className="landing-check">Track Progress</span>
               <span className="landing-check">Free to Start</span>
             </div>
 
@@ -237,10 +220,7 @@ export default function Landing() {
 
           {/* ── RIGHT — Hero Image with Decorative Elements ── */}
           <div className="landing-hero__right">
-            <div className="landing-hero__img-wrap" style={{
-              transform: `translate(${mousePos.x * 6}px, ${mousePos.y * 4}px)`,
-              transition: 'transform 0.3s ease-out'
-            }}>
+            <div className="landing-hero__img-wrap">
               {/* Green curved background shape */}
               <div className="landing-hero__shape" />
 
@@ -256,10 +236,7 @@ export default function Landing() {
               </div>
 
               {/* Floating stat cards */}
-              <div className="landing-float landing-float--1" style={{
-                transform: `translate(${mousePos.x * -10}px, ${mousePos.y * -7}px)`,
-                transition: 'transform 0.4s ease-out'
-              }}>
+              <div className="landing-float landing-float--1">
                 <div className="landing-float__icon">🎯</div>
                 <div>
                   <div className="landing-float__val">99.2%</div>
@@ -267,10 +244,7 @@ export default function Landing() {
                 </div>
               </div>
 
-              <div className="landing-float landing-float--2" style={{
-                transform: `translate(${mousePos.x * 8}px, ${mousePos.y * -5}px)`,
-                transition: 'transform 0.5s ease-out'
-              }}>
+              <div className="landing-float landing-float--2">
                 <div className="landing-float__icon">👥</div>
                 <div>
                   <div className="landing-float__val">2,847</div>
@@ -278,10 +252,7 @@ export default function Landing() {
                 </div>
               </div>
 
-              <div className="landing-float landing-float--3" style={{
-                transform: `translate(${mousePos.x * -6}px, ${mousePos.y * 8}px)`,
-                transition: 'transform 0.4s ease-out'
-              }}>
+              <div className="landing-float landing-float--3">
                 <div className="landing-float__icon">⚡</div>
                 <div>
                   <div className="landing-float__val">Instant</div>
@@ -289,10 +260,7 @@ export default function Landing() {
                 </div>
               </div>
 
-              <div className="landing-rating" style={{
-                transform: `translate(${mousePos.x * 5}px, ${mousePos.y * 6}px)`,
-                transition: 'transform 0.5s ease-out'
-              }}>
+              <div className="landing-rating">
                 <div className="landing-rating__stars">★★★★★</div>
                 <div className="landing-rating__score">4.8</div>
                 <div className="landing-rating__lbl">Google Reviews</div>
@@ -344,8 +312,8 @@ export default function Landing() {
         <div className="landing-inner">
           <div className="landing-section-head reveal-up">
             <span className="landing-tag">Why ArithExam</span>
-            <h2 className="landing-section-title">Everything your exam needs,<br />nothing it doesn't</h2>
-            <p className="landing-section-desc">Purpose-built for modern assessment — no legacy baggage, no confusing UX.</p>
+            <h2 className="landing-section-title">Everything you need to<br />succeed, nothing you don't</h2>
+            <p className="landing-section-desc">Purpose-built for modern students — no distractions, just focus.</p>
           </div>
           <div className="landing-features__grid">
             {features.map((f, i) => (
@@ -464,24 +432,24 @@ export default function Landing() {
       <section className="landing-cta reveal-scale">
         <div className="landing-inner landing-cta__inner">
           <div className="landing-cta__left">
-            <h2 className="landing-cta__title">Ready to conduct your<br />first smart exam?</h2>
-            <p className="landing-cta__desc">Join 500+ institutions. Free plan available. No credit card needed.</p>
+            <h2 className="landing-cta__title">Ready to ace your<br />next big assessment?</h2>
+            <p className="landing-cta__desc">Join 50,000+ students. Join an exam or practice for free today.</p>
             <div className="landing-cta__actions">
-              <Link to="/register"><button className="landing-btn-primary landing-btn-primary--lg magnetic-btn">Create Free Account</button></Link>
+              <Link to="/register"><button className="landing-btn-primary landing-btn-primary--lg magnetic-btn">Get Started Now</button></Link>
               <Link to="/login"><button className="landing-btn-outline magnetic-btn">Candidate Login</button></Link>
             </div>
             <div className="landing-cta__trust">
-              <span>✓ Free forever plan</span>
-              <span>✓ No credit card</span>
-              <span>✓ Setup in 2 minutes</span>
+              <span>✓ Free for Students</span>
+              <span>✓ Instant Progress Tracker</span>
+              <span>✓ Mobile Ready</span>
             </div>
           </div>
           <div className="landing-cta__right">
             <div className="landing-cta__card">
               <div className="landing-cta__card-icon">🚀</div>
               <div>
-                <div className="landing-cta__card-stat">10,000+</div>
-                <div className="landing-cta__card-lbl">Exams delivered this month</div>
+                <div className="landing-cta__card-stat">50,000+</div>
+                <div className="landing-cta__card-lbl">Active students this month</div>
               </div>
             </div>
             <div className="landing-cta__card landing-cta__card--2">
@@ -518,7 +486,7 @@ export default function Landing() {
             </div>
             <div className="landing-footer__col">
               <div className="landing-footer__col-head">Platform</div>
-              <Link to="/login">Candidate Login</Link>
+              <Link to="/login">Student Portal</Link>
               <Link to="/register">Create Account</Link>
               <a href="#how-it-works">How it works</a>
             </div>
