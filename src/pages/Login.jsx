@@ -33,10 +33,9 @@ const TODAY = new Date().toLocaleDateString('en-IN', {
 function Field({ id, label, type = 'text', value, onChange, onBlur, ok, err, autoComplete, children }) {
   return (
     <div className={`lg-field ${ok ? 'lg-field--ok' : err ? 'lg-field--err' : ''}`}>
-      <input id={id} type={type} placeholder=" " value={value}
+      <input id={id} type={type} placeholder={label} value={value}
         onChange={e => onChange?.(e.target.value)}
         onBlur={onBlur} autoComplete={autoComplete}/>
-      <label htmlFor={id}>{label}</label>
       {ok && (
         <span className="lg-field__check">
           <svg viewBox="0 0 20 20" fill="none">
@@ -60,29 +59,10 @@ function Field({ id, label, type = 'text', value, onChange, onBlur, ok, err, aut
 function AccessCard({ email, emailOk }) {
   const initials = getInitials(email);
   const masked   = maskEmail(email);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setTilt({ x: -(y / (rect.height / 2)) * 10, y: (x / (rect.width / 2)) * 10 });
-  };
-
-  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   return (
-    <div className="lc-wrap" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-      <div className="lc-scene" style={{ 
-        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-        transition: tilt.x === 0 ? 'transform 0.5s ease' : 'none'
-      }}>
-        {/* Sheen overlay */}
-        <div className="lc-sheen" style={{
-          transform: `translate(${-tilt.y * 8}px, ${-tilt.x * 8}px)`,
-          opacity: tilt.x === 0 ? 0 : 0.12
-        }} />
-
+    <div className="lc-wrap">
+      <div className="lc-scene">
         <div className="lc-card">
           {/* ── FRONT ── */}
           <div className="lc-front">
@@ -90,12 +70,13 @@ function AccessCard({ email, emailOk }) {
             <div className="lc-holo"/>
             {/* ... rest of card ... */}
             <div className="lc-header">
-              <div className="lc-seal"><img src="/logo.png" alt="" width="36" height="36" /></div>
+              <div className="lc-seal"><img src="/logo.png" alt="" width="50" height="50" /></div>
               <div className="lc-header__text">
                 <p className="lc-header__inst">ArithExam Assessment Board</p>
                 <h3 className="lc-header__title">ACCESS CARD</h3>
-                <p className="lc-header__session">Session 2024–25</p>
+                <div className="lc-header__chip">VIRTUAL ACCESS</div>
               </div>
+              <div className="lc-header__icon">🔒</div>
             </div>
             <div className="lc-divider"/>
             <div className="lc-body">
@@ -110,7 +91,6 @@ function AccessCard({ email, emailOk }) {
               </div>
             </div>
             <div className="lc-footer">
-              <div className="lc-footer__sig"><div className="lc-footer__line"/><p className="lc-footer__lbl">Controller</p></div>
               <span className={`lc-badge ${emailOk ? 'lc-badge--valid' : 'lc-badge--pending'}`}>{emailOk ? '✓ VERIFIED' : 'PENDING'}</span>
             </div>
           </div>
@@ -172,7 +152,7 @@ export default function Login() {
   const [welcomed, setWelcomed] = useState(false);
 
   const emailOk = validateEmail(email);
-  const passOk  = password.length >= 6;
+  const passOk  = password.length >= 8;
 
   /* load remembered email */
   useEffect(() => {
@@ -215,10 +195,10 @@ export default function Login() {
 
           {/* logo */}
           <div className="lg-logo">
-            <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
+            <img src="/logo.png" alt="ArithExam" width="48" height="48" style={{ borderRadius: '12px' }} />
             <div>
               <span className="lg-logo__name">ArithExam</span>
-              <span className="lg-logo__sub">Engineered for Precision. Deciphering Potential.</span>
+              <span className="lg-logo__sub">Assess Smarter, Perform Better.</span>
             </div>
           </div>
 
@@ -269,7 +249,7 @@ export default function Login() {
               </button>
             </Field>
             {touched.p && password && !passOk &&
-              <p className="lg-hint lg-hint--e">Minimum 6 characters required</p>}
+              <p className="lg-hint lg-hint--e">Minimum 8 characters required (strong password recommended)</p>}
 
             {/* remember + forgot */}
             <div className="lg-util-row">
@@ -301,34 +281,6 @@ export default function Login() {
             <span className="lg-or__line"/>
           </div>
 
-          {/* security trust strip */}
-          <div className="lg-trust">
-            <div className="lg-trust__item">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <rect x="3" y="11" width="18" height="11" rx="2"/>
-                <path d="M7 11V7a5 5 0 0110 0v4"/>
-              </svg>
-              <span>256-bit SSL</span>
-            </div>
-            <div className="lg-trust__sep"/>
-            <div className="lg-trust__item">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-              <span>Secure Session</span>
-            </div>
-            <div className="lg-trust__sep"/>
-            <div className="lg-trust__item">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-              <span>Verified Platform</span>
-            </div>
-          </div>
 
           <p className="lg-footer">
             Don't have an account?&nbsp;

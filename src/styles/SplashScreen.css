@@ -1,423 +1,256 @@
-/* ═══════════════════════════════════════════════════════
-   SPLASH SCREEN V4 — CINEMATIC STORY
-   ═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   ARITH-EXAM SPLASH SCREEN V9.0 — SplashScreen.css
+   Silent animation, infinity ribbon BEHIND compass legs
+   ═══════════════════════════════════════════════════════════════ */
 
-.sp {
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&display=swap');
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+    --sp-teal: #1a8c82;
+    --sp-teal-dark: #144541;
+    --sp-teal-light: #44b5ad;
+    --sp-gold: #c9a84c;
+    --sp-gold-light: #e0c06a;
+    --sp-gold-dark: #8a6d2c;
+    --sp-bg: #f8fafb;
+    --sp-text-muted: #5a7a78;
+    --sp-text-faint: #94a3b8;
+}
+
+/* ── Wrapper ────────────────────────────────────────────────── */
+.sp-container {
     position: fixed;
     inset: 0;
-    z-index: 10000;
-    background: #ffffff;
-    color: #111827;
+    background-color: var(--sp-bg);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    z-index: 999999;
     overflow: hidden;
-    font-family: 'Inter', sans-serif;
-}
-
-.sp__canvas {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    opacity: 0.6;
-}
-
-.sp__overlay {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, transparent 0%, rgba(243, 244, 246, 0.4) 100%);
-    z-index: 1;
-    pointer-events: none;
-}
-
-.sp__content {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    max-width: 800px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 60px 40px;
-}
-
-/* ─── Header ─── */
-.sp__header {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.sp__logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.sp__logo-box {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #1a4fff, #00b96b);
-    color: #fff;
-    font-size: 1.2rem;
-    font-weight: 900;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(26, 79, 255, 0.2);
-}
-
-.sp__logo-text {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-}
-
-.sp__logo-text .accent {
-    color: #1a4fff;
-}
-
-/* ─── Stage & Scenes ─── */
-.sp__stage {
-    position: relative;
-    width: 100%;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sp__scene {
-    position: absolute;
-    opacity: 0;
-    transform: scale(0.9) translateY(20px);
-    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    pointer-events: none;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sp__scene.active {
+    font-family: 'Montserrat', 'Segoe UI', sans-serif;
     opacity: 1;
-    transform: scale(1) translateY(0);
-    pointer-events: auto;
+    transition: opacity 0.9s ease;
 }
 
-.sp__scene.done {
+.sp-container.sp-fade-out {
     opacity: 0;
-    transform: scale(1.1) translateY(-30px);
 }
 
-/* ─── SCENE 1: LAPTOP ─── */
-.sp__laptop-3d {
-    perspective: 1000px;
-    width: 320px;
-}
-
-.sp__laptop-lid {
-    width: 100%;
-    height: 200px;
-    background: #f9fafb;
-    border: 3px solid #e5e7eb;
-    border-radius: 12px 12px 0 0;
-    position: relative;
-    transform-origin: bottom;
-    animation: lidOpen 1s ease forwards;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-    overflow: hidden;
-}
-
-@keyframes lidOpen {
-    from { transform: rotateX(-90deg); }
-    to { transform: rotateX(0deg); }
-}
-
-.sp__laptop-base {
-    width: 360px;
-    height: 12px;
-    background: #e5e7eb;
-    border-radius: 0 0 12px 12px;
-    margin-left: -20px;
-}
-
-.sp__portal-mock {
-    padding: 12px;
-    height: 100%;
-    background: #fff;
-}
-
-.sp__portal-head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #f3f4f6;
-    padding-bottom: 8px;
-}
-
-.win-dots {
-    display: flex;
-    gap: 4px;
-}
-
-.win-dots span {
-    width: 6px; height: 6px; border-radius: 50%;
-}
-
-.win-dots span:nth-child(1) { background: #ff5f57; }
-.win-dots span:nth-child(2) { background: #febc2e; }
-.win-dots span:nth-child(3) { background: #28c840; }
-
-.sp__portal-head span {
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #9ca3af;
-    text-transform: uppercase;
-}
-
-.sp__portal-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin: 20px 0;
-}
-
-.dot-pulse {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #1a4fff;
-    animation: dotPulse 1s infinite alternate;
-}
-
-@keyframes dotPulse {
-    from { transform: scale(1); opacity: 0.5; }
-    to { transform: scale(1.5); opacity: 1; }
-}
-
-.sp__portal-loading span {
-    font-size: 0.7rem;
-    color: #1a4fff;
-    font-weight: 600;
-}
-
-.sp__portal-fields {
-    padding: 0 20px;
-}
-
-.sp__portal-fields .fld {
-    height: 8px;
-    background: #f3f4f6;
-    margin-bottom: 8px;
-    border-radius: 4px;
-}
-
-.sp__portal-fields .btn {
-    height: 24px;
-    background: #111827;
-    border-radius: 6px;
-    color: #fff;
-    font-size: 0.6rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    margin-top: 10px;
-}
-
-/* ─── SCENE 2: SCAN ─── */
-.sp__scan-container {
-    width: 300px;
-}
-
-.sp__scan-frame {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 24px;
-    overflow: hidden;
-    border: 2px solid #e5e7eb;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-}
-
-.sp__student-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.sp__scan-overlay {
+/* ── Engineering grid background ──────────────────────────── */
+.sp-grid-bg {
     position: absolute;
     inset: 0;
-    background: rgba(26, 79, 255, 0.1);
+    background-image: radial-gradient(#1a5b54 0.5px, transparent 0.5px);
+    background-size: 28px 28px;
+    opacity: 0.03;
+    pointer-events: none;
 }
 
-.sp__scan-line {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: #1a4fff;
-    box-shadow: 0 0 15px #1a4fff;
-    animation: scanMove 2s ease-in-out infinite;
+/* ── SVG Logo ───────────────────────────────────────────────── */
+.sp-logo-svg {
+    width: 260px;
+    height: 300px;
+    overflow: visible;
 }
 
-@keyframes scanMove {
-    0%, 100% { top: 0%; }
-    50% { top: 100%; }
+/* ── Compass Legs ───────────────────────────────────────────── */
+.sp-leg-group {
+    opacity: 0;
+    transition: opacity 0.1s ease;
 }
 
-.sp__hud-corners span {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #1a4fff;
+.sp-leg-group.sp-visible {
+    opacity: 1;
 }
 
-.sp__hud-corners span:nth-child(1) { top: 20px; left: 20px; border-right: none; border-bottom: none; }
-.sp__hud-corners span:nth-child(2) { top: 20px; right: 20px; border-left: none; border-bottom: none; }
-.sp__hud-corners span:nth-child(3) { bottom: 20px; left: 20px; border-right: none; border-top: none; }
-.sp__hud-corners span:nth-child(4) { bottom: 20px; right: 20px; border-left: none; border-top: none; }
-
-.sp__hud-data {
-    position: absolute;
-    bottom: 20px;
-    left: 30px;
-    font-family: monospace;
-    color: #1a4fff;
-    font-size: 0.6rem;
+.sp-leg-right-group {
+    transition-delay: 0.05s;
 }
 
-.sp__scan-bottom {
-    margin-top: 20px;
-    width: 100%;
+/* Filled polygon legs — clip-reveal from apex downward */
+.sp-leg-fill {
+    opacity: 0;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+    transition:
+        opacity 0.2s ease,
+        clip-path 1.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.sp__scan-progress-bar {
-    width: 100%;
-    height: 4px;
-    background: #f3f4f6;
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 8px;
+.sp-leg-fill.sp-drawn {
+    opacity: 1;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
-.sp__scan-progress-bar .fill {
-    height: 100%;
-    background: #1a4fff;
-    transition: width 0.1s linear;
+/* Inner edge shadow lines */
+.sp-leg-line {
+    stroke-dasharray: 320;
+    stroke-dashoffset: 320;
+    transition: stroke-dashoffset 1.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.sp__scan-status {
-    font-size: 0.65rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: #1a4fff;
+.sp-leg-right-line {
+    stroke-dasharray: 320;
+    stroke-dashoffset: 320;
+    transition: stroke-dashoffset 1.3s cubic-bezier(0.4, 0, 0.2, 1) 0.08s;
+}
+
+.sp-leg-line.sp-drawn,
+.sp-leg-right-line.sp-drawn {
+    stroke-dashoffset: 0;
+}
+
+/* Adjustment blocks */
+.sp-adj-block {
+    opacity: 0;
+    transition: opacity 0.5s ease 1.0s;
+}
+
+.sp-adj-block.sp-visible {
+    opacity: 1;
+}
+
+/* Screw tick marks */
+.sp-screw-tick {
+    opacity: 0;
+    transition: opacity 0.5s ease 1.1s;
+}
+
+.sp-screw-tick.sp-visible {
+    opacity: 0.7;
+}
+
+/* Arrow tips */
+.sp-arrow-tip {
+    opacity: 0;
+    transition: opacity 0.4s ease 1.2s;
+}
+
+.sp-arrow-tip.sp-visible {
+    opacity: 1;
+}
+
+/* ── Joint / Hinge at apex ──────────────────────────────────── */
+.sp-joint-outer {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.05s;
+}
+
+.sp-joint-inner {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.1s;
+}
+
+.sp-joint-screw {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.8s;
+}
+
+.sp-joint-outer.sp-visible,
+.sp-joint-inner.sp-visible,
+.sp-joint-screw.sp-visible {
+    opacity: 1;
+}
+
+/* ── Infinity ribbon (single layer, behind legs) ───────────── */
+.sp-infinity {
+    stroke-dasharray: 850;
+    stroke-dashoffset: 850;
+    transition: stroke-dashoffset 1.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sp-infinity.sp-drawn {
+    stroke-dashoffset: 0;
+}
+
+/* ── Text block ─────────────────────────────────────────────── */
+.sp-text-block {
+    margin-top: 28px;
     text-align: center;
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+        opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+        transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-/* ─── SCENE 3: VERIFIED ─── */
-.sp__verified-box {
-    text-align: center;
+.sp-text-block.sp-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.sp__verified-check {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 30px;
-}
-
-.check-circle {
-    stroke: #00b96b;
-    stroke-width: 2;
-    stroke-dasharray: 166;
-    stroke-dashoffset: 166;
-    animation: circleScale 0.6s ease forwards;
-}
-
-.check-mark {
-    stroke: #00b96b;
-    stroke-width: 4;
-    stroke-dasharray: 48;
-    stroke-dashoffset: 48;
-    animation: checkDraw 0.3s 0.6s ease forwards;
-}
-
-@keyframes circleScale {
-    to { stroke-dashoffset: 0; }
-}
-
-@keyframes checkDraw {
-    to { stroke-dashoffset: 0; }
-}
-
-.sp__final-text {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #111827, #1a4fff);
+/* Wordmark heading */
+.sp-wordmark {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 3.8rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    
+    /* Vibrant Teal-to-Gold Gradient */
+    background: linear-gradient(135deg, #1a8c82 0%, #0D9488 45%, #D4A017 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 10px;
+    
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
 }
 
-.cursor {
-    animation: blink 0.8s infinite;
+.sp-text-block.sp-visible .sp-wordmark {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-@keyframes blink {
-    50% { opacity: 0; }
+.sp-wordmark-accent {
+    -webkit-text-fill-color: inherit; 
+    color: inherit;
 }
 
-/* ─── MASTER PROGRESS ─── */
-.sp__master-loading {
-    width: 300px;
-    margin-bottom: 40px;
+/* Gold divider bar */
+.sp-divider {
+    height: 2px;
+    width: 60px;
+    background: linear-gradient(90deg, 
+        var(--sp-gold-dark), 
+        var(--sp-gold-light), 
+        var(--sp-gold-dark)
+    );
+    margin: 18px auto 12px;
+    border-radius: var(--radius-pill);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 1s ease 0.5s;
+    opacity: 0.8;
 }
 
-.sp__master-fill {
-    height: 4px;
-    background: linear-gradient(90deg, #1a4fff, #00b96b);
-    border-radius: 2px;
-    transition: width 0.3s ease;
+.sp-divider.sp-visible {
+    transform: scaleX(1);
 }
 
-.sp__master-info {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-size: 0.7rem;
+/* Tagline */
+.sp-tagline {
+    margin: 0;
+    color: var(--sp-text-muted);
+    font-size: 0.78rem;
     font-weight: 700;
-    color: #9ca3af;
+    letter-spacing: 5px;
     text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.8s ease 0.8s;
 }
 
-/* ─── Footer ─── */
-.sp__footer {
-    width: 100%;
-    border-top: 1px solid #f3f4f6;
-    padding-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: #d1d5db;
-    letter-spacing: 1px;
+.sp-tagline.sp-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* ─── Cinematic Exit ─── */
-.sp--exit {
-    animation: spExit 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
-}
-
-@keyframes spExit {
-    to { transform: translateY(-100%); }
+/* ── Fallback Animations if needed ── */
+@keyframes spFadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }

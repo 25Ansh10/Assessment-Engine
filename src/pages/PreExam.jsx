@@ -468,7 +468,7 @@ export default function PreExam({ onBegin }) {
         <div className="pe-topbar__brand">
           <div className="pe-topbar__mark">AE</div>
           <span className="pe-topbar__name">ArithExam</span>
-          <span className="pe-topbar__tag">Engineered for Precision. Deciphering Potential.</span>
+          <span className="pe-topbar__tag">Assess Smarter, Perform Better.</span>
         </div>
         <div className="pe-topbar__steps">
           <div className={`pe-step ${page >= 1 ? "pe-step--done" : ""} ${page === 1 ? "pe-step--active" : ""}`}>

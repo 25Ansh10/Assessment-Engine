@@ -1,0 +1,43 @@
+export const mockResults = {
+  examId: 'EX001',
+  examTitle: 'Advanced Mathematics',
+  candidateName: 'Demo User',
+  totalScore: 82,
+  totalMarks: 100,
+  percentage: 82,
+  passed: true,
+  passingPercentage: 40,
+  totalQuestions: 10,
+  correctAnswers: 8,
+  incorrectAnswers: 1,
+  unattempted: 1,
+  timeTaken: '47 min 23 sec',
+  rank: 6,
+  totalCandidates: 42,
+  submittedAt: '2026-03-14T10:47:23Z',
+  topicBreakdown: [
+    { topic: 'Calculus', correct: 3, total: 4, percentage: 75, color: '#0066FF' },
+    { topic: 'Algebra', correct: 3, total: 3, percentage: 100, color: '#00C9A7' },
+    { topic: 'Statistics', correct: 1, total: 2, percentage: 50, color: '#FF6B6B' },
+    { topic: 'Trigonometry', correct: 1, total: 1, percentage: 100, color: '#FFB340' },
+  ],
+  levelStats: [
+    { level: 'Easy', solved: 4, unsolved: 0, total: 4 },
+    { level: 'Medium', solved: 3, unsolved: 1, total: 4 },
+    { level: 'Hard', solved: 1, unsolved: 1, total: 2 },
+  ],
+  answers: [
+    { questionId: 'Q1', selected: 'A', correct: 'A', isCorrect: true },
+    { questionId: 'Q2', selected: 'B', correct: 'B', isCorrect: true },
+    { questionId: 'Q3', selected: 'B', correct: 'B', isCorrect: true },
+    { questionId: 'Q4', selected: 'A', correct: 'C', isCorrect: false },
+    { questionId: 'Q5', selected: 'A', correct: 'A', isCorrect: true },
+    { questionId: 'Q6', selected: 'B', correct: 'B', isCorrect: true },
+    { questionId: 'Q7', selected: 'B', correct: 'B', isCorrect: true },
+    { questionId: 'Q8', selected: 'B', correct: 'B', isCorrect: true },
+    { questionId: 'Q9', selected: 'A', correct: 'A', isCorrect: true },
+    { questionId: 'Q10', selected: null, correct: 'A', isCorrect: false },
+  ],
+};
+
+export default mockResults;

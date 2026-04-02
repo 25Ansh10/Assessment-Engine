@@ -24,9 +24,9 @@ const maskEmail = (email) => {
 
 const getStrength = p => {
   if (!p) return null;
-  if (p.length < 4) return { label: 'Weak',   pct: '20%',  color: '#ef4444' };
-  if (p.length < 6) return { label: 'Fair',   pct: '45%',  color: '#f59e0b' };
-  if (p.length < 8) return { label: 'Good',   pct: '72%',  color: '#10b981' };
+  if (p.length < 5) return { label: 'Weak',   pct: '20%',  color: '#ef4444' };
+  if (p.length < 8) return { label: 'Fair',   pct: '45%',  color: '#f59e0b' };
+  if (p.length < 10) return { label: 'Good',   pct: '72%',  color: '#10b981' };
   return               { label: 'Strong', pct: '100%', color: '#0D9488' };
 };
 
@@ -36,10 +36,9 @@ const getStrength = p => {
 function Field({ id, label, type = 'text', value, onChange, onBlur, ok, err, autoComplete, children }) {
   return (
     <div className={`fp-field ${ok ? 'fp-field--ok' : err ? 'fp-field--err' : ''}`}>
-      <input id={id} type={type} placeholder=" " value={value}
+      <input id={id} type={type} placeholder={label} value={value}
         onChange={e => onChange?.(e.target.value)}
         onBlur={onBlur} autoComplete={autoComplete}/>
-      <label htmlFor={id}>{label}</label>
       {ok && (
         <span className="fp-field__check">
           <svg viewBox="0 0 20 20" fill="none">
@@ -95,16 +94,6 @@ function OtpInput({ value, onChange, disabled }) {
 function RecoveryCard({ step, email, emailOk, resetDone }) {
   const initials = getInitials(email);
   const masked   = maskEmail(email);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setTilt({ x: -(y / (rect.height / 2)) * 10, y: (x / (rect.width / 2)) * 10 });
-  };
-
-  const handleMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   const statusLabel = step === 0 ? 'IDENTIFY' :
                       step === 1 ? 'VERIFY' :
@@ -112,17 +101,8 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
   const statusColor = step === 3 ? '#15803d' : '#0D9488';
 
   return (
-    <div className="fc-wrap" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-      <div className="fc-scene" style={{ 
-        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-        transition: tilt.x === 0 ? 'transform 0.5s ease' : 'none'
-      }}>
-        {/* Sheen overlay */}
-        <div className="fc-sheen" style={{
-          transform: `translate(${-tilt.y * 8}px, ${-tilt.x * 8}px)`,
-          opacity: tilt.x === 0 ? 0 : 0.12
-        }} />
-
+    <div className="fc-wrap">
+      <div className="fc-scene">
         <div className="fc-card">
           {/* ── FRONT ── */}
           <div className="fc-front">
@@ -134,7 +114,7 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
               <div className="fc-header__text">
                 <p className="fc-header__inst">ArithExam Assessment Board</p>
                 <h3 className="fc-header__title">RECOVERY CARD</h3>
-                <p className="fc-header__session">Secure Password Reset</p>
+                <div className="fc-header__chip">SECURE RECOVERY</div>
               </div>
               <div className="fc-role-badge" style={{ background: statusColor }}>
                 {statusLabel}
@@ -156,7 +136,6 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
               </div>
             </div>
             <div className="fc-footer">
-              <div className="fc-footer__sig"><div className="fc-footer__line"/><p className="fc-footer__lbl">Security Officer</p></div>
               <span className={`fc-badge ${resetDone ? 'fc-badge--valid' : step > 0 ? 'fc-badge--progress' : 'fc-badge--pending'}`}>{resetDone ? '✓ RECOVERED' : step > 0 ? 'IN PROGRESS' : 'PENDING'}</span>
             </div>
           </div>
@@ -253,7 +232,7 @@ export default function ForgotPassword() {
 
   const emailOk  = validateEmail(email);
   const strength = getStrength(password);
-  const passOk   = strength && (strength.label === 'Good' || strength.label === 'Strong');
+  const passOk   = strength && (strength.label === 'Strong' || strength.label === 'Good');
   const matchOk  = confirm.length > 0 && password === confirm;
   const mismatch = confirm.length > 0 && password !== confirm;
 
@@ -332,7 +311,7 @@ export default function ForgotPassword() {
             <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
             <div>
               <span className="fp-logo__name">ArithExam</span>
-              <span className="fp-logo__sub">Engineered for Precision. Deciphering Potential.</span>
+              <span className="fp-logo__sub">Assess Smarter, Perform Better.</span>
             </div>
           </div>
 
@@ -490,34 +469,6 @@ export default function ForgotPassword() {
               </button>
             )}
 
-            {/* security trust strip */}
-            <div className="fp-trust">
-              <div className="fp-trust__item">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2"/>
-                  <path d="M7 11V7a5 5 0 0110 0v4"/>
-                </svg>
-                <span>256-bit SSL</span>
-              </div>
-              <div className="fp-trust__sep"/>
-              <div className="fp-trust__item">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                </svg>
-                <span>Secure Recovery</span>
-              </div>
-              <div className="fp-trust__sep"/>
-              <div className="fp-trust__item">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                  <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-                <span>Verified Platform</span>
-              </div>
-            </div>
 
             <p className="fp-footer-text">
               Remember your password?&nbsp;

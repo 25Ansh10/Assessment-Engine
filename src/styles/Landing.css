@@ -91,10 +91,10 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 /* Magnetic button */
 .magnetic-btn {
   position: relative;
-  transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  transition: all 0.3s ease;
 }
-.magnetic-btn:hover { transform: translateY(-2px) scale(1.02); }
-.magnetic-btn:active { transform: scale(0.97); }
+.magnetic-btn:hover { box-shadow: var(--shadow-lg); }
+.magnetic-btn:active { transform: scale(0.98); }
 
 /* ── Buttons ── */
 .landing .landing-btn-primary {
@@ -127,7 +127,6 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 .landing .landing-btn-primary:hover {
   background: #1238d6 !important;
   box-shadow: 0 10px 30px rgba(26,79,255,0.35);
-  transform: translateY(-2px);
 }
 .landing .landing-btn-primary--lg { padding: 18px 48px; font-size: 1.1rem; }
 
@@ -151,16 +150,14 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 }
 .landing .landing-btn-outline:hover {
   background: rgba(26,79,255,0.06) !important;
-  transform: translateY(-2px);
 }
 
 /* ── Reveal animations ── */
 .reveal-up {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.6s ease;
 }
-.reveal-up.visible { opacity: 1; transform: none; }
+.reveal-up.visible { opacity: 1; }
 .reveal, .reveal-left, .reveal-right, .reveal-scale {
   opacity: 0;
   transform: translateY(20px);
@@ -168,7 +165,7 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 }
 .reveal.visible, .reveal-left.visible,
 .reveal-right.visible, .reveal-scale.visible {
-  opacity: 1; transform: none;
+  opacity: 1;
 }
 
 /* Hero entry animations — simplified to prevent invisible state */
@@ -591,7 +588,7 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
   background: var(--white); padding: 44px 32px;
   text-align: center; transition: all 0.35s ease;
 }
-.landing-stat:hover { background: var(--blue-light); transform: scale(1.02); }
+.landing-stat:hover { background: var(--blue-light); }
 .landing-stat__icon  { font-size: 1.8rem; margin-bottom: 12px; display: block; }
 .landing-stat__val   { font-family: 'Poppins', sans-serif; font-size: 2.4rem; font-weight: 900; color: var(--blue); line-height: 1; margin-bottom: 8px; }
 .landing-stat__label { font-size: 0.88rem; font-weight: 600; color: var(--ink-2); }
@@ -609,7 +606,6 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
   transition: all 0.35s ease; position: relative; overflow: hidden;
 }
 .landing-feat:hover {
-  transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
   border-color: rgba(26,79,255,0.2);
 }
@@ -646,7 +642,7 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
   overflow: hidden; border: 2px solid;
   box-shadow: var(--shadow-lg); transition: all 0.4s ease;
 }
-.landing-showcase__img-wrap:hover { transform: translateY(-6px); box-shadow: var(--shadow-xl); }
+.landing-showcase__img-wrap:hover { box-shadow: var(--shadow-xl); }
 .landing-showcase__img { width: 100%; height: auto; display: block; aspect-ratio: 4/3; object-fit: cover; }
 .landing-showcase__img-glow { position: absolute; inset: -20%; pointer-events: none; z-index: -1; }
 .landing-showcase__text-col { display: flex; flex-direction: column; align-items: flex-start; }
@@ -688,7 +684,6 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 .landing-step-card.active {
   background: var(--white); 
   border-color: #0D9488;
-  transform: translateY(-8px) scale(1.02); 
   box-shadow: 0 20px 40px rgba(0,0,0,0.08);
   opacity: 1 !important;
   visibility: visible !important;
@@ -728,7 +723,7 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
   border-radius: var(--radius-lg); padding: 28px;
   transition: all 0.35s ease;
 }
-.landing-review:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.landing-review:hover { box-shadow: var(--shadow-lg); }
 .landing-review__stars  { color: #f59e0b; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 14px; }
 .landing-review__text   { font-size: 0.92rem; color: var(--ink-2); line-height: 1.75; margin-bottom: 22px; font-style: italic; }
 .landing-review__author { display: flex; align-items: center; gap: 12px; }
@@ -765,7 +760,7 @@ html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
   box-shadow: var(--shadow-md); min-width: 220px;
   transition: all 0.3s ease; border: 1px solid var(--border);
 }
-.landing-cta__card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.landing-cta__card:hover { box-shadow: var(--shadow-lg); }
 .landing-cta__card-icon { font-size: 1.8rem; }
 .landing-cta__card-stat { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--blue); line-height: 1; }
 .landing-cta__card-lbl  { font-size: 0.78rem; color: var(--muted); margin-top: 3px; }

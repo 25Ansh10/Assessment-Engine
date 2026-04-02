@@ -79,7 +79,7 @@ export default function Results() {
       <header className="res-nav">
         <div className="res-nav-brand">
           <img src="/logo.png" alt="" width="36" height="36" />
-          <span className="res-nav-title">ArithExam <small>Engineered for Precision. Deciphering Potential.</small></span>
+          <span className="res-nav-title">ArithExam <small>Assess Smarter, Perform Better.</small></span>
         </div>
         <button className="res-back-btn" onClick={() => navigate('/dashboard')}>
           Back to Dashboard
