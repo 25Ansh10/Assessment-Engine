@@ -20,7 +20,7 @@ export default function Landing() {
   // Cookie consent
   useEffect(() => {
     const t = setTimeout(() => {
-      if (!localStorage.getItem('arithexam_cookie')) setShowCookie(true);
+      if (!localStorage.getItem('ArithExam_cookie')) setShowCookie(true);
     }, 4000);
     return () => clearTimeout(t);
   }, []);
@@ -82,15 +82,55 @@ export default function Landing() {
   }, []);
 
   const handleCookie = (accept) => {
-    localStorage.setItem('arithexam_cookie', accept ? 'accepted' : 'declined');
+    localStorage.setItem('ArithExam_cookie', accept ? 'accepted' : 'declined');
     setShowCookie(false);
   };
 
   const features = [
-    { icon: '🛡️', title: 'Smart Proctoring', desc: 'Secure environment that ensures fair play using advanced AI face detection and tab monitoring.', color: '#1a4fff', img: aiProctoring },
-    { icon: '⚡', title: 'Instant Launch', desc: 'Enter your exam code and dive straight into your assessment. No wait times, no friction.', color: '#00b96b', img: null },
-    { icon: '📈', title: 'Growth Tracking', desc: 'Detailed performance breakdown and personalized insights to help you improve every day.', color: '#7c3aed', img: analyticsDashboard },
-    { icon: '📱', title: 'Device Agnostic', desc: 'Take your exam on a smartphone, tablet, or laptop. Consistent performance everywhere.', color: '#f59e0b', img: null },
+    { 
+      icon: (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ), 
+      title: 'Smart Proctoring', 
+      desc: 'Secure environment that ensures fair play using advanced AI face detection and tab monitoring.', 
+      color: 'var(--primary)', 
+      img: aiProctoring 
+    },
+    { 
+      icon: (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      ), 
+      title: 'Instant Launch', 
+      desc: 'Enter your exam code and dive straight into your assessment. No wait times, no friction.', 
+      color: 'var(--secondary)', 
+      img: null 
+    },
+    { 
+      icon: (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm0 0h5a2 2 0 002-2v-3a2 2 0 00-2-2h-5M9 19v-3a2 2 0 002-2h4a2 2 0 002 2v3a2 2 0 00-2 2h-4a2 2 0 00-2-2z" />
+        </svg>
+      ), 
+      title: 'Growth Tracking', 
+      desc: 'Detailed performance breakdown and personalized insights to help you improve every day.', 
+      color: '#7c3aed', 
+      img: analyticsDashboard 
+    },
+    { 
+      icon: (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+      ), 
+      title: 'Device Agnostic', 
+      desc: 'Take your exam on a smartphone, tablet, or laptop. Consistent performance everywhere.', 
+      color: 'var(--accent)', 
+      img: null 
+    },
   ];
 
   const featureShowcase = [
@@ -100,7 +140,15 @@ export default function Landing() {
       desc: 'Our AI proctoring identifies distractions and ensures integrity without being intrusive, so you can focus entirely on your performance.',
       img: aiProctoring,
       badges: ['Face Detection', 'Integrity First', 'Auto-Lock', 'Zero Latency'],
-      accent: '#1a4fff',
+      accent: 'var(--primary)',
+    },
+    {
+      tag: 'Robust Security',
+      title: 'Unmatched Exam Integrity',
+      desc: 'Complete peace of mind with webcam monitoring, tab detection, and fullscreen enforcement to ensure a verified testing environment.',
+      img: securityFeatures,
+      badges: ['Webcam Mon', 'Tab Detection', 'Anti-Cheat', 'Verified'],
+      accent: 'var(--green)',
     },
     {
       tag: 'Personalized Insights',
@@ -108,15 +156,52 @@ export default function Landing() {
       desc: 'Get an instant, deep-dive report of your strengths and weaknesses the moment you finish. Track your progress across multiple sessions.',
       img: analyticsDashboard,
       badges: ['Instant Score', 'Topic Analysis', 'Progress Chart', 'Skill Gaps'],
-      accent: '#00b96b',
+      accent: 'var(--secondary)',
     },
   ];
 
   const steps = [
-    { n: '1', icon: '📝', title: 'Quick Join', desc: 'Securely create your candidate profile or enter your unique exam code to begin.' },
-    { n: '2', icon: '👁️', title: 'Smart Verify', desc: 'A quick biometric check ensures your identity and secures your testing session.' },
-    { n: '3', icon: '🧠', title: 'Take the Exam', desc: 'Experience a modern, distraction-free assessment interface designed for focus.' },
-    { n: '4', icon: '🏆', title: 'Check Progress', desc: 'Instantly view your results and comprehensive feedback to track your learning journey.' },
+    { 
+      n: '1', 
+      icon: (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      ), 
+      title: 'Quick Join', 
+      desc: 'Securely create your candidate profile or enter your unique exam code to begin.' 
+    },
+    { 
+      n: '2', 
+      icon: (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+      ), 
+      title: 'Smart Verify', 
+      desc: 'A quick biometric check ensures your identity and secures your testing session.' 
+    },
+    { 
+      n: '3', 
+      icon: (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      ), 
+      title: 'Take the Exam', 
+      desc: 'Experience a modern, distraction-free assessment interface designed for focus.' 
+    },
+    { 
+      n: '4', 
+      icon: (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" />
+        </svg>
+      ), 
+      title: 'Check Progress', 
+      desc: 'Instantly view your results and comprehensive feedback to track your learning journey.' 
+    },
   ];
 
   const testimonials = [
@@ -141,7 +226,7 @@ export default function Landing() {
       <div className={`landing-menu ${menuOpen ? 'landing-menu--open' : ''}`}>
         <div className="landing-menu__logo">
           <img src="/logo.png" alt="ArithExam" width="40" height="40" style={{ borderRadius: '10px' }} />
-          <span>ArithExam</span>
+          <span className="landing-navbar__logo-text" style={{ color: 'var(--ink)' }}>ArithExam</span>
         </div>
         <nav className="landing-menu__links">
           <a href="#features" className="landing-menu__link" onClick={() => setMenuOpen(false)}>Features</a>
@@ -237,7 +322,9 @@ export default function Landing() {
 
               {/* Floating stat cards */}
               <div className="landing-float landing-float--1">
-                <div className="landing-float__icon">🎯</div>
+                <div className="landing-float__icon">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
                 <div>
                   <div className="landing-float__val">99.2%</div>
                   <div className="landing-float__lbl">AI Accuracy</div>
@@ -245,26 +332,25 @@ export default function Landing() {
               </div>
 
               <div className="landing-float landing-float--2">
-                <div className="landing-float__icon">👥</div>
+                <div className="landing-float__icon">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                </div>
                 <div>
-                  <div className="landing-float__val">2,847</div>
+                  <div className="landing-float__val">50,000+</div>
                   <div className="landing-float__lbl">Active Now</div>
                 </div>
               </div>
 
               <div className="landing-float landing-float--3">
-                <div className="landing-float__icon">⚡</div>
+                <div className="landing-float__icon">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                </div>
                 <div>
                   <div className="landing-float__val">Instant</div>
                   <div className="landing-float__lbl">Results</div>
                 </div>
               </div>
 
-              <div className="landing-rating">
-                <div className="landing-rating__stars">★★★★★</div>
-                <div className="landing-rating__score">4.8</div>
-                <div className="landing-rating__lbl">Google Reviews</div>
-              </div>
             </div>
           </div>
         </div>
@@ -290,10 +376,43 @@ export default function Landing() {
         <div className="landing-inner">
           <div className="landing-stats__grid">
             {[
-              { val: counters.exams.toLocaleString()+'+', label: 'Exams Delivered', icon: '📝' },
-              { val: counters.students.toLocaleString()+'+', label: 'Students Served', icon: '🎓' },
-              { val: counters.accuracy+'%', label: 'Proctoring Accuracy', icon: '🤖' },
-              { val: counters.uptime+'%', label: 'Platform Uptime', icon: '⚙️' },
+              { 
+                val: counters.exams.toLocaleString()+'+', 
+                label: 'Exams Delivered', 
+                icon: (
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="28" height="28">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                )
+              },
+              { 
+                val: counters.students.toLocaleString()+'+', 
+                label: 'Students Served', 
+                icon: (
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="28" height="28">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-10.824-6.998 12.083 12.083 0 01.665-6.479L12 14z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0v6" />
+                  </svg>
+                )
+              },
+              { 
+                val: counters.accuracy+'%', 
+                label: 'Proctoring Accuracy', 
+                icon: (
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="28" height="28">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                )
+              },
+              { 
+                val: counters.uptime+'%', 
+                label: 'Platform Uptime', 
+                icon: (
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="28" height="28">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                )
+              },
             ].map((s,i) => (
               <div key={i} className="landing-stat reveal-up" style={{ animationDelay: `${i*0.1}s` }}>
                 <div className="landing-stat__icon">{s.icon}</div>
@@ -318,8 +437,8 @@ export default function Landing() {
           <div className="landing-features__grid">
             {features.map((f, i) => (
               <div key={i} className="landing-feat reveal-up" style={{ animationDelay: `${i*0.1}s` }}>
-                <div className="landing-feat__icon-wrap" style={{ background: `${f.color}10`, border: `1.5px solid ${f.color}20` }}>
-                  <span className="landing-feat__icon">{f.icon}</span>
+                <div className="landing-feat__icon" style={{ color: f.color }}>
+                  {f.icon}
                 </div>
                 <h3 className="landing-feat__title">{f.title}</h3>
                 <p className="landing-feat__desc">{f.desc}</p>
@@ -413,7 +532,11 @@ export default function Landing() {
           <div className="landing-reviews__grid">
             {testimonials.map((t, i) => (
               <div key={i} className="landing-review reveal-up" style={{ animationDelay: `${i*0.12}s` }}>
-                <div className="landing-review__stars">{'★'.repeat(t.stars)}</div>
+                <div className="landing-review__stars">
+                  {[...Array(t.stars)].map((_, idx) => (
+                    <svg key={idx} fill="#f59e0b" viewBox="0 0 20 20" width="16" height="16" style={{marginRight: '3px'}}><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                  ))}
+                </div>
                 <p className="landing-review__text">"{t.text}"</p>
                 <div className="landing-review__author">
                   <div className="landing-review__av">{t.av}</div>
@@ -446,14 +569,22 @@ export default function Landing() {
           </div>
           <div className="landing-cta__right">
             <div className="landing-cta__card">
-              <div className="landing-cta__card-icon">🚀</div>
+              <div className="landing-cta__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="32" height="32">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
               <div>
                 <div className="landing-cta__card-stat">50,000+</div>
                 <div className="landing-cta__card-lbl">Active students this month</div>
               </div>
             </div>
             <div className="landing-cta__card landing-cta__card--2">
-              <div className="landing-cta__card-icon">🛡️</div>
+              <div className="landing-cta__card-icon">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="32" height="32">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
               <div>
                 <div className="landing-cta__card-stat">99.2%</div>
                 <div className="landing-cta__card-lbl">AI proctoring accuracy</div>
@@ -468,7 +599,8 @@ export default function Landing() {
         <div className="landing-inner landing-footer__inner">
           <div className="landing-footer__brand">
             <div className="landing-footer__logo">
-              <span className="landing-navbar__logo-icon">A</span> ArithExam
+              <img src="/logo.png" alt="ArithExam" width="36" height="36" style={{ borderRadius: '8px' }} />
+              <span className="landing-navbar__logo-text">ArithExam</span>
             </div>
             <p className="landing-footer__tagline">Assess Smarter, Perform Better.</p>
             <div className="landing-footer__social">
@@ -509,7 +641,10 @@ export default function Landing() {
       {/* ── COOKIE ── */}
       {showCookie && (
         <div className="landing-cookie">
-          <h4>🍪 Cookie Preferences</h4>
+          <h4>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style={{ marginBottom: '-4px', marginRight: '8px' }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+            Cookie Preferences
+          </h4>
           <p>We use cookies to improve your experience and analyze usage.</p>
           <div className="landing-cookie__btns">
             <button className="landing-btn-primary" onClick={() => handleCookie(true)}>Accept All</button>

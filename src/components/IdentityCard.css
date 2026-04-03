@@ -1,0 +1,239 @@
+.idc-wrap {
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  perspective: 1200px;
+}
+
+.idc-card {
+  width: 100%;
+  background: linear-gradient(160deg, #ffffff 0%, #fefcf5 60%, #fffdf0 100%);
+  border-radius: 20px;
+  border: 1.5px solid rgba(212, 160, 23, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 #fff;
+  overflow: hidden;
+  position: relative;
+  padding: 10px;
+}
+
+.idc-header {
+  padding: 24px;
+  background: rgba(240, 253, 244, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 3px solid var(--secondary);
+  position: relative;
+}
+
+.idc-seal {
+  width: 48px;
+  height: 48px;
+  background: white;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.idc-h-text {
+  flex: 1;
+}
+
+.idc-inst {
+  font-size: 10px;
+  font-weight: 700;
+  color: #0f766e;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 2px;
+}
+
+.idc-title {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: 1.2px;
+  margin: 0;
+}
+
+.idc-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  background: rgba(13, 148, 136, 0.1);
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 6px;
+  letter-spacing: 0.12em;
+  margin-top: 8px;
+  border: 1.5px solid rgba(13, 148, 136, 0.2);
+}
+
+.idc-body {
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.idc-photo-box {
+  width: 100px;
+  height: 130px;
+  border: 2px solid var(--secondary);
+  border-radius: 10px;
+  background: #f5f0e0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.idc-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.idc-ava {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f4f8;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink-muted);
+}
+
+.idc-stamp {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 30, 61, 0.9);
+  color: var(--secondary);
+  font-size: 7px;
+  font-weight: 900;
+  text-align: center;
+  padding: 4px 0;
+  letter-spacing: 1px;
+  font-family: var(--font-heading);
+}
+
+.idc-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.idc-row {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1.5px dashed rgba(212, 160, 23, 0.3);
+  padding-bottom: 6px;
+}
+
+.idc-row label {
+  font-size: 9px;
+  font-weight: 800;
+  color: rgba(15, 30, 61, 0.5);
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+
+.idc-val-name {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+}
+
+.idc-row span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-light);
+}
+
+.idc-id-val {
+  font-family: var(--font-body);
+  font-weight: 900 !important;
+  color: var(--primary) !important;
+  font-size: 18px !important;
+  letter-spacing: 0.05em;
+}
+
+.idc-footer {
+  padding: 16px 24px 24px;
+  background: linear-gradient(180deg, #fef9e7, #f5edd0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.idc-status {
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: var(--ink-muted);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.idc-status--verified {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1.5px solid #86efac;
+}
+
+.idc-meta {
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-weight: 700;
+}
+
+.idc-security {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--secondary);
+  background: rgba(212, 160, 23, 0.08);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 160, 23, 0.2);
+  letter-spacing: 0.1em;
+}
+
+.idc-actions {
+  position: relative;
+}
+
+.idc-edit-btn {
+  padding: 6px 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+
+.idc-edit-btn:hover {
+  transform: translateY(-1px);
+}

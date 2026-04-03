@@ -4,24 +4,19 @@
    Fonts: Unbounded + DM Sans + Cinzel
 ═══════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Cinzel:wght@600;700&display=swap');
-
-.lg-page, .lg-page *, .lg-page *::before, .lg-page *::after {
-  box-sizing: border-box; margin: 0; padding: 0;
-}
-
+/* Reuse global tokens from index.css */
 .lg-page {
-  --t:   #0D9488;  --t2:  #14B8A6;  --tdk: #0f766e;
-  --ok:  #10b981;  --er:  #ef4444;
-  --gd:  #d4a017;  --gd2: #f0c040;
-  --nv:  #0f1e3d;  --nv2: #162848;
-  --tx:  #0f172a;  --mu:  #64748b;  --bd:  #e2e8f0;
-  --sf:  #ffffff;
-  --sp:  cubic-bezier(.34,1.56,.64,1);
-  --ez:  cubic-bezier(.4,0,.2,1);
-  --fd:  'DM Sans', sans-serif;
-  --fb:  'DM Sans', sans-serif;
-  --fc:  'DM Sans', sans-serif;
+  --t: var(--primary);
+  --t2: var(--primary-hover);
+  --gd: var(--secondary);
+  --gd2: var(--secondary-hover);
+  --tx: var(--ink);
+  --mu: var(--ink-muted);
+  --bd: var(--border);
+  --sf: var(--surface);
+  --fb: var(--font-body);
+  --fd: var(--font-heading);
+  --fc: var(--font-body);
 
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
@@ -174,7 +169,7 @@
 .lc-header__text   { flex: 1; }
 .lc-header__inst   { font-size: .46rem; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: #0f766e; margin-bottom: 2px; }
 .lc-header__title  { 
-  font-family: 'Cinzel', serif; 
+  font-family: var(--font-heading); 
   font-size: 14px; 
   font-weight: 800; 
   color: #b48a1b; 

@@ -3,7 +3,7 @@
    Silent animation, infinity ribbon BEHIND compass legs
    ═══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&display=swap');
+
 
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
@@ -29,7 +29,7 @@
     flex-direction: column;
     z-index: 999999;
     overflow: hidden;
-    font-family: 'Montserrat', 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     opacity: 1;
     transition: opacity 0.9s ease;
 }
@@ -182,7 +182,7 @@
 
 /* Wordmark heading */
 .sp-wordmark {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-size: 3.8rem;
     font-weight: 900;
     letter-spacing: -0.03em;

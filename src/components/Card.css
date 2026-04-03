@@ -1,0 +1,51 @@
+.aw-card {
+  background: white;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  box-shadow: 0 40px 100px -20px rgba(0,0,0,0.06);
+  transition: all 0.3s var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.aw-card--standard {
+  background: white;
+}
+
+.aw-card--glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+}
+
+.aw-card-header {
+  margin-bottom: 24px;
+}
+
+.aw-card-title {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  font-weight: 800;
+  margin: 0;
+}
+
+.aw-card-subtitle {
+  font-size: 14px;
+  color: var(--ink-light);
+  margin-top: 4px;
+}
+
+.aw-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 48px 120px -30px rgba(0,0,0,0.08);
+  border-color: var(--primary-light);
+}
+
+.aw-card-body {
+  flex: 1;
+}

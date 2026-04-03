@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { Hand } from 'lucide-react';
+import IdentityCard from '../components/IdentityCard';
 import '../styles/Dashboard.css';
-const QUESTION_API = import.meta.env.VITE_QUESTION_API;
 /* ─────────────────────────────
    DATA & CONFIG
 ───────────────────────────── */
+const QUESTION_API = import.meta.env.VITE_QUESTION_API;
 const STATS = { totalExams: 15, avgScore: 78, bestScore: 96, streak: 8 };
 
 const TREND = [
@@ -44,7 +46,7 @@ function AnimNum({ to, suffix = '' }) {
   return <>{v}{suffix}</>;
 }
 
-function StatCard({ val, lbl }) {
+function StatItem({ val, lbl }) {
   return (
     <div className="db-stat-item">
       <p className="db-stat-val">
@@ -104,86 +106,6 @@ function SettingsView() {
   );
 }
 
-function RegistrationCard({ user, initials, hideEdit }) {
-  const [editing, setEditing] = useState(false);
-  const [name, setName] = useState(user.name);
-
-  return (
-    <div className="drc-wrap">
-      <div className="drc-card">
-        <div className="drc-holo" />
-        <div className="drc-header">
-          <div className="drc-seal"><img src="/logo.png" alt="" width="32" height="32" /></div>
-          <div className="drc-h-text">
-            <p className="drc-inst">ArithExam Assessment Board</p>
-            <h3 className="drc-title">REGISTRATION CARD</h3>
-            <div className="drc-chip">DIGITAL IDENTITY</div>
-          </div>
-          {!hideEdit && (
-            <div className="drc-actions">
-              <button className="drc-edit-btn" onClick={() => setEditing(!editing)}>
-                {editing ? 'SAVE' : 'EDIT'}
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="drc-body">
-          <div className="drc-photo-box">
-            {user.photo ? (
-              <img src={user.photo} alt="Candidate" className="drc-img" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
-            ) : (
-              <div className="drc-ava">{initials}</div>
-            )}
-            <div className="drc-stamp">CANDIDATE</div>
-          </div>
-          <div className="drc-fields">
-            <div className="drc-row">
-              <label>NAME</label>
-              {editing ? (
-                <input className="drc-input" value={name} onChange={e => setName(e.target.value)} autoFocus onBlur={() => setEditing(false)} />
-              ) : (
-                <strong>{name.toUpperCase()}</strong>
-              )}
-            </div>
-            <div className="drc-row">
-              <label>EMAIL</label>
-              <span>{user.email}</span>
-            </div>
-            <div className="drc-row">
-              <label>CANDIDATE ID</label>
-              <span className="drc-id-val">{user.id || 'AE-SR-000000'}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="drc-footer">
-          <div className="drc-f-left">
-            <div className="drc-status-badge">✓ VERIFIED</div>
-            <div className="drc-meta-info">Status: ACTIVE</div>
-          </div>
-          <div className="drc-f-right">
-            <div className="drc-security-stamp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              SECURE IDENTITY
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProfileView({ user, initials, hideEdit }) {
-  return (
-    <div className="db-profile">
-      <div className="profile-hero">
-        <RegistrationCard user={user} initials={initials} hideEdit={hideEdit} />
-      </div>
-    </div>
-  );
-}
-
 /* ─────────────────────────────
    MAIN PAGE
 ───────────────────────────── */
@@ -200,33 +122,35 @@ export default function Dashboard() {
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
    const ud = {
     name: user?.name || 'Pool Candidate',
-    email: user?.email || 'verified@arithexam.co',
+    email: user?.email || 'verified@ArithExam.co',
     id: user?.id || 'AE-SR-000000',
     photo: user?.photo || null
   };
   const initials = ud.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
   const recentDiff = TREND[TREND.length - 1].score - TREND[TREND.length - 2].score;
   const startTestAndNavigate = () => {
+    // Clear old state for a fresh start
+    localStorage.removeItem("examSession");
+    localStorage.removeItem("latestExamResults");
+    sessionStorage.removeItem("ae_live_photo");
 
-    // 🔥 Call backend WITHOUT waiting
-    console.log("USER:", user);
+    // ✅ Navigate immediately so the user sees the PreExam page right away
+    navigate("/pre-exam");
+
+    console.log("Initializing session in background...");
     fetch(`${QUESTION_API}/start-test`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({ user_id: 1 }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: user?.id || 1 }),
     })
       .then(res => res.json())
       .then(data => {
         localStorage.setItem("examSession", JSON.stringify(data));
-        console.log("Session ready");
+        console.log("Session loaded successfully");
       })
-      .catch(err => console.error(err));
-
-    // ✅ Navigate instantly
-    navigate("/pre-exam");
+      .catch(err => {
+        console.error("Session init failed:", err);
+      });
   };
   return (
     <div className="db-root">
@@ -261,7 +185,6 @@ export default function Dashboard() {
             )}
             <div className="db-side-user-info">
               <p className="db-side-user-name">{ud.name}</p>
-              <p className="db-side-user-role">Candidate Pool</p>
             </div>
           </div>
           <button className="db-side-logout" onClick={logout}>
@@ -279,7 +202,7 @@ export default function Dashboard() {
           <div className="db-bento-view">
             <header className="db-view-head">
               <div>
-                <p className="db-greet-text">{greet}, {ud.name.split(' ')[0]} 👋</p>
+                <p className="db-greet-text">{greet}, {ud.name.split(' ')[0]} <Hand size={16} style={{ display:'inline', marginLeft: 6 }} /></p>
                 <h1 className="db-main-title">Candidate Dashboard</h1>
               </div>
               <button className="db-launch-btn" onClick={startTestAndNavigate}>
@@ -289,19 +212,23 @@ export default function Dashboard() {
 
             <div className="db-grid">
               {/* Profile Bento */}
-              <div className="db-grid-profile">
-                <ProfileView user={ud} initials={initials} hideEdit={true} />
+              <div className="db-grid-item">
+                <p className="db-sec-title">Candidate Identity</p>
+                <IdentityCard user={ud} hideEdit={true} />
               </div>
 
-              {/* Stats Bento */}
+              {/* Stats & Trend */}
               <div className="db-grid-group">
-                <div className="db-stat-row">
-                  <StatCard val={STATS.totalExams} lbl="Total Tests" />
-                  <StatCard val={`${STATS.avgScore}%`} lbl="Avg Score" />
+                <div className="db-grid-item">
+                  <p className="db-sec-title">Performance Data</p>
+                  <div className="db-stat-row">
+                    <StatItem val={STATS.totalExams} lbl="Total Tests" />
+                    <StatItem val={`${STATS.avgScore}%`} lbl="Avg Score" />
+                  </div>
                 </div>
                 <div className="db-grid-item">
-                  <div className="db-sec-head">
-                    <h3 className="db-sec-title">PERFORMANCE TREND</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <p className="db-sec-title">Progress Trend</p>
                     <div className={`db-delta ${recentDiff >= 0 ? 'db-delta--up' : 'db-delta--down'}`}>
                       {recentDiff >= 0 ? '+' : ''}{recentDiff}%
                     </div>
@@ -313,15 +240,85 @@ export default function Dashboard() {
               {/* History */}
               <div className="db-grid-group">
                 <div className="db-grid-item">
-                  <h3 className="db-sec-title">RECENT ACTIVITY</h3>
+                  <p className="db-sec-title">Recent Activity</p>
                   <div className="db-mini-table">
-                    {TREND.slice(-3).reverse().map((ex, i) => (
-                      <div key={i} className="db-log-row">
-                        <span className="db-log-date">{ex.date}</span>
-                        <span className="db-log-score">{ex.score}%</span>
-                        <span className="db-log-status">SECURE</span>
+                    {TREND.length > 0 ? (
+                      TREND.slice(-3).reverse().map((ex, i) => (
+                        <div key={i} className="db-log-row">
+                          <span className="db-log-date">{ex.date}</span>
+                          <span className="db-log-score">{ex.score}%</span>
+                          <span className="db-log-status">SECURE</span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="db-empty-state">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--ink-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                          <path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z" />
+                          <path d="M12 11h4" /><path d="M12 16h4" /><path d="M8 11h.01" /><path d="M8 16h.01" />
+                        </svg>
+                        <p className="db-empty-title">No exams taken yet</p>
+                        <p className="db-empty-sub">Your activity will appear here after your first exam</p>
+                        <button className="db-empty-btn" onClick={startTestAndNavigate}>Start First Exam →</button>
                       </div>
-                    ))}
+                    )}
+                  </div>
+
+                  <div className="db-info-tiles">
+                    <div className="db-info-tile">
+                      <span className="db-info-tile-label">Next Exam</span>
+                      <span className="db-info-tile-val">Not Scheduled</span>
+                    </div>
+                    <div className="db-info-tile">
+                      <span className="db-info-tile-label">Best Score</span>
+                      <span className="db-info-tile-val">{STATS.bestScore}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── BOTTOM SECTION ── */}
+            <div className="db-bottom">
+              <div className="db-grid-item">
+                <p className="db-sec-title">Quick Actions</p>
+                <div className="db-actions-row">
+                  <button className="db-action-card" onClick={startTestAndNavigate}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    <span className="db-action-label">Start New Exam</span>
+                    <span className="db-action-desc">Begin a timed assessment</span>
+                  </button>
+                  <div className="db-action-card">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
+                    <span className="db-action-label">View Reports</span>
+                    <span className="db-action-desc">Download past results</span>
+                  </div>
+                  <div className="db-action-card">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+                    <span className="db-action-label">Exam Guidelines</span>
+                    <span className="db-action-desc">Rules &amp; preparation tips</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="db-grid-item">
+                <p className="db-sec-title">Important Notes</p>
+                <div className="db-notes-list">
+                  <div className="db-note-item">
+                    <span className="db-note-dot" />
+                    <span>Ensure a stable internet connection before starting any exam</span>
+                  </div>
+                  <div className="db-note-item">
+                    <span className="db-note-dot" />
+                    <span>Webcam and microphone access will be required for proctored exams</span>
+                  </div>
+                  <div className="db-note-item">
+                    <span className="db-note-dot" />
+                    <span>Tab switching or window resizing during an exam will be flagged as a violation</span>
+                  </div>
+                  <div className="db-note-item">
+                    <span className="db-note-dot" />
+                    <span>Each question is individually timed — manage your time carefully</span>
                   </div>
                 </div>
               </div>
@@ -331,18 +328,25 @@ export default function Dashboard() {
 
         {view === 'topics' && (
           <div className="db-bento-view">
-            <h1 className="db-main-title">Topic Mastery</h1>
-            <p className="db-sub-explain">Deep dive into your performance across specific technical domains and subject bundles.</p>
+            <header className="db-view-head">
+              <div>
+                <h1 className="db-main-title">Topic Mastery</h1>
+                <p className="db-sub-explain">Deep dive into your performance across specific technical domains.</p>
+              </div>
+            </header>
+            
             <div className="db-grid" style={{ marginTop: 24 }}>
-              <div className="db-grid-item db-grid--full">
-                <h3 className="db-sec-title">Topic Expertise</h3>
-                <div className="db-topic-list" style={{ marginTop: 24 }}>
-                  {TOPICS.map(t => (
-                    <div key={t.name} className="db-topic-row">
-                      <div className="db-topic-meta"><span>{t.name}</span><strong>{t.pct}%</strong></div>
-                      <div className="db-topic-track"><div className="db-topic-fill" style={{ width: `${t.pct}%`, background: t.color }} /></div>
-                    </div>
-                  ))}
+              <div className="db-grid--full">
+                <div className="db-grid-item">
+                  <p className="db-sec-title">Topic Expertise Analysis</p>
+                  <div className="db-topic-list">
+                    {TOPICS.map(t => (
+                      <div key={t.name} className="db-topic-row">
+                        <div className="db-topic-meta"><span>{t.name}</span><strong>{t.pct}%</strong></div>
+                        <div className="db-topic-track"><div className="db-topic-fill" style={{ width: `${t.pct}%`, background: t.color }} /></div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -351,40 +355,35 @@ export default function Dashboard() {
 
         {view === 'profile' && (
           <div className="db-bento-view">
-            <h1 className="db-main-title">Profile & Settings</h1>
-            <div className="db-profile-layout" style={{ marginTop: 20 }}>
-              {/* Left: Big Registration Card */}
-              <div className="db-profile-card-col">
-                <div className="db-grid-item db-profile-card-item">
-                  <ProfileView user={ud} initials={initials} />
+            <header className="db-view-head">
+              <h1 className="db-main-title">Profile & Settings</h1>
+            </header>
+
+            <div className="db-grid" style={{ marginTop: 20 }}>
+              <div className="db-grid--full">
+                <div className="db-grid-item">
+                  <p className="db-sec-title">Digital ID Card</p>
+                  <IdentityCard user={ud} hideEdit={false} />
                 </div>
               </div>
 
-              {/* Right: Settings + Account Info */}
-              <div className="db-profile-settings-col">
-
-                <div className="db-grid-item db-settings-card">
-                  <h3 className="db-sec-title">ACCOUNT</h3>
+              <div className="db-grid-group db-grid--full">
+                <div className="db-grid-item">
+                  <p className="db-sec-title">Account Information</p>
                   <div className="db-account-rows">
-                    <div className="db-account-row">
-                      <span className="db-account-label">Full Name</span>
-                      <span className="db-account-value">{ud.name}</span>
-                    </div>
-                    <div className="db-account-row">
-                      <span className="db-account-label">Email</span>
-                      <span className="db-account-value">{ud.email}</span>
-                    </div>
-                    <div className="db-account-row">
-                      <span className="db-account-label">Candidate ID</span>
-                      <span className="db-account-value db-account-value--id">{ud.id}</span>
-                    </div>
-                    <div className="db-account-row">
-                      <span className="db-account-label">Status</span>
-                      <span className="db-account-badge">✓ Verified</span>
-                    </div>
+                    {[
+                      { l: 'Full Name', v: ud.name },
+                      { l: 'Email', v: ud.email },
+                      { l: 'Candidate ID', v: ud.id, id: true },
+                      { l: 'Status', b: '✓ Verified' }
+                    ].map((row, i) => (
+                      <div key={i} className="db-log-row">
+                        <span className="db-log-date">{row.l}</span>
+                        {row.b ? <span className="db-log-status" style={{ color: 'var(--primary)', opacity: 1 }}>{row.b}</span> : <span className="db-log-score" style={{ color: 'var(--ink)' }}>{row.v}</span>}
+                      </div>
+                    ))}
                   </div>
                 </div>
-
               </div>
             </div>
           </div>

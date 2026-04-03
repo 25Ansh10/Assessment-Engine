@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import '../styles/Results.css';
 
 /* ─────────────────────────────
@@ -50,6 +51,7 @@ function DiffCard({ lvl, solved, total, color }) {
    ───────────────────────────── */
 
 export default function Results() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [score, setScore] = useState(0);
   const [results, setResults] = useState(null);
@@ -59,7 +61,6 @@ export default function Results() {
     if (saved) {
       const data = JSON.parse(saved);
       setResults(data);
-      // Anim final score
       let n=0; const step=Math.ceil(data.percentage/30);
       const t=setInterval(()=>{ n+=step; if(n>=data.percentage){setScore(data.percentage);clearInterval(t);}else setScore(n); },30);
       return ()=>clearInterval(t);
@@ -78,87 +79,80 @@ export default function Results() {
       {/* ── HEADER ── */}
       <header className="res-nav">
         <div className="res-nav-brand">
-          <img src="/logo.png" alt="" width="36" height="36" />
-          <span className="res-nav-title">ArithExam <small>Assess Smarter, Perform Better.</small></span>
+          <img src="/logo.png" alt="ArithExam Logo" width="30" height="30" className="res-nav-logo" />
+          <span className="res-nav-title">ArithExam</span>
         </div>
         <button className="res-back-btn" onClick={() => navigate('/dashboard')}>
-          Back to Dashboard
+           Back to Dashboard
         </button>
       </header>
 
       <main className="res-content">
-        
-        {/* ── SCORE HERO ── */}
-        <section className="res-hero">
-          <div className="res-score-box">
-             <svg width="220" height="220" viewBox="0 0 200 200">
-               <circle cx="100" cy="100" r="90" className="res-ring-bg" />
-               <circle cx="100" cy="100" r="90" className="res-ring-fill" 
-                 style={{ strokeDasharray: circ, strokeDashoffset: offset }} />
-             </svg>
-             <div className="res-score-inner">
-               <span className="res-score-num">{score}</span>
-               <span className="res-score-pct">%</span>
-               <p className="res-score-lbl">OVERALL SCORE</p>
-             </div>
-          </div>
-          
-          <div className="res-hero-text">
-            <h1 className="res-title">Submission Successful</h1>
-            <p className="res-subtitle">Your performance analysis has been finalized by our precision engine.</p>
-            <div className="res-tag-row">
-              <span className="res-tag">ID: {results.rank < 10 ? 'AE-00' : 'AE-0'}{results.rank}</span>
-              <span className={`res-tag ${results.passed ? 'res-tag--pass' : 'res-tag--warn'}`}>
-                {results.passed ? 'VERIFIED PASS' : 'NEEDS PRACTICE'}
-              </span>
+        <div className="res-main-row">
+          {/* ── SCORE HERO (LEFT) ── */}
+          <section className="res-hero">
+            <div className="res-score-box">
+               <svg width="240" height="240" viewBox="0 0 200 200">
+                 <circle cx="100" cy="100" r="90" className="res-ring-glow" />
+                 <circle cx="100" cy="100" r="90" className="res-ring-bg" />
+                 <circle cx="100" cy="100" r="90" className="res-ring-fill" 
+                   style={{ strokeDasharray: circ, strokeDashoffset: offset }} />
+               </svg>
+               <div className="res-score-inner">
+                 <div className="res-score-num-row">
+                   <span className="res-score-num">{score}</span>
+                   <span className="res-score-pct">%</span>
+                 </div>
+                 <p className="res-score-lbl">VERIFIED SCORE</p>
+               </div>
             </div>
-          </div>
-        </section>
+            
+            <div className="res-hero-text">
+              <h1 className="res-title">Submission Successful</h1>
+              <p className="res-subtitle">Your assessment result has been digitally verified and finalized by the precision engine.</p>
+              <div className="res-tag-row">
+                <span className="res-tag">ID: {user?.id || 'AE-SR-000000'}</span>
+                <span className={`res-tag ${results.passed ? 'res-tag--pass' : 'res-tag--warn'}`}>
+                  {results.passed ? 'VERIFIED PASS' : 'NEEDS PRACTICE'}
+                </span>
+              </div>
+            </div>
+          </section>
 
-        {/* ── METRICS GRID ── */}
-        <div className="res-grid-wrap">
+          {/* ── METRICS (RIGHT) ── */}
           <div className="res-metrics">
-            <AnimMetric 
-              lbl="Solved" 
-              val={results.correctAnswers + results.incorrectAnswers} 
-              sub="Questions Attempted" 
-              color="teal"
-              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>}
-            />
-            <AnimMetric 
-              lbl="Unsolved" 
-              val={results.unattempted} 
-              sub="Left Blank" 
-              color="gold"
-              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>}
-            />
-            <AnimMetric 
-              lbl="Efficiency" 
-              val={Math.round((results.correctAnswers / (results.correctAnswers + results.incorrectAnswers || 1)) * 100)}
-              sub="Accuracy Ratio" 
-              color="teal"
-              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>}
-            />
-          </div>
+            <div className="res-metric-item">
+              <div className="res-m-icon-top">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div className="res-m-info">
+                <p className="res-m-lbl">Questions Solved</p>
+                <h2 className="res-m-val">{results.correctAnswers + results.incorrectAnswers}</h2>
+                <p className="res-m-sub">Total Attempted</p>
+              </div>
+            </div>
 
-          {/* ── DIFFICULTY ANALYSIS ── */}
-          <div className="res-analysis">
-             <div className="res-card-head">
-               <h3>DIFFICULTY BREAKDOWN</h3>
-               <p>Performance segmented by cognitive complexity levels.</p>
-             </div>
-             
-             <div className="res-diff-list">
-               {results.levelStats.map(stat => (
-                 <DiffCard 
-                   key={stat.level}
-                   lvl={stat.level} 
-                   solved={stat.solved} 
-                   total={stat.total}
-                   color={stat.level === 'Easy' ? '#0D9488' : stat.level === 'Medium' ? '#d4a017' : '#ef4444'}
-                 />
-               ))}
-             </div>
+            <div className="res-metric-item">
+              <div className="res-m-icon-top res-m-icon--gold">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div className="res-m-info">
+                <p className="res-m-lbl">Unsolved / Skipped</p>
+                <h2 className="res-m-val">{results.unattempted}</h2>
+                <p className="res-m-sub">Left Blank</p>
+              </div>
+            </div>
+
+            <div className="res-metric-item">
+              <div className="res-m-icon-top">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div className="res-m-info">
+                <p className="res-m-lbl">Efficiency Ratio</p>
+                <h2 className="res-m-val">{Math.round((results.correctAnswers / (results.correctAnswers + results.incorrectAnswers || 1)) * 100)}%</h2>
+                <p className="res-m-sub">Accuracy Score</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -167,11 +161,10 @@ export default function Results() {
            <button className="res-cta res-cta--sec" onClick={() => navigate('/dashboard')}>
              Back to Dashboard
            </button>
-           <button className="res-cta res-cta--pri" onClick={() => window.print()}>
-             Download PDF Report
+           <button className="res-cta res-cta--pri" onClick={() => navigate('/pre-exam')}>
+             Retake Exam
            </button>
         </footer>
-
       </main>
     </div>
   );

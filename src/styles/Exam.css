@@ -3,43 +3,12 @@
    Teal #0D9488  |  Gold #d4a017
    ═══════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --teal:         #0D9488;
-  --teal-dark:    #0a7c71;
-  --teal-border:  rgba(13,148,136,0.25);
-  --teal-mist:    #f0fdfa;
-  --teal-soft:    #e6f7f5;
+/* Reuse global tokens from index.css */
 
-  --gold:         #d4a017;
-  --gold-dark:    #b8890f;
-  --gold-soft:    #fffbeb;
-  --gold-border:  rgba(212,160,23,0.3);
-
-  --text-1:       #0f172a;
-  --text-2:       #475569;
-  --text-3:       #94a3b8;
-
-  --bg:           #f8fafc;
-  --border:       #e2e8f0;
-  --white:        #ffffff;
-
-  --r-sm:  8px;
-  --r:     12px;
-  --r-lg:  18px;
-  --r-xl:  24px;
-
-  --sh-sm: 0 2px 8px rgba(0,0,0,0.05);
-  --sh:    0 4px 20px rgba(0,0,0,0.07);
-  --sh-md: 0 8px 32px rgba(0,0,0,0.09);
-
-  --font:  'Outfit', sans-serif;
-  --mono:  'JetBrains Mono', 'Fira Code', monospace;
-  --ease:  0.18s ease;
-}
 
 /* ═══════════════════
    KEYFRAMES
@@ -56,8 +25,8 @@
 .ex-shell {
   min-height: 100vh;
   background: var(--bg);
-  font-family: var(--font);
-  color: var(--text-2);
+  font-family: var(--font-heading);
+  color: var(--ink-light);
   display: flex;
   flex-direction: column;
   animation: fadeIn .35s ease;
@@ -129,13 +98,13 @@
 .tab-overlay__title {
   font-size: 22px;
   font-weight: 800;
-  color: var(--text-1);
+  color: var(--ink);
   letter-spacing: -.02em;
   margin-bottom: 10px;
 }
 .tab-overlay__text {
   font-size: 14px;
-  color: var(--text-2);
+  color: var(--ink-light);
   line-height: 1.6;
   margin-bottom: 20px;
 }
@@ -153,11 +122,11 @@
 .tab-overlay__btn {
   width: 100%;
   padding: 14px;
-  background: var(--teal);
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: var(--r);
-  font-family: var(--font);
+  font-family: var(--font-heading);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -206,7 +175,7 @@
   font-size: 64px;
   font-weight: 800;
   color: #dc2626;
-  font-family: var(--font);
+  font-family: var(--font-heading);
   line-height: 1;
   margin: 8px 0 26px;
   animation: pulse 1s ease infinite;
@@ -214,11 +183,11 @@
 .fs-btn {
   width: 100%;
   padding: 14px;
-  background: var(--teal);
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: var(--r);
-  font-family: var(--font);
+  font-family: var(--font-heading);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -249,7 +218,7 @@
 .ex-bar__session {
   font-size: 10px;
   font-weight: 700;
-  color: var(--teal);
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: .08em;
 }
@@ -272,7 +241,7 @@
 .ex-bar__prog-label {
   font-size: 11px;
   font-weight: 700;
-  color: var(--text-3);
+  color: var(--ink-muted);
   text-align: center;
 }
 
@@ -289,7 +258,7 @@
   border-radius: var(--r-sm);
   font-size: 12px;
   font-weight: 700;
-  color: var(--text-3);
+  color: var(--ink-muted);
   transition: all var(--ease);
 }
 .ex-violation-badge--active {
@@ -313,7 +282,7 @@
   font-family: var(--mono);
   font-size: 18px;
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--ink);
   line-height: 1;
   letter-spacing: .04em;
 }
@@ -403,7 +372,7 @@
 .ex-sidebar__label  {
   font-size: 9.5px;
   font-weight: 800;
-  color: var(--text-3);
+  color: var(--ink-muted);
   text-transform: uppercase;
   letter-spacing: .1em;
 }
@@ -466,18 +435,18 @@
   border-radius: 7px;
   background: var(--bg);
   border: 1.5px solid var(--border);
-  color: var(--text-3);
+  color: var(--ink-muted);
   transition: all var(--ease);
   cursor: default;
 }
 .ex-qpill--active {
   background: var(--teal-mist);
   border-color: var(--teal);
-  color: var(--teal);
+  color: var(--primary);
   box-shadow: 0 0 0 3px rgba(13,148,136,.1);
 }
 .ex-qpill--done {
-  background: var(--teal);
+  background: var(--primary);
   color: white;
   border-color: var(--teal);
 }
@@ -558,7 +527,7 @@
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-3);
+  color: var(--ink-muted);
 }
 
 /* Question card */
@@ -582,7 +551,7 @@
 .ex-q-text {
   font-size: 20px;
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--ink);
   line-height: 1.55;
   letter-spacing: -.02em;
   user-select: text; /* allow reading question text */
@@ -622,7 +591,7 @@
   justify-content: center;
   font-weight: 800;
   font-size: 13px;
-  color: var(--text-3);
+  color: var(--ink-muted);
   background: var(--bg);
   flex-shrink: 0;
   transition: all .18s;
@@ -668,7 +637,7 @@
   line-height: 1.75;
   flex: 1;
   resize: vertical;
-  font-family: var(--font);
+  font-family: var(--font-heading);
   user-select: text; /* allow typing */
 }
 .ex-editor--code {
@@ -690,7 +659,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  color: var(--text-3);
+  color: var(--ink-muted);
   font-size: 12px;
   font-weight: 600;
 }
@@ -699,7 +668,7 @@
   border: none;
   border-radius: var(--r-lg);
   color: white;
-  font-family: var(--font);
+  font-family: var(--font-heading);
   font-weight: 800;
   font-size: 15px;
   letter-spacing: .02em;
@@ -723,7 +692,7 @@
   align-items: center;
   justify-content: center;
   background: var(--bg);
-  font-family: var(--font);
+  font-family: var(--font-heading);
   padding: 24px;
 }
 .res-card {
@@ -763,7 +732,7 @@
 }
 .res-note {
   font-size: 13px;
-  color: var(--text-3);
+  color: var(--ink-muted);
   line-height: 1.6;
   margin-bottom: 36px;
   padding: 12px 16px;
@@ -773,11 +742,11 @@
 }
 .res-btn {
   padding: 16px 40px;
-  background: var(--teal);
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: var(--r-lg);
-  font-family: var(--font);
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 15px;
   cursor: pointer;

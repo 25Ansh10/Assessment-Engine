@@ -146,38 +146,38 @@ export default function Exam({ onFinish }) {
   const [confirmSubmit, setConfirmSubmit] = useState(false);
 
   const submitAnswerHandler = async () => {
-  if (!answerText) {
-    alert("Answer required");
-    return;
-  }
-
-  try {
-    const res = await fetch(`${QUESTION_API}/submit-answer`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        session_id: sessionId,
-        question_id: question.question_id,
-        answer: answerText,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (data.completed) {
-      alert("Test Completed");
+    if (!answerText) {
+      alert("Answer required");
       return;
     }
 
-    setQuestion(data);
-    setAnswerText("");
+    try {
+      const res = await fetch(`${QUESTION_API}/submit-answer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          question_id: question.question_id,
+          answer: answerText,
+        }),
+      });
 
-  } catch (err) {
-    console.error(err);
-  }
-};
+      const data = await res.json();
+
+      if (data.completed) {
+        alert("Test Completed");
+        return;
+      }
+
+      setQuestion(data);
+      setAnswerText("");
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   /* ─── Toast helper — shows message, auto-clears ─── */
   const showToast = useCallback((msg, type = "warn") => {
@@ -217,18 +217,18 @@ export default function Exam({ onFinish }) {
   }, [qTimeLeft, submitted, current]);
 
   useEffect(() => {
-  const stored = localStorage.getItem("examSession");
+    const stored = localStorage.getItem("examSession");
 
-  if (!stored) {
-    alert("No session found");
-    return;
-  }
+    if (!stored) {
+      alert("No session found");
+      return;
+    }
 
-  const data = JSON.parse(stored);
+    const data = JSON.parse(stored);
 
-  setSessionId(data.session_id);
-  setQuestion(data);
-}, []);
+    setSessionId(data.session_id);
+    setQuestion(data);
+  }, []);
 
   /* ══════════════════════════════════════════
      ANTI-CHEAT: ALL DETECTION HOOKS
@@ -492,7 +492,7 @@ export default function Exam({ onFinish }) {
     };
 
     localStorage.setItem("latestExamResults", JSON.stringify(resultsData));
-    
+
     // Smooth transition
     setTimeout(() => {
       navigate("/results");
