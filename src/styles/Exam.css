@@ -353,8 +353,8 @@
 * { box-sizing: border-box; }
 
 .ex-global-topbar {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
+  background: transparent;
+  border-bottom: none;
   padding: 8px 40px;
   display: flex;
   justify-content: space-between;
@@ -384,8 +384,8 @@
   color: var(--text-3);
   text-transform: uppercase;
   letter-spacing: .15em;
-  background: var(--white);
-  border-top: 1px solid var(--border);
+  background: transparent;
+  border-top: none;
 }
 .ex-global-status {
   font-size: 11px;
@@ -420,17 +420,27 @@
     grid-template-columns: 240px 1fr 240px;
   }
 }
+@media (max-width: 1120px) {
+  .ex-body.ex-body--alt {
+    grid-template-columns: 200px 1fr 200px;
+  }
+}
+@media (max-width: 992px) {
+  .ex-body.ex-body--alt {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  .ex-body.ex-body--alt > .ex-sidebar {
+    display: none;
+  }
+}
 
 /* Sidebars Layout Ratios */
 .ex-sidebar--left, .ex-sidebar--right {
-  background: var(--white);
-  color: var(--ink);
   display: flex;
   flex-direction: column;
   padding: 20px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-xl);
-  box-shadow: var(--sh-sm);
   height: 100%;
   overflow: hidden; /* Container doesn't scroll, inner areas do */
   min-height: 0;
@@ -675,11 +685,8 @@
 /* Main Central Area */
 .ex-main.ex-main--alt {
   flex: 1;
-  background: var(--white);
+  background: transparent;
   padding: 0; 
-  border: 1.5px solid var(--border);
-  border-radius: var(--r-xl);
-  box-shadow: var(--sh-sm);
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -698,8 +705,8 @@
 .ex-main-foot {
   flex-shrink: 0;
   padding: 0 60px;
-  background: var(--white);
-  border-top: 1px solid var(--border);
+  background: transparent;
+  border-top: none;
   display: flex;
   justify-content: center; /* Centering buttons */
   align-items: center;
@@ -775,7 +782,8 @@
   align-items: center;
   margin-bottom: 0px; 
   padding: 12px 60px;
-  border-bottom: 1px solid var(--border);
+  background: transparent;
+  border-bottom: none;
   flex-shrink: 0;
 }
 .ex-header-left {
@@ -839,7 +847,7 @@
   color: var(--teal);
 }
 .ex-q-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-body);
   font-size: 24px;
   font-weight: 700;
   color: var(--ink);

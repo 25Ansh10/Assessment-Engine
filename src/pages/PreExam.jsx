@@ -5,7 +5,8 @@ import "../styles/PreExam.css";
 import { 
   Globe, Video, Mic, Clock, Lock, 
   ShieldAlert, ChevronRight, Zap, 
-  ShieldCheck, RefreshCw, Wifi, Camera
+  ShieldCheck, RefreshCw, Wifi, Camera,
+  Check, X, ArrowRight
 } from "lucide-react";
 
 /* ─── Meta ─── */
@@ -18,14 +19,14 @@ const EXAM_META = {
 };
 
 const RULES = [
-  { icon: <Clock size={20} />, text: "Keep an eye on the timer. Each question auto-submits when time runs out." },
-  { icon: <Lock size={20} />, text: "Fullscreen mode is mandatory. Do not switch tabs or minimize the window." },
-  { icon: <Video size={20} />, text: "Stay centered in the camera frame for the entire duration of the exam." },
-  { icon: <ChevronRight size={20} />, text: "You can only go forward. Choose carefully — no going back to previous answers." },
-  { icon: <ShieldAlert size={20} />, text: "External resources, notes, or secondary devices are strictly prohibited." },
-  { icon: <Globe size={20} />, text: "Ensure a stable internet connection throughout. Disconnections may auto-submit." },
-  { icon: <Zap size={20} />, text: "Results are generated instantly after submission. Review your performance immediately." },
-  { icon: <Mic size={20} />, text: "Microphone access is required for the Interactive Viva section of the assessment." },
+  { icon: <Clock size={20} />, text: "Watch the timer closely as questions auto-submit when time expires." },
+  { icon: <Lock size={20} />, text: "Stay in fullscreen. Do not switch tabs or minimize the browser window." },
+  { icon: <Video size={20} />, text: "Keep your face clearly visible in the camera frame at all times." },
+  { icon: <ChevronRight size={20} />, text: "You cannot return to previous questions. Review your answer before proceeding." },
+  { icon: <ShieldAlert size={20} />, text: "External devices, notes, and other resources are strictly prohibited." },
+  { icon: <Globe size={20} />, text: "Ensure your internet connection remains stable to avoid early submission." },
+  { icon: <Zap size={20} />, text: "Your final results will be generated immediately after your submission." },
+  { icon: <Mic size={20} />, text: "Microphone access is mandatory for the Interactive Viva section." },
 ];
 
 const TOPICS = ["Python", "React", "Coding", "Interactive Viva", "Ethical Reasoning"];
@@ -53,7 +54,7 @@ function PageInstructions({ onNext }) {
 
           <div className="pe-meta-group">
             <span className="pe-meta-label">Topics Covered</span>
-            <p className="pe-tag-list">{TOPICS.join(" · ")}</p>
+            <p className="pe-tag-list">{TOPICS.join(", ")}</p>
           </div>
 
           <div className="pe-meta-group">
@@ -61,15 +62,15 @@ function PageInstructions({ onNext }) {
             <div className="pe-param-list">
               <div className="pe-param-row">
                 <span className="pe-param-lbl">MCQ</span>
-                <span className="pe-param-val">4 questions · 1 min each</span>
+                <span className="pe-param-val">4 questions, 1 min each</span>
               </div>
               <div className="pe-param-row">
                 <span className="pe-param-lbl">Coding</span>
-                <span className="pe-param-val">2 questions · 11 min each</span>
+                <span className="pe-param-val">2 questions, 11 min each</span>
               </div>
               <div className="pe-param-row">
                 <span className="pe-param-lbl">Viva</span>
-                <span className="pe-param-val">4 questions · 1 min each</span>
+                <span className="pe-param-val">4 questions, 1 min each</span>
               </div>
             </div>
           </div>
@@ -113,7 +114,7 @@ function PageInstructions({ onNext }) {
       <div className="pe-fixed-footer">
         <div className="pe-footer-inner">
           <div className={`pe-consent-bar ${agreed ? "is-on" : ""}`} onClick={() => setAgreed(!agreed)}>
-            <div className="pe-check-box">{agreed && "✓"}</div>
+            <div className="pe-check-box">{agreed && <Check size={16} />}</div>
             <span className="pe-check-text">I have read all the rules and agree to follow them during the exam.</span>
           </div>
 
@@ -122,7 +123,7 @@ function PageInstructions({ onNext }) {
             disabled={!agreed}
             onClick={onNext}
           >
-            Continue to Verification →
+            Continue to Verification <ArrowRight size={16} />
           </button>
         </div>
       </div>
@@ -270,7 +271,7 @@ function PageVerify({ onBegin }) {
                   )}
                 </div>
                 <div className="pe-pipe-trail">
-                  {row.s === "ok" ? "✓" : row.s === "err" ? "✗" : "…"}
+                  {row.s === "ok" ? <Check size={14} /> : row.s === "err" ? <X size={14} /> : "…"}
                 </div>
               </div>
             ))}
@@ -319,7 +320,7 @@ function PageVerify({ onBegin }) {
             )}
             {verified && !verifying && (
               <div className="pe-success-bar">
-                <span>✓ Identity Verified</span>
+                <span style={{display: 'flex', alignItems: 'center', gap: '4px'}}><Check size={16} /> Identity Verified</span>
                 <button onClick={retake}><RefreshCw size={14} /> Retake</button>
               </div>
             )}
@@ -334,7 +335,7 @@ function PageVerify({ onBegin }) {
             disabled={!verified || launching}
             onClick={handleBegin}
           >
-            {launching ? "Starting Exam..." : "Start Exam →"}
+            {launching ? "Starting Exam..." : <span style={{display: 'flex', alignItems: 'center', gap: '4px'}}>Start Exam <ArrowRight size={16} /></span>}
           </button>
         </div>
       </div>
@@ -362,12 +363,12 @@ export default function PreExam({ onBegin }) {
 
         <div className="pe-topbar__steps">
           <div className={`pe-step ${page >= 1 ? "pe-step--done" : ""} ${page === 1 ? "pe-step--active" : ""}`}>
-            <span className="pe-step__num">{page > 1 ? "✓" : "1"}</span>
+            <span className="pe-step__num">{page > 1 ? <Check size={14} /> : "1"}</span>
             <span className="pe-step__lbl">Instructions</span>
           </div>
           <div className="pe-step__line" />
           <div className={`pe-step ${page >= 2 ? "pe-step--done" : ""} ${page === 2 ? "pe-step--active" : ""}`}>
-            <span className="pe-step__num">{page > 2 ? "✓" : "2"}</span>
+            <span className="pe-step__num">{page > 2 ? <Check size={14} /> : "2"}</span>
             <span className="pe-step__lbl">Verification</span>
           </div>
           <div className="pe-step__line" />

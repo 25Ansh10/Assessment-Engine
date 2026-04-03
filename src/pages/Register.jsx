@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/Register.css';
+import { Check, X, ArrowLeft, ArrowRight, Ban, Camera as CameraIcon, IdCard, PartyPopper } from 'lucide-react';
 
 /* ─────────────────────────────────
    HELPERS
@@ -64,19 +65,19 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
                 <div className="rc-field-row">
                   <span className="rc-field-lbl">Candidate Name</span>
                   <span className={`rc-field-val rc-field-val--name ${name ? 'rc-field-val--filled' : ''}`}>
-                    {name ? name.toUpperCase() : '— — — — — — —'}
+                    {name ? name.toUpperCase() : 'Awaiting Input'}
                   </span>
                 </div>
                 <div className="rc-field-row">
                   <span className="rc-field-lbl">Email Address</span>
                   <span className={`rc-field-val ${email ? 'rc-field-val--filled' : ''}`}>
-                    {email || '— — — — — — —'}
+                    {email || 'Awaiting Input'}
                   </span>
                 </div>
                 <div className="rc-field-row">
                   <span className="rc-field-lbl">Registration Date</span>
                   <span className={`rc-field-val ${regDate ? 'rc-field-val--filled' : ''}`}>
-                    {regDate || '— — — — —'}
+                    {regDate || 'Pending'}
                   </span>
                 </div>
               </div>
@@ -84,7 +85,7 @@ function RegistrationCard({ visible, name, email, examId, regDate, photo }) {
             <div className="rc-footer">
               <div className="rc-footer__badge">
                 {photo && examId
-                  ? <span className="rc-badge rc-badge--valid">✓ VERIFIED</span>
+                  ? <span className="rc-badge rc-badge--valid" style={{display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={14} style={{marginRight:'4px'}}/> VERIFIED</span>
                   : <span className="rc-badge rc-badge--pending">PENDING</span>
                 }
               </div>
@@ -265,7 +266,7 @@ function Mirror({ onCapture, onClose }) {
           )}
           {phase === 'error' && (
             <div className="rg-mirror__status rg-mirror__status--err">
-              🚫 Camera access denied
+              <Ban size={16} style={{marginRight:'8px'}}/> Camera access denied
             </div>
           )}
           <video ref={vRef}
@@ -277,7 +278,7 @@ function Mirror({ onCapture, onClose }) {
           {phase === 'done' && snap && (
             <div className="rg-mirror__done">
               <img src={snap} alt="" className="rg-mirror__snap"/>
-              <div className="rg-mirror__ok">✓  Accepted</div>
+              <div className="rg-mirror__ok" style={{display:'flex',alignItems:'center',justifyContent:'center'}}><Check size={16} style={{marginRight:'6px'}}/> Accepted</div>
             </div>
           )}
           <canvas ref={cRef} style={{ display: 'none' }}/>
@@ -292,9 +293,9 @@ function Mirror({ onCapture, onClose }) {
               <span className="rg-mirror__shutter"/>Capture Photo
             </button>
           )}
-          {phase === 'countdown' && <p className="rg-mirror__hint">Hold still 😊</p>}
-          {phase === 'done' && <p className="rg-mirror__hint" style={{ color: '#0D9488' }}>✓ Auto-accepting…</p>}
-          <button className="rg-mirror__close" onClick={onClose}>✕  Close</button>
+          {phase === 'countdown' && <p className="rg-mirror__hint">Hold still</p>}
+          {phase === 'done' && <p className="rg-mirror__hint" style={{ color: '#0D9488', display:'flex', alignItems:'center', justifyContent:'center' }}><Check size={14} style={{marginRight:'4px'}}/> Auto-accepting…</p>}
+          <button className="rg-mirror__close" onClick={onClose} style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'6px'}}><X size={16}/> Close</button>
         </div>
       </div>
     </div>
@@ -470,7 +471,7 @@ export default function Register() {
           <div className="rg-success-overlay">
             <div className="rg-success-content">
               <div className="rg-success-badge">
-                <span className="rg-success-icon">🎉</span>
+                <span className="rg-success-icon"><PartyPopper size={36} color="var(--primary)"/></span>
                 <h2>Registration Successful!</h2>
                 <p>Your official card is ready. Redirecting soon...</p>
               </div>
@@ -569,13 +570,13 @@ export default function Register() {
                     style={{ display: 'none' }} onChange={handleIdUpload}/>
                   {!idPreview
                     ? <button type="button" className="rg-upload" onClick={() => fileRef.current?.click()}>
-                        <span style={{ fontSize: '1.5rem' }}>🪪</span>
+                        <span style={{ fontSize: '1.5rem', display:'flex' }}><IdCard size={28} color="var(--teal)" /></span>
                         <span>Upload ID</span>
                       </button>
                     : <div className="rg-prev">
                         <img src={idPreview} alt="ID" style={{ maxHeight: '100px' }}/>
                         <div className="rg-prev__ov"><button onClick={() => { setIdFile(null); setIdPreview(null); }}>Change</button></div>
-                        <span className="rg-prev__badge">✓ ID</span>
+                        <span className="rg-prev__badge" style={{display:'flex',alignItems:'center'}}><Check size={12} style={{marginRight:'2px'}}/> ID</span>
                       </div>}
                 </div>
 
@@ -583,13 +584,13 @@ export default function Register() {
                   <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Live Photo</span>
                   {!photo
                     ? <button type="button" className="rg-upload rg-upload--cam" onClick={() => setMirrorOpen(true)}>
-                        <span style={{ fontSize: '1.5rem' }}>🪞</span>
+                        <span style={{ fontSize: '1.5rem', display:'flex' }}><CameraIcon size={28} color="var(--teal)" /></span>
                         <span>Live Mirror</span>
                       </button>
                     : <div className="rg-prev rg-prev--photo">
                         <img src={photo} alt="Live" style={{ maxHeight: '100px' }}/>
                         <div className="rg-prev__ov"><button onClick={() => { setPhoto(null); setMirrorOpen(true); }}>Retake</button></div>
-                        <span className="rg-prev__badge">✓ Photo</span>
+                        <span className="rg-prev__badge" style={{display:'flex',alignItems:'center'}}><Check size={12} style={{marginRight:'2px'}}/> Photo</span>
                       </div>}
                 </div>
               </div>
@@ -599,19 +600,19 @@ export default function Register() {
 
             <div className="rg-nav" style={{ marginTop: '20px' }}>
               {step > 0 && !done && (
-                <button className="rg-nav__bk" onClick={goBack}>← Back</button>
+                <button className="rg-nav__bk" onClick={goBack} style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'6px'}}><ArrowLeft size={16}/> Back</button>
               )}
               {step === 0 && (
                 <button className={`rg-nav__nx ${step0Complete ? 'rg-nav__nx--rdy' : ''}`}
                   onClick={goNext} disabled={!step0Complete}>
-                  Continue →
+                  <span style={{display:'flex',alignItems:'center',gap:'6px'}}>Continue <ArrowRight size={16}/></span>
                 </button>
               )}
               {step === 1 && (
                 <button className={`rg-nav__sub ${done ? 'rg-nav__sub--done' : ''}`}
                   onClick={handleSubmit} disabled={loading || done || !step1Complete}>
                   <Confetti on={done}/>
-                  {done ? '🎉 Success!' : loading ? 'Please wait…' : 'Complete Registration →'}
+                  {done ? <span style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'6px'}}><PartyPopper size={16}/> Success!</span> : loading ? 'Please wait…' : <span style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'6px'}}>Complete Registration <ArrowRight size={16}/></span>}
                 </button>
               )}
             </div>

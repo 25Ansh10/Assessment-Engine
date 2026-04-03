@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/Login.css';
+import { Lock, Check, Hand, ArrowRight } from 'lucide-react';
 
 /* ─────────────────────────────
    HELPERS
@@ -76,7 +77,7 @@ function AccessCard({ email, emailOk }) {
                 <h3 className="lc-header__title">ACCESS CARD</h3>
                 <div className="lc-header__chip">VIRTUAL ACCESS</div>
               </div>
-              <div className="lc-header__icon">🔒</div>
+              <div className="lc-header__icon"><Lock size={18} /></div>
             </div>
             <div className="lc-divider"/>
             <div className="lc-body">
@@ -91,7 +92,7 @@ function AccessCard({ email, emailOk }) {
               </div>
             </div>
             <div className="lc-footer">
-              <span className={`lc-badge ${emailOk ? 'lc-badge--valid' : 'lc-badge--pending'}`}>{emailOk ? '✓ VERIFIED' : 'PENDING'}</span>
+              <span className={`lc-badge ${emailOk ? 'lc-badge--valid' : 'lc-badge--pending'}`} style={{display: 'flex', alignItems: 'center', gap: '4px'}}>{emailOk ? <><Check size={14} /> VERIFIED</> : 'PENDING'}</span>
             </div>
           </div>
         </div>
@@ -122,8 +123,8 @@ function WelcomeScreen({ email }) {
             }}/>
           ))}
         </div>
-        <div className="lg-welcome__avatar">{initials || '👋'}</div>
-        <p className="lg-welcome__greeting">Welcome back 👋</p>
+        <div className="lg-welcome__avatar">{initials || <Hand size={24} />}</div>
+        <p className="lg-welcome__greeting" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'}}>Welcome back <Hand size={18} /></p>
         <p className="lg-welcome__email">{email}</p>
         <span className="lg-welcome__role">Candidate</span>
         <div className="lg-welcome__bar-wrap">
@@ -222,7 +223,7 @@ export default function Login() {
             {touched.e && email && !emailOk &&
               <p className="lg-hint lg-hint--e">Enter a valid email address</p>}
             {emailOk && touched.e &&
-              <p className="lg-hint lg-hint--ok">✓ Card updating live</p>}
+              <p className="lg-hint lg-hint--ok" style={{display: 'flex', alignItems: 'center', gap: '4px'}}><Check size={14} /> Card updating live</p>}
 
             {/* password */}
             <Field id="lg-pass" label="Password"
@@ -269,7 +270,7 @@ export default function Login() {
             <button type="submit" className="lg-submit" disabled={loading}>
               {loading
                 ? <><span className="lg-spinner"/>Signing in…</>
-                : <><span>Sign In</span><span className="lg-submit__arrow">→</span></>
+                : <><span>Sign In</span><span className="lg-submit__arrow" style={{display: 'flex'}}><ArrowRight size={16} /></span></>
               }
             </button>
           </form>

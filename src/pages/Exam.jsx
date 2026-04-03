@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Exam.css";
+import { Check, ArrowRight, RefreshCw } from 'lucide-react';
 
 const QUESTIONS = [
   {
@@ -627,6 +628,9 @@ export default function Exam({ onFinish }) {
                   <div className="ex-inst-item"><Ic.Check /><span>Always stay in camera frame</span></div>
                   <div className="ex-inst-item"><Ic.Check /><span>Minimize background noise</span></div>
                   <div className="ex-inst-item"><Ic.Check /><span>Submit before timer ends</span></div>
+                  <div className="ex-inst-item"><Ic.Check /><span>No external devices allowed</span></div>
+                  <div className="ex-inst-item"><Ic.Check /><span>Avoid looking away frequently</span></div>
+                  <div className="ex-inst-item"><Ic.Check /><span>Verify answers before next</span></div>
                 </div>
 
                 <div className="ex-sidebar-info">
@@ -715,14 +719,14 @@ export default function Exam({ onFinish }) {
             <div className="ex-main-foot">
               <div className="ex-foot-btns">
                   <button className="ex-btn-submit-early" onClick={() => setConfirmSubmit(true)}>
-                    Submit Assessment ✓
+                    <span style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'}}>Submit Assessment <Check size={16}/></span>
                   </button>
                   <button 
                     className="ex-next-alt-btn" 
                     onClick={() => goNext()} 
                     disabled={transitioning || answers[current] === undefined}
                   >
-                    {current < QUESTIONS.length - 1 ? "Next Question →" : "Finalize Exam ✓"}
+                    {current < QUESTIONS.length - 1 ? <span style={{display:'flex', alignItems:'center', justifyContent: 'center', gap:'6px'}}>Next Question <ArrowRight size={16}/></span> : <span style={{display:'flex', alignItems:'center', justifyContent: 'center', gap:'6px'}}>Finalize Exam <Check size={16}/></span>}
                   </button>
               </div>
             </div>
@@ -735,7 +739,7 @@ export default function Exam({ onFinish }) {
                 <div className="ex-cam-status">
                    <span className="ex-cam-dot">●</span> LIVE
                 </div>
-                <div className="ex-cam-refresh">↻</div>
+                <div className="ex-cam-refresh" style={{display:'flex',alignItems:'center',justifyContent:'center'}}><RefreshCw size={14} /></div>
               </div>
               <div className="ex-cam-wrap">
                 <div className="ex-cam-corner top-left"></div>
@@ -754,7 +758,7 @@ export default function Exam({ onFinish }) {
                     const isCur = sec.key === q?.section;
                     return (
                         <div key={sec.key} className={`ex-step-box ${isCur ? 'is-active' : ''} ${isPassed ? 'is-done' : ''}`}>
-                            <div className="ex-step-check">{isPassed ? '✓' : idx + 1}</div>
+                            <div className="ex-step-check" style={{display:'flex',alignItems:'center',justifyContent:'center'}}>{isPassed ? <Check size={14} /> : idx + 1}</div>
                             <div className="ex-step-content">
                                 <span className="ex-step-sec">{sec.label}</span>
                                 <span className="ex-step-meta">{sec.total} Questions</span>
@@ -778,17 +782,25 @@ export default function Exam({ onFinish }) {
 
 function SubmitModal({ count, onCancel, onConfirm }) {
   return (
-    <div className="tab-overlay">
-      <div className="tab-overlay__card" style={{ maxWidth: 400 }}>
-        <div className="tab-overlay__icon" style={{ background: 'rgba(13,148,136,0.1)', color: 'var(--teal)' }}>✓</div>
-        <h2 className="tab-overlay__title" style={{ fontFamily: 'var(--header-font)' }}>Ready to Submit?</h2>
-        <p className="tab-overlay__text">
-          You have answered <strong>{count}</strong> out of <strong>{QUESTIONS.length}</strong> questions.
-          You cannot change your answers after submission.
-        </p>
-        <div className="ex-modal-btns" style={{ display: 'flex', gap: 12, width: '100%', marginTop: 24 }}>
-          <button className="ex-btn-cancel" onClick={onCancel}>Keep Reviewing</button>
-          <button className="ex-btn-confirm" onClick={onConfirm}>Submit Now</button>
+    <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+      <div style={{ background: 'var(--white)', padding: '40px', borderRadius: '16px', border: '1.5px solid var(--border)', boxShadow: '0 24px 60px rgba(0,0,0,0.1)', maxWidth: '440px', width: '100%', textAlign: 'center' }}>
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ width: 64, height: 64, background: 'var(--teal-mist)', color: 'var(--teal)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', border: '2px solid var(--teal)' }}>
+             <Check size={32} />
+          </div>
+          <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-1)', marginBottom: '12px' }}>Ready to Submit?</h2>
+          <p style={{ fontSize: '15px', color: 'var(--text-2)', lineHeight: 1.6 }}>
+            You have answered <strong style={{ color: 'var(--ink)' }}>{count}</strong> out of <strong style={{ color: 'var(--ink)' }}>{QUESTIONS.length}</strong> questions.
+            You cannot change your answers after submission.
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
+          <button onClick={onCancel} style={{ flex: 1, padding: '14px', background: 'var(--bg)', color: 'var(--text-2)', border: '1.5px solid var(--border)', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={e => e.target.style.background = 'var(--bg-hover)'} onMouseOut={e => e.target.style.background = 'var(--bg)'}>
+            Keep Reviewing
+          </button>
+          <button onClick={onConfirm} style={{ flex: 1, padding: '14px', background: 'var(--teal)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={e => e.target.style.background = 'var(--teal-dark)'} onMouseOut={e => e.target.style.background = 'var(--teal)'}>
+            Submit Now
+          </button>
         </div>
       </div>
     </div>

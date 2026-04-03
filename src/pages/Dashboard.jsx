@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Hand } from 'lucide-react';
+import { Hand, Check } from 'lucide-react';
 import IdentityCard from '../components/IdentityCard';
 import '../styles/Dashboard.css';
 /* ─────────────────────────────
@@ -152,6 +152,16 @@ export default function Dashboard() {
         console.error("Session init failed:", err);
       });
   };
+
+  const handleEditProfile = () => {
+    const newName = window.prompt("Enter your updated full name:", ud.name);
+    if (newName && newName.trim() !== "" && newName.trim() !== ud.name) {
+      const updatedUser = { ...user, name: newName.trim() };
+      localStorage.setItem('arithexam_user', JSON.stringify(updatedUser));
+      window.location.reload(); // Reload to sync state immediately
+    }
+  };
+
   return (
     <div className="db-root">
       <div className="db-aurora" />
@@ -278,51 +288,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* ── BOTTOM SECTION ── */}
-            <div className="db-bottom">
-              <div className="db-grid-item">
-                <p className="db-sec-title">Quick Actions</p>
-                <div className="db-actions-row">
-                  <button className="db-action-card" onClick={startTestAndNavigate}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-                    <span className="db-action-label">Start New Exam</span>
-                    <span className="db-action-desc">Begin a timed assessment</span>
-                  </button>
-                  <div className="db-action-card">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
-                    <span className="db-action-label">View Reports</span>
-                    <span className="db-action-desc">Download past results</span>
-                  </div>
-                  <div className="db-action-card">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-                    <span className="db-action-label">Exam Guidelines</span>
-                    <span className="db-action-desc">Rules &amp; preparation tips</span>
-                  </div>
-                </div>
-              </div>
 
-              <div className="db-grid-item">
-                <p className="db-sec-title">Important Notes</p>
-                <div className="db-notes-list">
-                  <div className="db-note-item">
-                    <span className="db-note-dot" />
-                    <span>Ensure a stable internet connection before starting any exam</span>
-                  </div>
-                  <div className="db-note-item">
-                    <span className="db-note-dot" />
-                    <span>Webcam and microphone access will be required for proctored exams</span>
-                  </div>
-                  <div className="db-note-item">
-                    <span className="db-note-dot" />
-                    <span>Tab switching or window resizing during an exam will be flagged as a violation</span>
-                  </div>
-                  <div className="db-note-item">
-                    <span className="db-note-dot" />
-                    <span>Each question is individually timed — manage your time carefully</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
@@ -363,7 +329,7 @@ export default function Dashboard() {
               <div className="db-grid--full">
                 <div className="db-grid-item">
                   <p className="db-sec-title">Digital ID Card</p>
-                  <IdentityCard user={ud} hideEdit={false} />
+                  <IdentityCard user={ud} hideEdit={false} onEdit={handleEditProfile} />
                 </div>
               </div>
 
@@ -375,7 +341,7 @@ export default function Dashboard() {
                       { l: 'Full Name', v: ud.name },
                       { l: 'Email', v: ud.email },
                       { l: 'Candidate ID', v: ud.id, id: true },
-                      { l: 'Status', b: '✓ Verified' }
+                      { l: 'Status', b: <div style={{display: 'flex', alignItems: 'center', gap: '4px'}}><Check size={14}/> Verified</div> }
                     ].map((row, i) => (
                       <div key={i} className="db-log-row">
                         <span className="db-log-date">{row.l}</span>

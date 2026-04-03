@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/ForgotPassword.css';
+import { Check, X, ArrowRight, ArrowLeft } from 'lucide-react';
+
 
 /* ─────────────────────────────
    HELPERS
@@ -128,7 +130,7 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
               </div>
               <div className="fc-fields">
                 <div className="fc-field-row"><span className="fc-field-lbl">Recovery Email</span><span className={`fc-field-val ${email ? 'fc-field-val--filled' : ''}`}>{email ? masked : '— — — — — — —'}</span></div>
-                <div className="fc-field-row"><span className="fc-field-lbl">Recovery Status</span><span className="fc-field-val fc-field-val--filled fc-field-val--status">{step === 0 && 'AWAITING EMAIL'}{step === 1 && 'OTP SENT'}{step === 2 && 'VERIFIED — SET NEW PASSWORD'}{step === 3 && '✓ PASSWORD RESET COMPLETE'}</span></div>
+                <div className="fc-field-row"><span className="fc-field-lbl">Recovery Status</span><span className="fc-field-val fc-field-val--filled fc-field-val--status" style={{display: 'flex', alignItems: 'center', gap: '4px'}}>{step === 0 && 'AWAITING EMAIL'}{step === 1 && 'OTP SENT'}{step === 2 && 'VERIFIED — SET NEW PASSWORD'}{step === 3 && <><Check size={14}/> PASSWORD RESET COMPLETE</>}</span></div>
                 <div className="fc-field-row">
                   <span className="fc-field-lbl">Security Level</span>
                   <div className="fc-security-dots">{[0, 1, 2, 3].map(i => (<span key={i} className={`fc-security-dot ${i <= step ? 'fc-security-dot--on' : ''}`} />))}<span className="fc-security-label">{step === 0 ? 'Level 1' : step === 1 ? 'Level 2' : step === 2 ? 'Level 3' : 'Complete'}</span></div>
@@ -136,7 +138,7 @@ function RecoveryCard({ step, email, emailOk, resetDone }) {
               </div>
             </div>
             <div className="fc-footer">
-              <span className={`fc-badge ${resetDone ? 'fc-badge--valid' : step > 0 ? 'fc-badge--progress' : 'fc-badge--pending'}`}>{resetDone ? '✓ RECOVERED' : step > 0 ? 'IN PROGRESS' : 'PENDING'}</span>
+              <span className={`fc-badge ${resetDone ? 'fc-badge--valid' : step > 0 ? 'fc-badge--progress' : 'fc-badge--pending'}`} style={{display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center'}}>{resetDone ? <><Check size={14}/> RECOVERED</> : step > 0 ? 'IN PROGRESS' : 'PENDING'}</span>
             </div>
           </div>
         </div>
@@ -352,12 +354,12 @@ export default function ForgotPassword() {
               {touched.e && email && !emailOk &&
                 <p className="fp-hint fp-hint--e">Enter a valid email address</p>}
               {emailOk && touched.e &&
-                <p className="fp-hint fp-hint--ok">✓ Recovery card updating live</p>}
+                <p className="fp-hint fp-hint--ok" style={{display: 'flex', alignItems: 'center', gap: '4px'}}><Check size={14} /> Recovery card updating live</p>}
 
               <button type="submit" className="fp-submit" disabled={loading}>
                 {loading
                   ? <><span className="fp-spinner"/>Sending OTP…</>
-                  : <><span>Send Recovery Code</span><span className="fp-submit__arrow">→</span></>
+                  : <><span>Send Recovery Code</span><span className="fp-submit__arrow" style={{display: 'flex'}}><ArrowRight size={16} /></span></>
                 }
               </button>
             </form>
@@ -373,7 +375,7 @@ export default function ForgotPassword() {
               <OtpInput value={otp} onChange={v => { setOtp(v); setOtpErr(''); }} disabled={false}/>
               {otpErr && <p className="fp-hint fp-hint--e">{otpErr}</p>}
               {otp.length === 6 && !otpErr &&
-                <p className="fp-hint fp-hint--ok">✓ Ready to verify</p>}
+                <p className="fp-hint fp-hint--ok" style={{display: 'flex', alignItems: 'center', gap: '4px'}}><Check size={14} /> Ready to verify</p>}
 
               <div className="fp-otp-actions">
                 <button
@@ -381,7 +383,7 @@ export default function ForgotPassword() {
                   onClick={handleVerifyOtp} disabled={loading}>
                   {loading
                     ? <><span className="fp-spinner"/>Verifying…</>
-                    : 'Verify Code →'
+                    : <span style={{display: 'flex', alignItems: 'center', gap: '4px'}}>Verify Code <ArrowRight size={16} /></span>
                   }
                 </button>
                 <ResendTimer onResend={handleResendOtp}/>
@@ -447,15 +449,15 @@ export default function ForgotPassword() {
                 </button>
               </Field>
               {confirm && (
-                <p className={`fp-hint ${matchOk ? 'fp-hint--ok' : 'fp-hint--e'}`}>
-                  {matchOk ? '✓ Passwords match' : '✗ Passwords do not match'}
+                <p className={`fp-hint ${matchOk ? 'fp-hint--ok' : 'fp-hint--e'}`} style={{display: 'flex', alignItems: 'center', gap: '4px'}}>
+                  {matchOk ? <><Check size={14} /> Passwords match</> : <><X size={14} /> Passwords do not match</>}
                 </p>
               )}
 
               <button type="submit" className="fp-submit" disabled={loading}>
                 {loading
                   ? <><span className="fp-spinner"/>Resetting…</>
-                  : <><span>Reset Password</span><span className="fp-submit__arrow">→</span></>
+                  : <><span>Reset Password</span><span className="fp-submit__arrow" style={{display: 'flex'}}><ArrowRight size={16} /></span></>
                 }
               </button>
             </form>
@@ -464,8 +466,8 @@ export default function ForgotPassword() {
           {/* Back + Security Trust */}
           <div className="fp-bottom">
             {step > 0 && step < 3 && (
-              <button className="fp-back" onClick={() => { setStep(s => s - 1); setError(''); setOtpErr(''); }}>
-                ← Back
+              <button className="fp-back" onClick={() => { setStep(s => s - 1); setError(''); setOtpErr(''); }} style={{display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center'}}>
+                <ArrowLeft size={16} /> Back
               </button>
             )}
 

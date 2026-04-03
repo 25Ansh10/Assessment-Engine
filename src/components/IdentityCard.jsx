@@ -1,8 +1,10 @@
 import React from 'react';
 import './IdentityCard.css';
+import { Check } from 'lucide-react';
+
 
 const maskEmail = (email) => {
-  if (!email || !email.includes('@')) return '— — — — — — —';
+  if (!email || !email.includes('@')) return 'Awaiting Input';
   const [local, domain] = email.split('@');
   if (local.length <= 2) return email;
   return local[0] + '•'.repeat(Math.min(local.length - 2, 5)) + local[local.length - 1] + '@' + domain;
@@ -85,7 +87,7 @@ export default function IdentityCard({
         <div className="idc-footer">
           <div className="idc-f-left">
             <div className={`idc-status ${isVerified ? 'idc-status--verified' : ''}`}>
-              {isVerified ? '✓ VERIFIED' : 'PENDING'}
+              {isVerified ? <span style={{display: 'flex', alignItems: 'center', gap: '3px'}}><Check size={12}/> VERIFIED</span> : 'PENDING'}
             </div>
             <div className="idc-meta">Status: ACTIVE</div>
           </div>

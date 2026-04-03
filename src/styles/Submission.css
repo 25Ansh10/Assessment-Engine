@@ -156,5 +156,5 @@
   padding: 4px 10px;
   background: #f5f7fb;
   border-radius: 6px;
-  font-family: monospace;
+  font-family: var(--font-body);
 }

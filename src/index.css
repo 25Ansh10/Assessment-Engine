@@ -30,8 +30,8 @@
   --border-focus: #94A3B8;
 
   /* ─── 2. Typography (Calibri & Times New Roman) ─── */
-  --font-heading: 'Times New Roman', Times, serif;
-  --font-body: 'Calibri', 'Segoe UI', Candara, Arial, sans-serif;
+  --font-heading: 'Calibri', sans-serif;
+  --font-body: 'Times New Roman', serif;
 
   /* Typography Ratios (Modular Scale 1.2) */
   --fs-h1: clamp(2rem, 5vw, 3rem);     /* Main hero/section heading */

@@ -358,7 +358,7 @@
 }
 
 .pe-topbar__brand { display: flex; align-items: center; gap: 10px; }
-.pe-topbar__name  { font-family: var(--font-heading); font-weight: 800; font-size: 18px; color: var(--ink); }
+.pe-topbar__name  { font-family: var(--font-heading); font-weight: 800; font-size: 18px; color: var(--primary); }
 
 /* Step Indicator — Center */
 .pe-topbar__steps {

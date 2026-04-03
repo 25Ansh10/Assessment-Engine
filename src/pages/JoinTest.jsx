@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Target, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
 import { mockExams } from '../data/mockExams';
 import '../styles/JoinTest.css';
 
@@ -83,7 +84,7 @@ export default function JoinTest() {
   return (
     <div className="join-test-page">
       <div className="join-test-content">
-        <div className="join-test-content__icon">🎯</div>
+        <div className="join-test-content__icon" style={{display:'flex',justifyContent:'center'}}><Target size={40} color="var(--primary)" strokeWidth={1.5} /></div>
         <h1 className="join-test-content__title">Join an Exam</h1>
         <p className="join-test-content__subtitle">Enter the 6-character test code provided by your instructor</p>
 
@@ -153,8 +154,8 @@ export default function JoinTest() {
               </div>
             </div>
             {exam.proctored && (
-              <div className="exam-preview__proctored">
-                🔒 AI-Proctored Examination
+              <div className="exam-preview__proctored" style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+                <Lock size={14} style={{marginRight:'6px'}}/> AI-Proctored Examination
               </div>
             )}
           </div>
@@ -167,11 +168,11 @@ export default function JoinTest() {
           disabled={!exam}
           id="proceed-btn"
         >
-          {exam ? 'Proceed to Verification →' : 'Enter Test Code'}
+          {exam ? <span style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'6px'}}>Proceed to Verification <ArrowRight size={16}/></span> : 'Enter Test Code'}
         </button>
 
         <div className="join-test-back">
-          <Link to="/dashboard">← Back to Dashboard</Link>
+          <Link to="/dashboard" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'6px'}}><ArrowLeft size={16}/> Back to Dashboard</Link>
         </div>
       </div>
     </div>

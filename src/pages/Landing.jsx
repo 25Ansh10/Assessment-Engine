@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { Check, Heart } from 'lucide-react';
 import '../styles/Landing.css';
 
 import heroStudents from '../assets/hero_students.png';
@@ -123,11 +124,11 @@ export default function Landing() {
     { 
       icon: (
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ), 
-      title: 'Device Agnostic', 
-      desc: 'Take your exam on a smartphone, tablet, or laptop. Consistent performance everywhere.', 
+      title: 'Desktop Optimized', 
+      desc: 'Take your proctored exams securely from any laptop or desktop web browser.', 
       color: 'var(--accent)', 
       img: null 
     },
@@ -137,25 +138,22 @@ export default function Landing() {
     {
       tag: 'Secure Testing',
       title: 'A Fair Playing Field for Every Student',
-      desc: 'Our AI proctoring identifies distractions and ensures integrity without being intrusive, so you can focus entirely on your performance.',
+      desc: 'Our AI proctoring identifies distractions and ensures integrity without being intrusive. Featuring zero-latency face detection and auto-lock mechanisms, you can focus entirely on your performance.',
       img: aiProctoring,
-      badges: ['Face Detection', 'Integrity First', 'Auto-Lock', 'Zero Latency'],
       accent: 'var(--primary)',
     },
     {
       tag: 'Robust Security',
       title: 'Unmatched Exam Integrity',
-      desc: 'Complete peace of mind with webcam monitoring, tab detection, and fullscreen enforcement to ensure a verified testing environment.',
+      desc: 'Experience complete peace of mind with our verified anti-cheat system. We utilize continuous webcam monitoring, smart tab detection, and fullscreen enforcement to secure your testing environment.',
       img: securityFeatures,
-      badges: ['Webcam Mon', 'Tab Detection', 'Anti-Cheat', 'Verified'],
       accent: 'var(--green)',
     },
     {
       tag: 'Personalized Insights',
       title: 'Don\'t Just Test, Grow!',
-      desc: 'Get an instant, deep-dive report of your strengths and weaknesses the moment you finish. Track your progress across multiple sessions.',
+      desc: 'Get an instant, deep-dive report of your strengths the moment you finish. Track your progress, analyze topics, and identify skill gaps across multiple sessions instantly.',
       img: analyticsDashboard,
-      badges: ['Instant Score', 'Topic Analysis', 'Progress Chart', 'Skill Gaps'],
       accent: 'var(--secondary)',
     },
   ];
@@ -466,14 +464,6 @@ export default function Landing() {
                 <span className="landing-tag" style={{ background: `${item.accent}10`, color: item.accent }}>{item.tag}</span>
                 <h3 className="landing-showcase__title">{item.title}</h3>
                 <p className="landing-showcase__desc">{item.desc}</p>
-                <div className="landing-showcase__badges">
-                  {item.badges.map((badge, bi) => (
-                    <span key={bi} className="landing-showcase__badge" style={{ borderColor: `${item.accent}25`, color: item.accent }}>
-                      <span className="landing-showcase__badge-dot" style={{ background: item.accent }} />
-                      {badge}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           ))}
@@ -555,16 +545,16 @@ export default function Landing() {
       <section className="landing-cta reveal-scale">
         <div className="landing-inner landing-cta__inner">
           <div className="landing-cta__left">
-            <h2 className="landing-cta__title">Ready to ace your<br />next big assessment?</h2>
-            <p className="landing-cta__desc">Join 50,000+ students. Join an exam or practice for free today.</p>
+            <h2 className="landing-cta__title">Ready to take your<br />next secure exam?</h2>
+            <p className="landing-cta__desc">Join 50,000+ students. Sign in to start your assessment today.</p>
             <div className="landing-cta__actions">
               <Link to="/register"><button className="landing-btn-primary landing-btn-primary--lg magnetic-btn">Get Started Now</button></Link>
               <Link to="/login"><button className="landing-btn-outline magnetic-btn">Candidate Login</button></Link>
             </div>
             <div className="landing-cta__trust">
-              <span>✓ Free for Students</span>
-              <span>✓ Instant Progress Tracker</span>
-              <span>✓ Mobile Ready</span>
+              <span style={{display:'flex', alignItems:'center', gap:'4px'}}><Check size={16}/> Free for Students</span>
+              <span style={{display:'flex', alignItems:'center', gap:'4px'}}><Check size={16}/> Instant Progress Tracker</span>
+              <span style={{display:'flex', alignItems:'center', gap:'4px'}}><Check size={16}/> Laptops & Desktops Only</span>
             </div>
           </div>
           <div className="landing-cta__right">
@@ -633,7 +623,7 @@ export default function Landing() {
         <div className="landing-footer__bottom">
           <div className="landing-inner landing-footer__bottom-inner">
             <span>© 2026 ArithExam. All rights reserved.</span>
-            <span>Made with ♥ in India</span>
+            <span style={{display:'flex', alignItems:'center', gap:'4px', justifyContent:'center'}}>Made with <Heart size={14} fill="var(--primary)" color="var(--primary)" /> in India</span>
           </div>
         </div>
       </footer>
