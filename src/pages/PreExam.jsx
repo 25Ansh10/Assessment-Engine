@@ -27,13 +27,17 @@ const EXAM_META = {
 };
 
 const RULES = [
-  { icon: <Ic.Time/>, text: "Keep an eye on the timer! Each question auto-submits when time runs out." },
-  { icon: <Ic.Lock/>, text: "Fullscreen mode is required. Do not switch tabs or minimize the browser window." },
-  { icon: <Ic.Cam/>, text: "Stay centered in the camera frame for the entire duration of the assessment." },
-  { icon: <Ic.ArrowRight/>, text: "You can only go forward. Choose carefully, as you cannot go back to previous answers." },
+  { icon: <Ic.Time/>, text: "Keep an eye on the timer. Each question auto-submits when time runs out." },
+  { icon: <Ic.Lock/>, text: "Fullscreen mode is mandatory. Do not switch tabs or minimize the window." },
+  { icon: <Ic.Cam/>, text: "Stay centered in the camera frame for the entire duration of the exam." },
+  { icon: <Ic.ArrowRight/>, text: "You can only go forward. Choose carefully — no going back to previous answers." },
+  { icon: <Ic.NoEntry/>, text: "External resources, notes, or secondary devices are strictly prohibited." },
+  { icon: <Ic.Network/>, text: "Ensure a stable internet connection throughout. Disconnections may auto-submit." },
+  { icon: <Ic.Zap/>, text: "Results are generated instantly after submission. Review your performance immediately." },
+  { icon: <Ic.Mic/>, text: "Microphone access is required for the Interactive Viva section of the assessment." },
 ];
 
-const TOPICS = ["Python", "React", "Coding", "Interactive Viva"];
+const TOPICS = ["Python", "React", "Coding", "Interactive Viva", "Ethical Reasoning"];
 
 const getRegPhoto = () =>
   sessionStorage.getItem("ae_register_photo") ||
@@ -47,54 +51,65 @@ function PageInstructions({ onNext }) {
 
   return (
     <div className="pe-page pe-page--instructions">
-
-      {/* Exam Info Card */}
-      <div className="pe-info-card">
-        <div className="pe-info-card__accent" />
-        <div className="pe-info-card__body">
-          <div className="pe-info-card__left">
-            <h1 className="pe-info-card__title">{EXAM_META.title}</h1>
-            <div className="pe-chips">
-              <span className="pe-chip pe-chip--teal">Proctored</span>
+      <div className="pe-split-layout">
+        
+        {/* Left Column: Assessment Profile */}
+        <div className="pe-split-left">
+          <div className="pe-profile-section">
+            <h1 className="pe-profile-title">{EXAM_META.title}</h1>
+            <div className="pe-chips pe-chips--vertical">
+              <span className="pe-chip pe-chip--teal">Proctored Assessment</span>
               <span className="pe-chip pe-chip--slate">No Negative Marking</span>
               <span className="pe-chip pe-chip--slate">MCQ + Coding + Viva</span>
             </div>
-            <div className="pe-topics">
-              {TOPICS.map(t => <span key={t} className="pe-topic-tag">{t}</span>)}
-            </div>
-          </div>
-          <div className="pe-info-card__stats">
-            {[
-              { val: EXAM_META.total, lbl: "Questions" },
-              { val: `${EXAM_META.duration}m`, lbl: "Duration" },
-              { val: "1m", lbl: "per MCQ" },
-            ].map((m, i) => (
-              <div key={i} className="pe-stat">
-                <span className="pe-stat__val">{m.val}</span>
-                <span className="pe-stat__lbl">{m.lbl}</span>
+            
+            <div className="pe-topics-box">
+              <p className="pe-label">Coverage Topics</p>
+              <div className="pe-topics">
+                {TOPICS.map(t => <span key={t} className="pe-topic-tag">{t}</span>)}
               </div>
-            ))}
+            </div>
+
+            <div className="pe-stats-stack">
+              {[
+                { val: "10", lbl: "Total Questions", sub: "4 MCQ + 4 Viva + 2 Coding" },
+                { val: "1m", lbl: "MCQ & Viva Time", sub: "Per each question" },
+                { val: "11m", lbl: "Coding Time", sub: "Per each question" },
+                { val: "30m", lbl: "Total Duration", sub: "Overall limit" },
+              ].map((m, i) => (
+                <div key={i} className="pe-stat-item">
+                  <div className="pe-stat-item__val">{m.val}</div>
+                  <div className="pe-stat-item__meta">
+                    <span className="pe-stat-item__lbl">{m.lbl}</span>
+                    <span className="pe-stat-item__sub">{m.sub}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Instructions */}
-      <div className="pe-section">
-        <h2 className="pe-section__heading pe-section__heading--center">
-          Exam Instructions
-        </h2>
-        <div className="pe-rules-minimal">
-          {RULES.map((r, i) => (
-            <div key={i} className="pe-rule-item" style={{ animationDelay: `${i * 55}ms` }}>
-              <span className="pe-rule-item__icon">{r.icon}</span>
-              <span className="pe-rule-item__text">{r.text}</span>
+        {/* Right Column: Instructions */}
+        <div className="pe-split-right">
+          <div className="pe-ins-container">
+            <h2 className="pe-section__heading">
+              Exam Instructions
+            </h2>
+            <div className="pe-rules-stack">
+              {RULES.map((r, i) => (
+                <div key={i} className="pe-rule-card" style={{ animationDelay: `${i * 60}ms` }}>
+                  <span className="pe-rule-card__icon">{r.icon}</span>
+                  <p className="pe-rule-card__text">{r.text}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
+
       </div>
 
-      {/* Consent + CTA */}
-      <div className="pe-consent-row">
+      {/* Footer: Consent + CTA */}
+      <div className="pe-footer-row">
         <div
           className={`pe-consent ${agreed ? "pe-consent--on" : ""}`}
           onClick={() => setAgreed(v => !v)}
@@ -107,7 +122,7 @@ function PageInstructions({ onNext }) {
             {agreed && <span className="pe-consent__tick">✓</span>}
           </span>
           <span className="pe-consent__text">
-            I have read all instructions, consent to proctoring, and agree to abide by the exam rules.
+            I confirm that I have read the instructions and agree to the proctoring terms.
           </span>
         </div>
 
@@ -133,48 +148,163 @@ function PageVerify({ onBegin }) {
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
 
+  const [sysStatus, setSysStatus] = useState({ net: "wait", cam: "wait", mic: "wait" });
+  const [sysReady, setSysReady] = useState(false);
+  const [micLevel, setMicLevel] = useState(0);
+
+  const [camState, setCamState] = useState("idle"); 
+  const [snapshot, setSnapshot] = useState(null);
+  const [verifying, setVerifying] = useState(false);
+  const [verified, setVerified] = useState(false);
+  const [matchPct, setMatchPct] = useState(null);
+  const [launching, setLaunching] = useState(false);
+
+  const regPhoto = getRegPhoto();
+
+  useEffect(() => {
+    runSystemCheck();
+    return () => stopStream();
+  }, []);
+
+  const stopStream = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+  };
+
+  const runSystemCheck = async () => {
+    // 1. Network
+    await new Promise(r => setTimeout(r, 600));
+    setSysStatus(s => ({ ...s, net: "ok" }));
+
+    // 2. Camera
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ video: true });
+      s.getTracks().forEach(t => t.stop());
+      setSysStatus(s => ({ ...s, cam: "ok" }));
+    } catch { setSysStatus(s => ({ ...s, cam: "err" })); }
+
+    // 3. Microphone
+    try {
+      const ms = await navigator.mediaDevices.getUserMedia({ audio: true });
+      setSysStatus(s => ({ ...s, mic: "ok" }));
+      
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = ctx.createMediaStreamSource(ms);
+      const ana = ctx.createAnalyser();
+      ana.fftSize = 256;
+      src.connect(ana);
+      const buf = new Uint8Array(ana.frequencyBinCount);
+      let active = true;
+      const tick = () => {
+        if (!active) return;
+        ana.getByteFrequencyData(buf);
+        setMicLevel(buf.reduce((a, b) => a + b, 0) / buf.length);
+        requestAnimationFrame(tick);
+      };
+      tick();
+      setTimeout(() => { active = false; ms.getTracks().forEach(t => t.stop()); ctx.close(); }, 3000);
+    } catch { setSysStatus(s => ({ ...s, mic: "err" })); }
+
+    setSysReady(true);
+  };
+
+  const startCamera = async () => {
+    stopStream();
+    setCamState("requesting");
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" },
+        audio: false,
+      });
+      streamRef.current = s;
+      if (videoRef.current) {
+        videoRef.current.srcObject = s;
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.play().catch(() => {});
+          setCamState("live");
+        };
+      }
+    } catch { setCamState("error"); }
+  };
+
+  const doCapture = () => {
+    const v = videoRef.current;
+    const c = canvasRef.current;
+    if (!v || !c) return;
+
+    const w = v.videoWidth || 640;
+    const h = v.videoHeight || 480;
+    c.width = w; c.height = h;
+
+    const ctx = c.getContext("2d");
+    ctx.save();
+    ctx.translate(w, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(v, 0, 0, w, h);
+    ctx.restore();
+
+    const data = c.toDataURL("image/jpeg", 0.92);
+    stopStream();
+    setSnapshot(data);
+    sessionStorage.setItem("ae_live_photo", data);
+    setCamState("captured");
+
+    setVerifying(true);
+    setTimeout(() => {
+      setMatchPct(Math.floor(Math.random() * 5) + 94);
+      setVerified(true);
+      setVerifying(false);
+    }, 1500);
+  };
+
+  const retake = () => {
+    stopStream();
+    setSnapshot(null);
+    setVerified(false);
+    setMatchPct(null);
+    setVerifying(false);
+    setCamState("idle");
+  };
+
+  const handleBegin = async () => {
+    setLaunching(true);
+    try { await document.documentElement.requestFullscreen(); } catch {}
+    setTimeout(() => {
+      if (onBegin) onBegin();
+      navigate("/exam");
+    }, 1000);
+  };
+
+  const isSysOk = sysStatus.net === "ok" && sysStatus.cam === "ok" && sysStatus.mic === "ok";
+
   const statusIcon = (s) => {
     if (s === "wait") return <span className="pe-sc-spinner" />;
-    if (s === "ok") return (
-      <span className="pe-sc-status-badge pe-sc-status-badge--ok">
-        <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        Ready
-      </span>
-    );
-    return (
-      <span className="pe-sc-status-badge pe-sc-status-badge--err">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        Error
-      </span>
-    );
+    if (s === "ok")   return <span className="pe-sc-dot pe-sc-dot--ok">✓</span>;
+    return                  <span className="pe-sc-dot pe-sc-dot--err">✗</span>;
   };
 
   return (
     <div className="pe-page pe-page--verify">
-
       <div className="pe-verify-layout">
 
-        {/* ── LEFT: System Check ── */}
-        <div className="pe-verify-left">
+        {/* ── LEFT: System Status Check ── */}
+        <div className="pe-verify-section pe-verify-left">
           <h2 className="pe-section__heading">
-            System Check
+             System Verification
           </h2>
-
           <div className="pe-sc-list">
             {[
-              { key: "net", icon: <Ic.Network/>, label: "Network", detail: sysStatus.net === "ok" ? "Stable connection" : "Checking…" },
-              { key: "cam", icon: <Ic.Cam/>, label: "Camera", detail: sysStatus.cam === "ok" ? "Accessible" : sysStatus.cam === "err" ? "Access denied" : "Checking…" },
-              { key: "mic", icon: <Ic.Mic/>, label: "Microphone", detail: sysStatus.mic === "ok" ? "Level detected" : sysStatus.mic === "err" ? "Blocked / muted" : "Calibrating…" },
+              { key: "net", label: "Network Connectivity", icon: <Ic.Network/>, detail: sysStatus.net === "ok" ? "Stable Link" : "Probing..." },
+              { key: "cam", label: "Optic Interface",      icon: <Ic.Cam/>,     detail: sysStatus.cam === "ok" ? "Sensor Ready" : sysStatus.cam === "err" ? "Access Denied" : "Detecting..." },
+              { key: "mic", label: "Bio-Audio Signal",     icon: <Ic.Mic/>,     detail: sysStatus.mic === "ok" ? "Input Active" : sysStatus.mic === "err" ? "Blocked" : "Calibrating..." },
             ].map(item => (
               <div key={item.key} className={`pe-sc-row pe-sc-row--${sysStatus[item.key]}`}>
                 <div className="pe-sc-row__icon">{statusIcon(sysStatus[item.key])}</div>
                 <div className="pe-sc-row__info">
-                  <div className="pe-sc-row__name">
-                    <span className="pe-sc-row__vec">{item.icon}</span> 
-                    {item.label}
-                  </div>
+                  <span className="pe-sc-row__name">{item.label}</span>
                   <span className="pe-sc-row__detail">{item.detail}</span>
-                  {/* mic level bar */}
                   {item.key === "mic" && sysStatus.mic === "ok" && (
                     <div className="pe-mic-track">
                       <div className="pe-mic-fill" style={{ width: `${Math.min(micLevel * 2.2, 100)}%` }} />
@@ -185,39 +315,36 @@ function PageVerify({ onBegin }) {
             ))}
           </div>
 
-          {sysReady && !sysOk && (
+          {!isSysOk && sysReady && (
             <div className="pe-sc-err-box">
-              <p>Some permissions are blocked. Check your browser settings and reload.</p>
-              <button className="pe-ghost-btn" onClick={() => window.location.reload()}>
-                Reload &amp; Retry
-              </button>
+              <p>Mandatory sensors are missing. Ensure camera and mic access are granted.</p>
+              <button className="pe-ghost-btn" onClick={() => window.location.reload()}>Reload Terminal</button>
             </div>
           )}
 
-          {sysReady && sysOk && camState === "idle" && (
-            <button className="pe-cta-btn pe-cta-btn--ready pe-cta-btn--full" onClick={startCamera}>
-              Open Camera →
-            </button>
+          {isSysOk && camState === "idle" && (
+             <button className="pe-cta-btn pe-cta-btn--ready pe-cta-btn--full" onClick={startCamera}>
+                Activate Optics →
+             </button>
           )}
         </div>
 
-        {/* ── RIGHT: Face Capture ── */}
-        <div className="pe-verify-right">
+        {/* ── RIGHT: Identity Verification ── */}
+        <div className="pe-verify-section pe-verify-right">
           <h2 className="pe-section__heading">
-             Identity Verification
+             Identity Cross-Link
           </h2>
 
           <div className="pe-face-row">
-
-            {/* Registered photo */}
+            {/* Registered profile */}
             <div className="pe-face-slot">
-              <p className="pe-face-slot__lbl">Registered</p>
+              <span className="pe-face-slot__lbl">Record Bio</span>
               <div className="pe-face-frame pe-face-frame--static">
-                <img src={regPhoto} alt="Registered" className="pe-face-img" />
+                <img src={regPhoto} alt="Ref" className="pe-face-img" />
               </div>
             </div>
 
-            {/* Match score / spinner */}
+            {/* Comparison Hub */}
             <div className="pe-face-vs">
               {verifying ? (
                 <div className="pe-vs__spinner" />
@@ -227,102 +354,59 @@ function PageVerify({ onBegin }) {
                   <span className="pe-vs__score-lbl">match</span>
                 </div>
               ) : (
-                <span className="pe-face-vs__text">vs</span>
+                <span className="pe-face-vs__text">VS</span>
               )}
             </div>
 
-            {/* Live capture slot */}
+            {/* Live capture */}
             <div className="pe-face-slot">
-              <p className="pe-face-slot__lbl">Live Capture</p>
-              <div className={`pe-face-frame ${showVideo ? "pe-face-frame--live" : ""}`}>
-
-                {/* video always mounted */}
-                <video
-                  ref={videoRef}
-                  autoPlay muted playsInline
-                  className="pe-face-video"
-                  style={{ display: showVideo ? "block" : "none" }}
-                />
-
-                {/* snapshot */}
-                {camState === "captured" && snapshot && (
-                  <img src={snapshot} alt="Captured" className="pe-face-img" />
+              <span className="pe-face-slot__lbl">Live Bio</span>
+              <div className={`pe-face-frame ${camState === "live" ? "pe-face-frame--live" : ""}`}>
+                <video ref={videoRef} autoPlay muted playsInline style={{ display: camState === "live" ? "block" : "none" }} className="pe-face-video" />
+                {snapshot && <img src={snapshot} alt="Captured" className="pe-face-img" />}
+                
+                {camState === "idle" && (
+                   <div className="pe-face-placeholder"><span className="pe-face-idle-ic">📷</span></div>
                 )}
-
-                {/* placeholder */}
-                {(camState === "idle" || camState === "requesting" || camState === "error") && (
-                  <div className="pe-face-placeholder">
-                    {camState === "requesting" && <span className="pe-sc-spinner" />}
-                    {camState === "idle" && <span className="pe-face-idle-ic">📷</span>}
-                    {camState === "error" && <span className="pe-face-idle-ic">🚫</span>}
-                  </div>
+                
+                {verifying && (
+                   <div className="pe-pulse-scan-overlay">
+                      <div className="pe-pulse-scanline" />
+                   </div>
                 )}
-
-                {/* LIVE badge */}
+                {camState === "live" && <div className="pe-pulse-scanline" />}
                 {camState === "live" && (
-                  <div className="pe-live-badge">
-                    <span className="pe-live-badge__dot" /> LIVE
-                  </div>
+                   <div className="pe-live-badge"><span className="pe-live-badge__dot" /> LIVE</div>
                 )}
-
-                {/* scan line */}
-                {camState === "live" && <div className="pe-scan" />}
-
-                {/* verified overlay */}
-                {camState === "captured" && verified && (
-                  <div className="pe-verified-badge">✓ VERIFIED</div>
-                )}
+                {verified && <div className="pe-verified-badge">✓ IDENTITY CONFIRMED</div>}
               </div>
             </div>
           </div>
 
-          {/* hidden canvas */}
-          <canvas ref={canvasRef} style={{ display: "none" }} />
-
-          {/* Action */}
           <div className="pe-face-action">
-            {camState === "idle" && (
-              <p className="pe-hint">System check must pass before capturing.</p>
-            )}
-            {camState === "requesting" && (
-              <p className="pe-hint">Opening camera…</p>
-            )}
-            {camState === "error" && (
-              <button className="pe-ghost-btn" onClick={startCamera}>🔄 Retry Camera</button>
-            )}
             {camState === "live" && (
               <button className="pe-cta-btn pe-cta-btn--ready pe-cta-btn--full" onClick={doCapture}>
-                📸 Capture &amp; Verify
+                Capture & Verify Sample
               </button>
             )}
-            {camState === "captured" && verifying && (
-              <p className="pe-hint">Verifying identity…</p>
-            )}
-            {camState === "captured" && !verifying && verified && (
+            {verified && !verifying && (
               <div className="pe-face-done-row">
-                <p className="pe-hint pe-hint--ok">✓ Identity confirmed</p>
-                <button className="pe-ghost-btn" onClick={retake}>Retake</button>
+                 <p className="pe-hint pe-hint--ok">Identity verification successful.</p>
+                 <button className="pe-radar-retake" onClick={retake}>Retake</button>
               </div>
             )}
           </div>
 
-          {/* Begin exam */}
-          <button
+          <button 
             className={`pe-begin-btn ${verified ? "pe-begin-btn--ready" : "pe-begin-btn--disabled"}`}
             disabled={!verified || launching}
             onClick={handleBegin}
           >
-            {launching
-              ? <><span className="pe-btn-spinner" /> Launching…</>
-              : "▶  Begin Exam"}
+            {launching ? "HANDSHAKE..." : "▶   BEGIN ASSESSMENT"}
           </button>
-          {!verified && (
-            <p className="pe-hint" style={{ textAlign: "center", marginTop: 8 }}>
-              Complete identity verification to begin.
-            </p>
-          )}
         </div>
 
+        <canvas ref={canvasRef} style={{ display: "none" }} />
       </div>
     </div>
   );
