@@ -95,7 +95,8 @@ const SECTIONS_META = [
 const fmt = (s) =>
   `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
-const MAX_VIOLATIONS = 2;
+const MAX_VIOLATIONS = 2; // Reduced to 2 as requested
+const VIOLATION_GRACE_PERIOD = 5;
 
 /* ─── Icons ─── */
 const Ic = {
@@ -114,11 +115,12 @@ const Ic = {
 export default function Exam({ onFinish }) {
   const navigate = useNavigate();
 
-  const QUESTION_API = import.meta.env.VITE_QUESTION_API;
-
-  const [question, setQuestion] = useState(null);
-  const [sessionId, setSessionId] = useState(null);
-  const [answerText, setAnswerText] = useState("");
+  /* --- INTEGRATED PART START --- */
+  // const QUESTION_API = import.meta.env.VITE_QUESTION_API;
+  // const [question, setQuestion] = useState(null);
+  // const [sessionId, setSessionId] = useState(null);
+  // const [answerText, setAnswerText] = useState("");
+  /* --- INTEGRATED PART END --- */
 
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -138,6 +140,7 @@ export default function Exam({ onFinish }) {
   const toastTimer = useRef(null);
   const violationRef = useRef(0); // sync ref for use inside event handlers
   const submittedRef = useRef(false);
+  const shellRef = useRef(null);
 
   /* keep refs in sync */
   useEffect(() => { violationRef.current = violations; }, [violations]);
@@ -145,6 +148,7 @@ export default function Exam({ onFinish }) {
 
   const [confirmSubmit, setConfirmSubmit] = useState(false);
 
+  /* --- INTEGRATED PART START ---
   const submitAnswerHandler = async () => {
     if (!answerText) {
       alert("Answer required");
@@ -178,6 +182,7 @@ export default function Exam({ onFinish }) {
       console.error(err);
     }
   };
+  --- INTEGRATED PART END --- */
 
   /* ─── Toast helper — shows message, auto-clears ─── */
   const showToast = useCallback((msg, type = "warn") => {
@@ -205,17 +210,24 @@ export default function Exam({ onFinish }) {
 
   /* ── Reset timer on question change ── */
   useEffect(() => {
-    setQTimeLeft(question?.duration || 60);
+    // setQTimeLeft(question?.duration || 60); /* INTEGRATED PART */
+    setQTimeLeft(QUESTIONS[current]?.duration || 60); /* LOCAL */
   }, [current]);
 
   /* ── Per-question countdown ── */
   useEffect(() => {
     if (submitted) return;
-    if (qTimeLeft <= 0) { goNext(true); return; }
-    const t = setInterval(() => setQTimeLeft(s => s - 1), 1000);
-    return () => clearInterval(t);
-  }, [qTimeLeft, submitted, current]);
+    if (qTimeLeft <= 0) {
+      goNext(true);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setQTimeLeft((prev) => prev - 1);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [qTimeLeft, submitted]);
 
+  /* --- INTEGRATED PART START ---
   useEffect(() => {
     const stored = localStorage.getItem("examSession");
 
@@ -229,6 +241,7 @@ export default function Exam({ onFinish }) {
     setSessionId(data.session_id);
     setQuestion(data);
   }, []);
+  --- INTEGRATED PART END --- */
 
   /* ══════════════════════════════════════════
      ANTI-CHEAT: ALL DETECTION HOOKS
@@ -498,13 +511,14 @@ export default function Exam({ onFinish }) {
       navigate("/results");
     }, 1200);
   };
-  if (!question) return null;
+  // if (!question) return null; /* INTEGRATED PART */
   /* ── Derived ── */
-  const q = question;
+  // const q = question; /* INTEGRATED PART */
+  const q = { ...QUESTIONS[current], question_type: QUESTIONS[current]?.type, question: QUESTIONS[current]?.text }; /* LOCAL FALLBACK */
   const secColor = SEC_COLOR[q?.section] ?? "#0D9488";
   const isUrgent = qTimeLeft <= 10;
   const isWarn = qTimeLeft <= 20 && !isUrgent;
-  const progressPct = (current / QUESTIONS.length) * 100;
+  const progressPct = ((current + 1) / QUESTIONS.length) * 100;
   const answeredCount = Object.keys(answers).length;
 
 
@@ -564,227 +578,200 @@ export default function Exam({ onFinish }) {
         <SubmitModal count={answeredCount} onCancel={() => setConfirmSubmit(false)} onConfirm={() => doSubmit()} />
       )}
 
-      <div className={`ex-shell ${(!isFullScreen || tabWarning) ? "ex-shell--blurred" : ""}`}>
+        <div className="ex-main-wrapper">
+          {/* ── GLOBAL TOP BAR ── */}
+          <header className="ex-global-topbar">
+             <div className="ex-global-brand">
+                <img src="/logo.png" alt="Logo" />
+                <span>ArithExam</span>
+             </div>
+             <div className="ex-global-status">
+                Assessment In Progress
+             </div>
+          </header>
 
-        {/* ── Toast ── */}
-        {toast && (
-          <div className={`ex-toast ex-toast--${toast.type}`}>
-            {toast.type === "critical" ? "🛑" : <Ic.Warn />}
-            <span>{toast.msg}</span>
-          </div>
-        )}
+          <div className={`ex-shell ${(!isFullScreen || tabWarning) ? "ex-shell--blurred" : ""}`}>
 
-        {/* ── TOP BAR ── */}
-        <header className="ex-bar">
-          <div className="ex-bar__brand">
-            <img src="/logo.png" alt="ArithExam Logo" width="32" height="32" style={{ borderRadius: '8px', filter: 'drop-shadow(0 0 4px rgba(13,148,136,0.3))' }} />
-            <div>
-              <div className="ex-bar__name">ArithExam</div>
-              <div className="ex-bar__session">Live Assessment</div>
-            </div>
-          </div>
-
-          <div className="ex-bar__center">
-            <div className="ex-bar__prog-wrap">
-              <div className="ex-bar__prog-track">
-                <div className="ex-bar__prog-fill" style={{ width: `${progressPct}%` }} />
-              </div>
-              <span className="ex-bar__prog-label">Question {current + 1} of {QUESTIONS.length}</span>
-            </div>
-          </div>
-
-          <div className="ex-bar__right">
-            {/* Violation counter */}
-            <div className={`ex-violation-badge ${violations > 0 ? "ex-violation-badge--active" : ""}`}>
-              <Ic.Eye />
-              <span>{violations}/{MAX_VIOLATIONS} warnings</span>
-            </div>
-
-            {/* Timer */}
-            <div className={`ex-qtimer ${isUrgent ? "ex-qtimer--urgent" : isWarn ? "ex-qtimer--warn" : ""}`}>
-              <Ic.Clock />
-              <span className="ex-qtimer__val">{fmt(qTimeLeft)}</span>
-            </div>
-
-            {/* Proctor cam */}
-            <div className="ex-cam-thumb">
-              <video ref={camRef} autoPlay muted playsInline className="ex-cam-thumb__vid" />
-              <div className="ex-cam-thumb__dot" />
-            </div>
-          </div>
-        </header>
-
-        {/* ── BODY ── */}
-        <div className="ex-body">
-
-          {/* ── SIDEBAR ── */}
-          <aside className="ex-sidebar">
-
-            {/* Question map */}
-            <div className="ex-sidebar__block">
-              <p className="ex-sidebar__label">Questions</p>
-              <div className="ex-sidebar__questions">
-                {QUESTIONS.map((que, i) => {
-                  const isCur = i === current;
-                  const isDone = answers[i] !== undefined;
-                  const col = SEC_COLOR[que.section];
-                  return (
-                    <div
-                      key={i}
-                      className={`ex-qpill ${isCur ? "ex-qpill--active" : ""} ${isDone ? "ex-qpill--done" : ""}`}
-                      style={isCur ? { borderColor: col, color: col } : {}}
-                      title={`Q${i + 1} · ${que.section}`}
-                    >
-                      {isDone && !isCur
-                        ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>
-                        : <span>{i + 1}</span>
-                      }
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="ex-sidebar__divider" />
-
-            {/* Sections */}
-            <div className="ex-sidebar__block">
-              <p className="ex-sidebar__label">Sections</p>
-              {SECTIONS_META.map(sec => {
-                const done = QUESTIONS.filter((que, i) => que.section === sec.key && answers[i] !== undefined).length;
-                const isActive = q.section === sec.key;
-                const col = SEC_COLOR[sec.key];
-                return (
-                  <div
-                    key={sec.key}
-                    className={`ex-sec-item ${isActive ? "ex-sec-item--active" : ""}`}
-                    style={isActive ? { borderLeftColor: col } : {}}
-                  >
-                    <div className="ex-sec-item__icon" style={isActive ? { color: col } : {}}>
-                      {sec.type === "mcq" && <Ic.Check />}
-                      {sec.type === "coding" && <Ic.Code />}
-                      {sec.type === "viva" && <Ic.Msg />}
-                    </div>
-                    <div className="ex-sec-item__info">
-                      <span className="ex-sec-item__name">{sec.label}</span>
-                      <span className="ex-sec-item__count">{done}/{sec.total} done</span>
-                    </div>
-                    {isActive && <div className="ex-sec-item__pip" style={{ background: col }} />}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="ex-sidebar__divider" />
-
-            {/* Status */}
-            <div className="ex-sidebar__block">
-              <p className="ex-sidebar__label">Proctoring</p>
-              <div className="ex-status-row">
-                <span className="ex-status-dot ex-status-dot--green" />
-                <span className="ex-status-text">System OK</span>
-              </div>
-              <div className="ex-status-row">
-                <span className={`ex-status-dot ${violations >= MAX_VIOLATIONS ? "ex-status-dot--red" : violations > 0 ? "ex-status-dot--amber" : "ex-status-dot--green"}`} />
-                <span className="ex-status-text">Violations: {violations}/{MAX_VIOLATIONS}</span>
-              </div>
-              <div className="ex-status-row">
-                <span className="ex-status-dot ex-status-dot--teal" />
-                <span className="ex-status-text">Camera active</span>
-              </div>
-              <div className="ex-status-row">
-                <span className="ex-status-dot ex-status-dot--teal" />
-                <span className="ex-status-text">Screen monitored</span>
-              </div>
-            </div>
-
-          </aside>
-
-          {/* ── MAIN ── */}
-          <main className={`ex-main ${transitioning ? "ex-main--fade" : ""}`}>
-
-            <div className="ex-q-meta">
-              <div className="ex-q-tag" style={{ background: `${secColor}0f`, color: secColor, borderColor: `${secColor}28` }}>
-                {q.section} · {q.sectionFull}
-              </div>
-              <div className="ex-q-badge">
-                {q?.question_type === "mcq" && <><Ic.Check /> Multiple Choice</>}
-                {q?.question_type === "coding" && <><Ic.Code />  Coding Challenge</>}
-                {q?.question_type === "viva" && <><Ic.Msg />   Viva</>}
-              </div>
-              <div className="ex-q-badge" style={{ marginLeft: "auto", color: isUrgent ? "#dc2626" : isWarn ? "#7a5c0a" : "var(--text-3)" }}>
-                <Ic.Clock />
-                {q?.question_type === "coding" ? `${q.duration / 60} min` : `${q.duration}s`} per question
-              </div>
-            </div>
-
-            <div className="ex-q-card">
-              <div className="ex-q-num" style={{ color: secColor }}>Q{current + 1}</div>
-              <p className="ex-q-text">{q?.question}</p>
-            </div>
-
-            {q?.question_type === "mcq" && (
-              <div className="ex-options">
-                {q.options.map((opt, i) => {
-                  const sel = answerText === opt;
-                  return (
-                    <button
-                      key={i}
-                      className={`ex-opt ${sel ? "ex-opt--selected" : ""}`}
-                      style={sel ? { borderColor: secColor, background: `${secColor}07` } : {}}
-                      onClick={() => setAnswerText(opt)}
-                    >
-                      <span className="ex-opt__letter" style={sel ? { background: secColor, color: "#fff", borderColor: secColor } : {}}>
-                        {String.fromCharCode(65 + i)}
-                      </span>
-                      <span className="ex-opt__text">{opt}</span>
-                      {sel && (
-                        <span className="ex-opt__check" style={{ color: secColor }}>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+            {/* ── Toast ── */}
+            {toast && (
+              <div className={`ex-toast ex-toast--${toast.type}`}>
+                {toast.type === "critical" ? "🛑" : <Ic.Warn />}
+                <span>{toast.msg}</span>
               </div>
             )}
 
-            {(q?.question_type === "coding" || q?.question_type === "viva") && (
-              <div className="ex-editor-wrap">
-                <div className="ex-editor-bar">
-                  <div className="ex-editor-bar__dots"><span /><span /><span /></div>
-                  <span className="ex-editor-bar__label">
-                    {q?.question_type === "coding" ? "Code Editor" : "Response Area"}
-                  </span>
+            {/* ── BODY ── */}
+            <div className="ex-body ex-body--alt">
+
+              {/* ── LEFT SIDEBAR ── */}
+              <aside className="ex-sidebar ex-sidebar--left">
+                <div className="ex-sidebar-brand-mini">
+                    Navigation
                 </div>
+
+                <div className="ex-nav-dots">
+                  {QUESTIONS.map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`ex-dot ${i === current ? "is-active" : ""} ${answers[i] !== undefined ? "is-done" : ""}`}
+                    >
+                      {i + 1}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="ex-spacer" />
+
+                <div className="ex-instructions-box">
+                  <h4 className="ex-inst-h">General Guidelines</h4>
+                  <div className="ex-inst-item"><Ic.Check /><span>Always stay in camera frame</span></div>
+                  <div className="ex-inst-item"><Ic.Check /><span>Minimize background noise</span></div>
+                  <div className="ex-inst-item"><Ic.Check /><span>Submit before timer ends</span></div>
+                </div>
+
+                <div className="ex-sidebar-info">
+                  <div className={`ex-proctor-status ${violations > 0 ? "is-warning" : ""}`}>
+                    <h5 className="ex-proctor-h">AI Proctoring Status</h5>
+                    <div className="ex-warn-count">
+                        Warnings Remaining: {MAX_VIOLATIONS - violations} / {MAX_VIOLATIONS}
+                    </div>
+                  </div>
+                  <div className="ex-info-row">
+                    <Ic.Eye /> <span>Tracking on</span>
+                  </div>
+                </div>
+              </aside>
+
+          <main 
+            className={`ex-main ex-main--alt ${transitioning ? "ex-main--fade" : ""}`}
+            onContextMenu={(e) => e.preventDefault()}
+            onCopy={(e) => e.preventDefault()}
+            onCut={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+            style={{ userSelect: 'none' }}
+          >
+            
+            <div className="ex-master-progress" title={`Exam Progress: ${Math.round(progressPct)}%`}>
+               <div className="ex-master-fill" style={{ width: `${progressPct}%` }} />
+            </div>
+
+            {/* ── MAIN HEADER ── */}
+            <header className="ex-main-header">
+              <div className="ex-header-left">
+                <span className="ex-breadcrumb">
+                  {q?.sectionFull || q?.section}
+                </span>
+                <span className="ex-q-lvl" style={{ 
+                    backgroundColor: q?.level === 'Easy' ? '#f0fdf4' : q?.level === 'Medium' ? '#fffbeb' : '#fef2f2',
+                    color: q?.level === 'Easy' ? '#16a34a' : q?.level === 'Medium' ? '#d97706' : '#dc2626'
+                }}>
+                    {q?.level}
+                </span>
+              </div>
+              <div className="ex-header-right">
+                <div className={`ex-main-timer ${isUrgent ? 'is-urgent' : isWarn ? 'is-warn' : ''}`}>
+                   <Ic.Clock />
+                   <span>{fmt(qTimeLeft)}</span>
+                </div>
+              </div>
+            </header>
+
+            <div className="ex-q-body">
+              <h2 className="ex-q-title">
+                {q?.question}
+              </h2>
+
+              <div className="ex-q-content-area">
+                  {q?.question_type === "mcq" && (
+                  <div className="ex-opts-grid">
+                      {q.options.map((opt, i) => {
+                      const sel = answers[current] === i;
+                      return (
+                          <div 
+                          key={i} 
+                          className={`ex-opt-row ${sel ? "is-selected" : ""}`}
+                          onClick={() => setAnswers(prev => ({ ...prev, [current]: i }))}
+                          >
+                          <span className="ex-opt-letter">{String.fromCharCode(97 + i)}</span>
+                          <span className="ex-opt-text">{opt}</span>
+                          </div>
+                      );
+                      })}
+                  </div>
+                  )}
+
+              {(q?.question_type === "coding" || q?.question_type === "viva") && (
                 <textarea
-                  className={`ex-editor ${q?.question_type === "coding" ? "ex-editor--code" : ""}`}
+                  className="ex-editor ex-editor--alt"
                   spellCheck={q?.question_type !== "coding"}
                   placeholder={q?.placeholder}
-                  value={answerText}
-                  onChange={e => setAnswerText(e.target.value)}
+                  value={answers[current] || ""}
+                  onChange={e => setAnswers(prev => ({ ...prev, [current]: e.target.value }))}
                 />
-              </div>
-            )}
-
-            <div className="ex-foot">
-              <div className="ex-foot__secure">
-                <Ic.Shield />
-                <span>Secure — forward navigation only</span>
-              </div>
-              <button
-                className="ex-next-btn"
-                style={{ background: secColor }}
-                onClick={submitAnswerHandler}
-                disabled={transitioning}
-              >
-                {current < QUESTIONS.length - 1 ? "Next Question →" : "Submit Exam ✓"}
-              </button>
+              )}
+            </div>
             </div>
 
+            <div className="ex-main-foot">
+              <div className="ex-foot-btns">
+                  <button className="ex-btn-submit-early" onClick={() => setConfirmSubmit(true)}>
+                    Submit Assessment ✓
+                  </button>
+                  <button 
+                    className="ex-next-alt-btn" 
+                    onClick={() => goNext()} 
+                    disabled={transitioning || answers[current] === undefined}
+                  >
+                    {current < QUESTIONS.length - 1 ? "Next Question →" : "Finalize Exam ✓"}
+                  </button>
+              </div>
+            </div>
           </main>
+
+          {/* ── RIGHT SIDEBAR ── */}
+          <aside className="ex-sidebar ex-sidebar--right">
+            <div className="ex-camera-box">
+              <div className="ex-cam-top">
+                <div className="ex-cam-status">
+                   <span className="ex-cam-dot">●</span> LIVE
+                </div>
+                <div className="ex-cam-refresh">↻</div>
+              </div>
+              <div className="ex-cam-wrap">
+                <div className="ex-cam-corner top-left"></div>
+                <div className="ex-cam-corner top-right"></div>
+                <div className="ex-cam-corner bottom-left"></div>
+                <div className="ex-cam-corner bottom-right"></div>
+                <video ref={camRef} autoPlay muted playsInline className="ex-cam-vid" />
+              </div>
+            </div>
+
+            <div className="ex-section-steps">
+               <h4 className="ex-steps-h">Assessment Roadmap</h4>
+               <div className="ex-steps-v">
+                  {SECTIONS_META.map((sec, idx) => {
+                    const isPassed = idx < SECTIONS_META.findIndex(s => s.key === q?.section);
+                    const isCur = sec.key === q?.section;
+                    return (
+                        <div key={sec.key} className={`ex-step-box ${isCur ? 'is-active' : ''} ${isPassed ? 'is-done' : ''}`}>
+                            <div className="ex-step-check">{isPassed ? '✓' : idx + 1}</div>
+                            <div className="ex-step-content">
+                                <span className="ex-step-sec">{sec.label}</span>
+                                <span className="ex-step-meta">{sec.total} Questions</span>
+                            </div>
+                        </div>
+                    );
+                  })}
+               </div>
+            </div>
+          </aside>
         </div>
       </div>
+      
+      <footer className="ex-global-footer">
+        Powered by ArithExam AI Assessment
+      </footer>
+    </div>
     </>
   );
 }
